@@ -3,9 +3,10 @@ package com.arslan.data
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
+
 @SpringBootApplication
-class ArcheageAuctionDataApplication
+class DataApplication
 
 fun main(args: Array<String>) {
-    runApplication<ArcheageAuctionDataApplication>(*args)
+    runApplication<DataApplication>(*args)
 }

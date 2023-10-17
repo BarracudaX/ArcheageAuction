@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.intercept.AuthorizationFilter
 
 @Configuration
-class SecurityConfiguration {
+class WebSecurityConfiguration {
 
     @FunctionalInterface
     interface HttpSecurityConfigurer{

@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
-class SecurityConfiguration {
+class DataSecurityConfiguration {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity) : SecurityFilterChain = http.build()

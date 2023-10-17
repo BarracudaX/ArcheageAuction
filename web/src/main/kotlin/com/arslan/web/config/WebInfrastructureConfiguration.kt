@@ -11,7 +11,7 @@ import java.nio.file.Files
 import kotlin.io.path.Path
 
 @Configuration
-class InfrastructureConfiguration {
+class WebInfrastructureConfiguration {
 
     @Bean
     fun passwordEncoder() : PasswordEncoder = BCryptPasswordEncoder()
@@ -19,10 +19,8 @@ class InfrastructureConfiguration {
     @Profile("schema")
     @Bean
     fun schemaCleaner() : ApplicationListener<ContextClosedEvent> = ApplicationListener<ContextClosedEvent> {
-        Files.deleteIfExists(Path("ArcheageAuctionWeb/create.sql"))
-        Files.deleteIfExists(Path("ArcheageAuctionWeb/drop.sql"))
-        Files.deleteIfExists(Path("create.sql"))
-        Files.deleteIfExists(Path("drop.sql"))
+        Files.deleteIfExists(Path("web-create.sql"))
+        Files.deleteIfExists(Path("web-drop.sql"))
     }
 
 }

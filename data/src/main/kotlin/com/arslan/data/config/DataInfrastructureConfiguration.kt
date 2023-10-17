@@ -9,14 +9,12 @@ import java.nio.file.Files
 import kotlin.io.path.Path
 
 @Configuration
-class InfrastructureConfiguration {
+class DataInfrastructureConfiguration {
 
     @Profile("schema")
     @Bean
     fun schemaCleaner() : ApplicationListener<ContextClosedEvent> = ApplicationListener<ContextClosedEvent> {
-        Files.deleteIfExists(Path("ArcheageAuctionData/create.sql"))
-        Files.deleteIfExists(Path("ArcheageAuctionData/drop.sql"))
-        Files.deleteIfExists(Path("create.sql"))
-        Files.deleteIfExists(Path("drop.sql"))
+        Files.deleteIfExists(Path("data-create.sql"))
+        Files.deleteIfExists(Path("data-drop.sql"))
     }
 }

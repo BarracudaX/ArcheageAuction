@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class ArcheageAuctionWebApplication
+class WebApplication
 
 fun main(args: Array<String>) {
-	runApplication<ArcheageAuctionWebApplication>(*args)
+	runApplication<WebApplication>(*args)
 }
