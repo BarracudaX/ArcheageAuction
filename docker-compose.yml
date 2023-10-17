@@ -1,0 +1,21 @@
+services:
+  mysql:
+    build:
+      dockerfile: MySQLDockerfile
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  prometheus:
+    image: bitnami/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus_data:/opt/bitnami/prometheus/data
+      - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+volumes:
+  mysql_data:
+  prometheus_data:
