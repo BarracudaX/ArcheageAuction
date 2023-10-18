@@ -6,6 +6,30 @@ create table users (id bigint not null, email varchar(255), password varchar(255
 create table users_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into users_id_sequence_generator values ( 1 );
 USE Archeage_en;
--- copy pate default schema for every locale
+create table item_recipes (item_recipe_id bigint not null, items_id bigint not null, primary key (item_recipe_id, items_id)) engine=InnoDB;
+create table items (id bigint not null, name varchar(255), primary key (id)) engine=InnoDB;
+create table items_id_sequence_generator (next_val bigint) engine=InnoDB;
+insert into items_id_sequence_generator values ( 1 );
+create table locations (id bigint not null, continent enum ('EAST','NORTH','WEST'), name varchar(255), primary key (id)) engine=InnoDB;
+create table locations_id_sequence_generator (next_val bigint) engine=InnoDB;
+insert into locations_id_sequence_generator values ( 1 );
+create table recipes (id bigint not null, item_id bigint, primary key (id)) engine=InnoDB;
+create table recipes_id_sequence_generator (next_val bigint) engine=InnoDB;
+insert into recipes_id_sequence_generator values ( 1 );
+alter table item_recipes add constraint FKcejr0vv2nt49xnamc4vcu07kq foreign key (items_id) references items (id);
+alter table item_recipes add constraint FKqvlomy05834tjjg94vrgogl0c foreign key (item_recipe_id) references recipes (id);
+alter table recipes add constraint FKqa2rk4ajsga38f5tsck0uiaar foreign key (item_id) references items (id);
 USE Archeage_ru;
--- copy pate default schema for every locale
+create table item_recipes (item_recipe_id bigint not null, items_id bigint not null, primary key (item_recipe_id, items_id)) engine=InnoDB;
+create table items (id bigint not null, name varchar(255), primary key (id)) engine=InnoDB;
+create table items_id_sequence_generator (next_val bigint) engine=InnoDB;
+insert into items_id_sequence_generator values ( 1 );
+create table locations (id bigint not null, continent enum ('EAST','NORTH','WEST'), name varchar(255), primary key (id)) engine=InnoDB;
+create table locations_id_sequence_generator (next_val bigint) engine=InnoDB;
+insert into locations_id_sequence_generator values ( 1 );
+create table recipes (id bigint not null, item_id bigint, primary key (id)) engine=InnoDB;
+create table recipes_id_sequence_generator (next_val bigint) engine=InnoDB;
+insert into recipes_id_sequence_generator values ( 1 );
+alter table item_recipes add constraint FKcejr0vv2nt49xnamc4vcu07kq foreign key (items_id) references items (id);
+alter table item_recipes add constraint FKqvlomy05834tjjg94vrgogl0c foreign key (item_recipe_id) references recipes (id);
+alter table recipes add constraint FKqa2rk4ajsga38f5tsck0uiaar foreign key (item_id) references items (id);

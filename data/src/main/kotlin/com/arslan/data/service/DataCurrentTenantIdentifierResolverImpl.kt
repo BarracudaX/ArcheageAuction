@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import java.util.Locale
 
 @Component
-class CurrentTenantIdentifierResolverImpl(@Value("\${base.schema.name}") private val baseName: String) : CurrentTenantIdentifierResolver,HibernatePropertiesCustomizer {
+class DataCurrentTenantIdentifierResolverImpl(@Value("\${base.schema.name}") private val baseName: String) : CurrentTenantIdentifierResolver,HibernatePropertiesCustomizer {
 
     private val supportedLocales = mapOf<Locale,Locale>(Locale.ENGLISH to Locale.ENGLISH,Locale("ru","RU") to Locale("ru","RU") )
 

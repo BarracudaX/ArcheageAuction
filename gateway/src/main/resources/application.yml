@@ -1,0 +1,14 @@
+server:
+  port: 8070
+management:
+  endpoints:
+    web:
+      exposure:
+        exclude: health,prometheus
+logging:
+  file:
+    name: logs/archeage_gateway.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: ${LOG_FILE}.%d{yyyy-MM-dd}.%i.log
+      max-history: 100

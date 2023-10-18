@@ -2,9 +2,9 @@ global:
   scrape_interval: 5m
 scrape_configs:
   - job_name: "archeage"
-#    scrape_interval: 20s
+    scrape_interval: 20s
     static_configs:
-      - targets: ['172.17.0.1:8080','172.17.0.1:8085']
+      - targets: ['172.17.0.1:8080','172.17.0.1:8085','172.17.0.1:8090']
     metrics_path: /actuator/prometheus
     relabel_configs:
       - source_labels: [ __address__ ]
@@ -16,3 +16,13 @@ scrape_configs:
         regex: '172.17.0.1:8085'
         target_label: 'application'
         replacement: 'archeage_data'
+
+      - source_labels: [ __address__ ]
+        regex: '172.17.0.1:8090'
+        target_label: 'application'
+        replacement: 'archeage_price'
+
+      - source_labels: [ __address__ ]
+        regex: '172.17.0.1:8070'
+        target_label: 'application'
+        replacement: 'archeage_gateway'
