@@ -29,7 +29,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client:3.1.4")
 
     //kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

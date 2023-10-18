@@ -57,7 +57,6 @@ class WebSecurityConfiguration {
                 }
                 .addFilterBefore(DevFilter(),AuthorizationFilter::class.java)
                 .csrf { csrf -> csrf.disable() }
-                .oauth2Login{  }
         }
     }
 
