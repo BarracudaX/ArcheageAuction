@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class PriceCurrentTenantIdentifierResolverImpl(@Value("\${base.schema.name}") private val baseName: String) : CurrentTenantIdentifierResolver,HibernatePropertiesCustomizer {
-    override fun resolveCurrentTenantIdentifier(): String = "${baseName}_${ArcheageServerContextHolder.getServerContext()}"
+    override fun resolveCurrentTenantIdentifier(): String = "${baseName}_${PriceArcheageServerContextHolder.getServerContext()}"
 
     override fun validateExistingCurrentSessions(): Boolean = false
 

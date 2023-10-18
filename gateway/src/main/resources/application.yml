@@ -4,7 +4,7 @@ management:
   endpoints:
     web:
       exposure:
-        exclude: health,prometheus
+        include: health,prometheus
 logging:
   file:
     name: logs/archeage_gateway.log

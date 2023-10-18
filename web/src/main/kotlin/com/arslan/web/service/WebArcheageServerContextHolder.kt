@@ -1,6 +1,6 @@
-package com.arslan.price.service
+package com.arslan.web.service
 
-class ArcheageServerContextHolder {
+class WebArcheageServerContextHolder {
 
     companion object{
         private val serverContext: ThreadLocal<String> = ThreadLocal()

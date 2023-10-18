@@ -39,7 +39,6 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus:1.11.5")
     runtimeOnly("com.mysql:mysql-connector-j")
     implementation("org.slf4j:slf4j-api:2.0.9")
-    implementation("ch.qos.logback:logback-classic:1.4.11")
 
     //test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
