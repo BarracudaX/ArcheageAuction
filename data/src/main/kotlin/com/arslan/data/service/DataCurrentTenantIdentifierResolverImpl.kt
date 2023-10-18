@@ -11,9 +11,9 @@ import java.util.Locale
 @Component
 class DataCurrentTenantIdentifierResolverImpl(@Value("\${base.schema.name}") private val baseName: String) : CurrentTenantIdentifierResolver,HibernatePropertiesCustomizer {
 
-    private val supportedLocales = mapOf<Locale,Locale>(Locale.ENGLISH to Locale.ENGLISH,Locale("ru","RU") to Locale("ru","RU") )
+    private val supportedLocales = mapOf<String,String>(Locale.ENGLISH.language to Locale.ENGLISH.language,Locale("ru","RU").language to Locale("ru","RU").language )
 
-    override fun resolveCurrentTenantIdentifier(): String = "${baseName}_${supportedLocales.getOrDefault(LocaleContextHolder.getLocale(),Locale.ENGLISH).language}"
+    override fun resolveCurrentTenantIdentifier(): String = "${baseName}_${supportedLocales.getOrDefault(LocaleContextHolder.getLocale().language,Locale.ENGLISH.language)}"
     override fun validateExistingCurrentSessions(): Boolean = true
     override fun customize(hibernateProperties: MutableMap<String, Any>) {
         hibernateProperties[AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER] = this

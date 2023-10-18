@@ -9,6 +9,7 @@ import org.springframework.security.web.SecurityFilterChain
 class DataSecurityConfiguration {
 
     @Bean
-    fun securityFilterChain(http: HttpSecurity) : SecurityFilterChain = http.build()
+    fun securityFilterChain(http: HttpSecurity) : SecurityFilterChain = http
+        .build()
 
 }

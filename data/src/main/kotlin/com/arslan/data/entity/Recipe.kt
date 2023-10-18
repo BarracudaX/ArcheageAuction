@@ -9,6 +9,9 @@ class Recipe(
     @ManyToOne
     var item: Item,
 
+    @OneToMany(mappedBy = "recipe")
+    val materials: MutableSet<CraftingMaterial> = mutableSetOf(),
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RECIPES_SEQUENCE_GENERATOR")
     var id: Long? = null

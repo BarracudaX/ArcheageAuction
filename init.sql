@@ -1,5 +1,5 @@
-CREATE DATABASE Archeage_en;
-CREATE DATABASE Archeage_ru;
+CREATE DATABASE Archeage_en CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;;
+CREATE DATABASE Archeage_ru CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;;
 CREATE DATABASE Archeage;
 
 CREATE DATABASE Archeage_price_lucius;
