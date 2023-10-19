@@ -40,6 +40,7 @@ class WebSecurityConfiguration {
             .authorizeHttpRequests { authorize ->
                 authorize
                     .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+                    .requestMatchers("/locations","/").permitAll()
                     .requestMatchers(HttpMethod.GET,"/resource/**").permitAll()
             }
             .anonymous {  }

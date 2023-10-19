@@ -1,6 +1,5 @@
-package com.arslan.price.config
+package com.arslan.web.config
 
-import com.arslan.price.service.PriceServerContextInterceptor
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.LocaleContextResolver
@@ -10,9 +9,12 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor
 
 @Configuration
-class PriceWebConfiguration(private val interceptor: PriceServerContextInterceptor) : WebMvcConfigurer {
+class WebConfiguration : WebMvcConfigurer {
+
+    @Bean
+    fun localeResolver() : LocaleContextResolver = CookieLocaleResolver("language")
 
     override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(interceptor)
+        registry.addInterceptor(LocaleChangeInterceptor())
     }
 }

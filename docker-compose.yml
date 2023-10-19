@@ -9,6 +9,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
   prometheus:
     image: bitnami/prometheus:latest
     ports:

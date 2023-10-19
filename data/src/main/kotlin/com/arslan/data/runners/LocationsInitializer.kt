@@ -37,7 +37,7 @@ class LocationsInitializer(
 
         LocaleContextHolder.setLocale(Locale("ru","RU"))
 
-        locationRepository.save(Location("Богровый каньон",Continent.EAST))
+        locationRepository.save(Location("богровый каньон",Continent.EAST))
         locationRepository.save(Location("долина талых снегов",Continent.EAST))
         locationRepository.save(Location("древний лес",Continent.EAST))
         locationRepository.save(Location("инистра",Continent.EAST))

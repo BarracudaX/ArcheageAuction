@@ -16,7 +16,9 @@ class DataMultiTenantConnectionProviderImpl(private val datasource: DataSource, 
 
     override fun <T : Any?> unwrap(unwrapType: Class<T>?): T = throw UnknownUnwrapTypeException(unwrapType)
 
-    override fun getAnyConnection(): Connection = datasource.connection
+    override fun getAnyConnection(): Connection = datasource.connection.apply {
+        createStatement().execute("USE Archeage_en")
+    }
 
     override fun releaseAnyConnection(connection: Connection) {
         connection.close()

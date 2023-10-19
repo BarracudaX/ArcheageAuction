@@ -105,7 +105,7 @@ create table locations (id bigint not null, continent enum ('EAST','NORTH','WEST
 create table locations_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into locations_id_sequence_generator values ( 1 );
 create table packs (creation_location_id bigint not null, id bigint not null, primary key (id)) engine=InnoDB;
-create table recipes (id bigint not null, item_id bigint, primary key (id)) engine=InnoDB;
+create table recipes (craftable_id bigint, id bigint not null, primary key (id)) engine=InnoDB;
 create table recipes_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into recipes_id_sequence_generator values ( 1 );
 alter table items add constraint ITEMS_UNIQUE_NAME_CONSTRAINT unique (name);
@@ -113,7 +113,7 @@ alter table crafting_material add constraint FKl24g8bw11xtarq11hvxm8sxi8 foreign
 alter table crafting_material add constraint FKe5wa9q3i5l5o7g9jnmauoqhx0 foreign key (recipe_id) references recipes (id);
 alter table packs add constraint FK1xi3vivn5vbkpsptcme6e4ovy foreign key (creation_location_id) references locations (id);
 alter table packs add constraint FKjml7yq3pqca98ugehgx0ul48k foreign key (id) references items (id);
-alter table recipes add constraint FKqa2rk4ajsga38f5tsck0uiaar foreign key (item_id) references items (id);
+alter table recipes add constraint FK3j7mnbptd1qayblp29pnqgy5l foreign key (craftable_id) references items (id);
 
 USE Archeage_ru;
 create table crafting_material (quantity integer not null, item_id bigint not null, recipe_id bigint not null, primary key (item_id, recipe_id)) engine=InnoDB;
@@ -124,7 +124,7 @@ create table locations (id bigint not null, continent enum ('EAST','NORTH','WEST
 create table locations_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into locations_id_sequence_generator values ( 1 );
 create table packs (creation_location_id bigint not null, id bigint not null, primary key (id)) engine=InnoDB;
-create table recipes (id bigint not null, item_id bigint, primary key (id)) engine=InnoDB;
+create table recipes (craftable_id bigint, id bigint not null, primary key (id)) engine=InnoDB;
 create table recipes_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into recipes_id_sequence_generator values ( 1 );
 alter table items add constraint ITEMS_UNIQUE_NAME_CONSTRAINT unique (name);
@@ -132,4 +132,4 @@ alter table crafting_material add constraint FKl24g8bw11xtarq11hvxm8sxi8 foreign
 alter table crafting_material add constraint FKe5wa9q3i5l5o7g9jnmauoqhx0 foreign key (recipe_id) references recipes (id);
 alter table packs add constraint FK1xi3vivn5vbkpsptcme6e4ovy foreign key (creation_location_id) references locations (id);
 alter table packs add constraint FKjml7yq3pqca98ugehgx0ul48k foreign key (id) references items (id);
-alter table recipes add constraint FKqa2rk4ajsga38f5tsck0uiaar foreign key (item_id) references items (id);
+alter table recipes add constraint FK3j7mnbptd1qayblp29pnqgy5l foreign key (craftable_id) references items (id);

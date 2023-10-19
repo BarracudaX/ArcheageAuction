@@ -7,7 +7,7 @@ import jakarta.persistence.*
 @Table(name = "RECIPES")
 class Recipe(
     @ManyToOne
-    var item: Item,
+    var craftable: Item,
 
     @OneToMany(mappedBy = "recipe")
     val materials: MutableSet<CraftingMaterial> = mutableSetOf(),
