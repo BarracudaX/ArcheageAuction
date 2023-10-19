@@ -15,6 +15,7 @@ import java.util.*
 @Order(2)
 class ItemsInitializer(private val itemRepository: ItemRepository) : ApplicationRunner{
     override fun run(args: ApplicationArguments?) {
+        LocaleContextHolder.setLocale(Locale.ENGLISH)
 
         if(itemRepository.count() != 0L) return
 
@@ -57,6 +58,8 @@ class ItemsInitializer(private val itemRepository: ItemRepository) : Application
         itemRepository.save(Item("гранат",""))
         itemRepository.save(Item("апельсин",""))
         itemRepository.save(Item("оливки",""))
+
+        LocaleContextHolder.setLocale(Locale.ENGLISH)
     }
 
 

@@ -11,9 +11,7 @@ spring:
         - id: web_route
           uri: http://localhost:8080
           predicates:
-            - Host={server}.app.localhost:8070
-          filters:
-            - AddRequestHeader=X-ARCHEAGE-SERVER,{server}
+            - Host=app.localhost:8070
         - id: data_route
           uri: http://localhost:8085
           predicates:

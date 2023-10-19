@@ -149,6 +149,7 @@ class PacksInitializer(
         ingredient = itemRepository.findByName("оливки")
         craftingMaterialRepository.save(CraftingMaterial(3,ingredient,recipe, CraftingMaterialID(ingredient.id!!,recipe.id!!)))
 
+        LocaleContextHolder.setLocale(Locale.ENGLISH)
     }
 
 }

@@ -18,6 +18,8 @@ class LocationsInitializer(
     private val locationRepository: LocationRepository,
 ) : ApplicationRunner {
     override fun run(args: ApplicationArguments) {
+        LocaleContextHolder.setLocale(Locale.ENGLISH)
+
         if(locationRepository.count() != 0L) return
 
         locationRepository.save(Location("solis headlands",Continent.EAST))
@@ -52,7 +54,7 @@ class LocationsInitializer(
         locationRepository.save(Location("тигриный хребет",Continent.EAST))
         locationRepository.save(Location("хазира",Continent.EAST))
 
-
+        LocaleContextHolder.setLocale(Locale.ENGLISH)
     }
 
 }
