@@ -12,21 +12,13 @@ import java.io.Serializable
 class CraftingMaterial(
     var quantity: Int,
 
+    @Id
     @ManyToOne
     @MapsId("itemID")
     var item: Item,
 
+    @Id
     @ManyToOne
     @MapsId("recipeID")
-    var recipe: Recipe,
-
-    @EmbeddedId
-    var craftingMaterialID: CraftingMaterialID
+    var recipe: Recipe
 )
-
-@Embeddable
-class CraftingMaterialID(
-    var itemID: Long,
-
-    var recipeID: Long
-) : Serializable

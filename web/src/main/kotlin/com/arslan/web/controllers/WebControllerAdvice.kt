@@ -12,7 +12,9 @@ import java.util.concurrent.ConcurrentHashMap
 @ControllerAdvice
 class WebControllerAdvice(private val serverService: ServerService) {
     @ModelAttribute("servers")
-    fun servers(model: Model,request: HttpServletRequest) : List<String> = serverService.servers()
+    fun servers() : List<String> = serverService.servers()
 
+    @ModelAttribute("currentURL")
+    fun currentURL(httpServletRequest: HttpServletRequest) : String = httpServletRequest.requestURL.toString()
 
 }

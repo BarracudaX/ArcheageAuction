@@ -11,6 +11,8 @@ class Location(
     @Enumerated(EnumType.STRING)
     val continent: Continent,
 
+    val hasFactory: Boolean = false,
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "LOCATIONS_SEQUENCE_GENERATOR")
     var id: Long? = null

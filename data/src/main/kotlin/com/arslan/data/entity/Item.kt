@@ -14,6 +14,9 @@ open class Item(
     @Column(columnDefinition = "TEXT")
     var description: String,
 
+    @OneToMany(mappedBy = "craftable")
+    var recipes: MutableSet<Recipe> = mutableSetOf(),
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ITEMS_SEQUENCE_GENERATOR")
     var id: Long? = null

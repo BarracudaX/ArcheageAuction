@@ -1,5 +1,6 @@
 package com.arslan.web.service
 
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Service
@@ -8,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 
 @Service
-class ServerServiceImpl(private val webClient: WebClient) : ServerService {
+class ServerServiceImpl(@Qualifier("dataWebClient") private val webClient: WebClient) : ServerService {
 
     private val servers = ConcurrentHashMap<String,List<String>>()
 

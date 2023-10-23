@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{index::head_fragment(#{page.packs.label})}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>Packages</title>
+</head>
+<body>
+<div class="container-fluid p-0">
+    <nav class="navbar bg-dark navbar-expand-lg" data-bs-theme="dark" th:replace="~{index::nav_fragment}">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" th:href="@{/}" th:text="${#strings.capitalize(server)}">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false" th:text="#{page.language.label}">Language</a>
+                        <ul class="dropdown-menu">
+                            <li th:each="language : ${T(com.arslan.web.entity.SupportedLanguages).values()}"><a
+                                    class="dropdown-item"
+                                    th:text="${#messages.msg('supported.language.'+language.name())}"
+                                    th:href="@{|/?locale=${language.locale.language}|}" href="#">Russian</a></li>
+                            <li th:remove="all"><a class="dropdown-item" href="#">Test</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false" th:text="#{page.server.label}">Server</a>
+                        <ul class="dropdown-menu">
+                            <li th:each="server : ${servers}"><a class="dropdown-item" th:text="${server}"
+                                                                 th:href="@{|/?server=${server}|}" href="#">Server</a>
+                            </li>
+                            <li th:remove="all"><a class="dropdown-item" href="#">Test</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#" th:href="@{/packs}" th:text="#{page.packs.label}">Packs</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div>
+        <div class="container-fluid">
+            <div class="row mt-2">
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-auto"><label class="form-label m-0" for="continent"
+                                                     th:text="#{page.continent.label}">Continent:</label></div>
+                        <div class="col-auto">
+                            <select class="form-select" id="continent">
+                                <option value="east" th:each="continent : ${T(com.arslan.web.Continent).values()}"
+                                        th:value="${continent.name()}"
+                                        th:text="${#messages.msg('page.continent.'+continent.name())}">East
+                                </option>
+                                <option value="west" th:remove="all">West</option>
+                                <option value="north" th:remove="all">North</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-auto"><label class="form-label m-0" for="departure_location" th:text="#{page.departure.location.label}">Departure Location:</label></div>
+                        <div class="col-auto">
+                            <select class="form-select" id="departure_location">
+                                <option value="all" th:text="#{page.locations.all}">All Locations</option>
+                                <option value="east" th:each="location : ${locations}" th:value="${location.name}" th:text="${#strings.capitalizeWords(location.name)}">Location1:</option>
+                                <option value="west" th:remove="all">Location2:</option>
+                                <option value="north" th:remove="all">Location3:</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-auto"><label class="form-label m-0" for="destination_location" th:text="#{page.destination.location.label}">Destination Location:</label></div>
+                        <div class="col-auto">
+                            <select class="form-select" id="destination_location">
+                                <option value="all" th:text="#{page.factories.all}">All Factories</option>
+                                <option value="east" th:each="location : ${factories}" th:value="${location.name}" th:text="${location.name}">Location1:</option>
+                                <option value="west" th:remove="all">Location2:</option>
+                                <option value="north" th:remove="all">Location3:</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid p-1 mt-5">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th th:text="#{page.pack.name}" class="text-center">Pack Name</th>
+                    <th th:text="#{page.pack.creation.location}" class="text-center">Creation Location</th>
+                    <th th:text="#{page.pack.destination.location}" class="text-center">Destination Location</th>
+                    <th th:text="#{page.pack.sell.price}" class="text-center">Sell Price</th>
+                    <th class="text-center">%</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="pack : ${packs}">
+                    <td th:text="${pack.name}" class="text-center">Pack Name</td>
+                    <td th:text="${pack.creationLocation}" class="text-center">Location X</td>
+                    <td th:text="${pack.destinationLocation}" class="text-center">Location Y</td>
+                    <td th:text="${pack.sellPrice.gold+#messages.msg('page.gold')+' '+pack.sellPrice.silver+#messages.msg('page.silver')+' '+pack.sellPrice.copper+#messages.msg('page.copper')}" class="text-center">1g 1s 1c</td>
+                    <td class="text-center">100%</td>
+                </tr>
+            </tbody>
+        </table>
+<!--        <button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Pack Name</button>-->
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+</html>

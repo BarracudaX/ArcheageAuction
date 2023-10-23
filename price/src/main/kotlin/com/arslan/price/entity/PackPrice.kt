@@ -10,17 +10,9 @@ import java.time.Instant
 @Entity
 @Table(name = "PACK_PRICES")
 class PackPrice(
-    val timestamp: Instant,
-
-    val itemName: String,
-
-    val departureLocation: String,
+    itemName: String,
 
     val destinationLocation: String,
 
-    val price: Price,
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "")
-    var id: Long? = null
-)
+    price: Price
+) : ItemPrice(itemName, price)

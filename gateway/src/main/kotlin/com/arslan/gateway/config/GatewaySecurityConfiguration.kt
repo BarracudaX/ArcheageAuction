@@ -10,6 +10,7 @@ class GatewaySecurityConfiguration {
 
     @Bean
     fun securityWebFilterChain(http: ServerHttpSecurity) : SecurityWebFilterChain = http
+        .csrf { csrf -> csrf.disable() }
         .authorizeExchange { authorize ->
             authorize.anyExchange().permitAll()
         }.build()

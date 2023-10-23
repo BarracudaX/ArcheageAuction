@@ -7,90 +7,90 @@ USE Archeage_price_lucius;
 create table item_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), item_name varchar(255), primary key (id)) engine=InnoDB;
 create table item_prices_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into item_prices_id_sequence_generator values ( 1 );
-create table pack_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), departure_location varchar(255), destination_location varchar(255), item_name varchar(255), primary key (id)) engine=InnoDB;
-create table pack_prices_seq (next_val bigint) engine=InnoDB;
-insert into pack_prices_seq values ( 1 );
-alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name);
+create table pack_prices (id bigint not null, destination_location varchar(255), primary key (id)) engine=InnoDB;
+alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name, timestamp);
+alter table pack_prices add constraint FK4rwpmf6cfyicyh56ah3ykoio5 foreign key (id) references item_prices (id);
+
 
 CREATE DATABASE Archeage_price_corvus;
 USE Archeage_price_corvus;
 create table item_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), item_name varchar(255), primary key (id)) engine=InnoDB;
 create table item_prices_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into item_prices_id_sequence_generator values ( 1 );
-create table pack_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), departure_location varchar(255), destination_location varchar(255), item_name varchar(255), primary key (id)) engine=InnoDB;
-create table pack_prices_seq (next_val bigint) engine=InnoDB;
-insert into pack_prices_seq values ( 1 );
-alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name);
+create table pack_prices (id bigint not null, destination_location varchar(255), primary key (id)) engine=InnoDB;
+alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name, timestamp);
+alter table pack_prices add constraint FK4rwpmf6cfyicyh56ah3ykoio5 foreign key (id) references item_prices (id);
+
 
 CREATE DATABASE Archeage_price_fanem;
 USE Archeage_price_fanem;
 create table item_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), item_name varchar(255), primary key (id)) engine=InnoDB;
 create table item_prices_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into item_prices_id_sequence_generator values ( 1 );
-create table pack_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), departure_location varchar(255), destination_location varchar(255), item_name varchar(255), primary key (id)) engine=InnoDB;
-create table pack_prices_seq (next_val bigint) engine=InnoDB;
-insert into pack_prices_seq values ( 1 );
-alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name);
+create table pack_prices (id bigint not null, destination_location varchar(255), primary key (id)) engine=InnoDB;
+alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name, timestamp);
+alter table pack_prices add constraint FK4rwpmf6cfyicyh56ah3ykoio5 foreign key (id) references item_prices (id);
+
 
 CREATE DATABASE Archeage_price_shaeda;
 USE Archeage_price_shaeda;
 create table item_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), item_name varchar(255), primary key (id)) engine=InnoDB;
 create table item_prices_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into item_prices_id_sequence_generator values ( 1 );
-create table pack_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), departure_location varchar(255), destination_location varchar(255), item_name varchar(255), primary key (id)) engine=InnoDB;
-create table pack_prices_seq (next_val bigint) engine=InnoDB;
-insert into pack_prices_seq values ( 1 );
-alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name);
+create table pack_prices (id bigint not null, destination_location varchar(255), primary key (id)) engine=InnoDB;
+alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name, timestamp);
+alter table pack_prices add constraint FK4rwpmf6cfyicyh56ah3ykoio5 foreign key (id) references item_prices (id);
+
 
 CREATE DATABASE Archeage_price_ifnir;
 USE Archeage_price_ifnir;
 create table item_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), item_name varchar(255), primary key (id)) engine=InnoDB;
 create table item_prices_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into item_prices_id_sequence_generator values ( 1 );
-create table pack_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), departure_location varchar(255), destination_location varchar(255), item_name varchar(255), primary key (id)) engine=InnoDB;
-create table pack_prices_seq (next_val bigint) engine=InnoDB;
-insert into pack_prices_seq values ( 1 );
-alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name);
+create table pack_prices (id bigint not null, destination_location varchar(255), primary key (id)) engine=InnoDB;
+alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name, timestamp);
+alter table pack_prices add constraint FK4rwpmf6cfyicyh56ah3ykoio5 foreign key (id) references item_prices (id);
+
 
 CREATE DATABASE Archeage_price_xanatos;
 USE Archeage_price_xanatos;
 create table item_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), item_name varchar(255), primary key (id)) engine=InnoDB;
 create table item_prices_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into item_prices_id_sequence_generator values ( 1 );
-create table pack_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), departure_location varchar(255), destination_location varchar(255), item_name varchar(255), primary key (id)) engine=InnoDB;
-create table pack_prices_seq (next_val bigint) engine=InnoDB;
-insert into pack_prices_seq values ( 1 );
-alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name);
+create table pack_prices (id bigint not null, destination_location varchar(255), primary key (id)) engine=InnoDB;
+alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name, timestamp);
+alter table pack_prices add constraint FK4rwpmf6cfyicyh56ah3ykoio5 foreign key (id) references item_prices (id);
+
 
 CREATE DATABASE Archeage_price_taron;
 USE Archeage_price_taron;
 create table item_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), item_name varchar(255), primary key (id)) engine=InnoDB;
 create table item_prices_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into item_prices_id_sequence_generator values ( 1 );
-create table pack_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), departure_location varchar(255), destination_location varchar(255), item_name varchar(255), primary key (id)) engine=InnoDB;
-create table pack_prices_seq (next_val bigint) engine=InnoDB;
-insert into pack_prices_seq values ( 1 );
-alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name);
+create table pack_prices (id bigint not null, destination_location varchar(255), primary key (id)) engine=InnoDB;
+alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name, timestamp);
+alter table pack_prices add constraint FK4rwpmf6cfyicyh56ah3ykoio5 foreign key (id) references item_prices (id);
+
 
 CREATE DATABASE Archeage_price_raven;
 USE Archeage_price_raven;
 create table item_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), item_name varchar(255), primary key (id)) engine=InnoDB;
 create table item_prices_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into item_prices_id_sequence_generator values ( 1 );
-create table pack_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), departure_location varchar(255), destination_location varchar(255), item_name varchar(255), primary key (id)) engine=InnoDB;
-create table pack_prices_seq (next_val bigint) engine=InnoDB;
-insert into pack_prices_seq values ( 1 );
-alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name);
+create table pack_prices (id bigint not null, destination_location varchar(255), primary key (id)) engine=InnoDB;
+alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name, timestamp);
+alter table pack_prices add constraint FK4rwpmf6cfyicyh56ah3ykoio5 foreign key (id) references item_prices (id);
+
 
 CREATE DATABASE Archeage_price_nagashar;
 USE Archeage_price_nagashar;
 create table item_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), item_name varchar(255), primary key (id)) engine=InnoDB;
 create table item_prices_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into item_prices_id_sequence_generator values ( 1 );
-create table pack_prices (copper integer not null, gold integer not null, silver integer not null, id bigint not null, timestamp datetime(6), departure_location varchar(255), destination_location varchar(255), item_name varchar(255), primary key (id)) engine=InnoDB;
-create table pack_prices_seq (next_val bigint) engine=InnoDB;
-insert into pack_prices_seq values ( 1 );
-alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name);
+create table pack_prices (id bigint not null, destination_location varchar(255), primary key (id)) engine=InnoDB;
+alter table item_prices add constraint ITEM_PRICES_ITEM_NAME_UNIQUE_CONSTRAINT unique (item_name, timestamp);
+alter table pack_prices add constraint FK4rwpmf6cfyicyh56ah3ykoio5 foreign key (id) references item_prices (id);
+
 
 USE Archeage;
 create table users (id bigint not null, email varchar(255), password varchar(255), role enum ('ADMIN','USER'), primary key (id)) engine=InnoDB;
@@ -101,11 +101,11 @@ create table crafting_material (quantity integer not null, item_id bigint not nu
 create table items (id bigint not null, description TEXT, name varchar(255), primary key (id)) engine=InnoDB;
 create table items_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into items_id_sequence_generator values ( 1 );
-create table locations (id bigint not null, continent enum ('EAST','NORTH','WEST'), name varchar(255), primary key (id)) engine=InnoDB;
+create table locations (has_factory bit not null, id bigint not null, continent enum ('EAST','NORTH','WEST'), name varchar(255), primary key (id)) engine=InnoDB;
 create table locations_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into locations_id_sequence_generator values ( 1 );
 create table packs (creation_location_id bigint not null, id bigint not null, primary key (id)) engine=InnoDB;
-create table recipes (craftable_id bigint, id bigint not null, primary key (id)) engine=InnoDB;
+create table recipes (produced_quantity integer not null, craftable_id bigint, id bigint not null, primary key (id)) engine=InnoDB;
 create table recipes_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into recipes_id_sequence_generator values ( 1 );
 create table servers (name varchar(255) not null, primary key (name)) engine=InnoDB;
@@ -121,11 +121,11 @@ create table crafting_material (quantity integer not null, item_id bigint not nu
 create table items (id bigint not null, description TEXT, name varchar(255), primary key (id)) engine=InnoDB;
 create table items_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into items_id_sequence_generator values ( 1 );
-create table locations (id bigint not null, continent enum ('EAST','NORTH','WEST'), name varchar(255), primary key (id)) engine=InnoDB;
+create table locations (has_factory bit not null, id bigint not null, continent enum ('EAST','NORTH','WEST'), name varchar(255), primary key (id)) engine=InnoDB;
 create table locations_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into locations_id_sequence_generator values ( 1 );
 create table packs (creation_location_id bigint not null, id bigint not null, primary key (id)) engine=InnoDB;
-create table recipes (craftable_id bigint, id bigint not null, primary key (id)) engine=InnoDB;
+create table recipes (produced_quantity integer not null, craftable_id bigint, id bigint not null, primary key (id)) engine=InnoDB;
 create table recipes_id_sequence_generator (next_val bigint) engine=InnoDB;
 insert into recipes_id_sequence_generator values ( 1 );
 create table servers (name varchar(255) not null, primary key (name)) engine=InnoDB;

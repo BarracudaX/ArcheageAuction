@@ -28,4 +28,7 @@ class WebInfrastructureConfiguration {
     @Bean
     fun dataWebClient(@Value("\${data.app.base.url}") dataAppBaseUrl: String) : WebClient = WebClient.create(dataAppBaseUrl)
 
+    @Bean
+    fun defaultWebClient() : WebClient = WebClient.create()
+
 }

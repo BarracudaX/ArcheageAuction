@@ -9,6 +9,6 @@ import org.springframework.security.web.SecurityFilterChain
 class PriceSecurityConfiguration {
 
     @Bean
-    fun securityFilterChain(http: HttpSecurity) : SecurityFilterChain = http.build()
+    fun securityFilterChain(http: HttpSecurity) : SecurityFilterChain = http.csrf { csrf -> csrf.disable() }.build()
 
 }
