@@ -34,7 +34,7 @@
                             <li th:remove="all"><a class="dropdown-item" href="#" >Test</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#" th:href="@{/packs}" th:text="#{page.packs.label}">Packs</a></li>
+                    <li th:if="${server != null}" class="nav-item"><a class="nav-link" href="#" th:href="@{/packs}" th:text="#{page.packs.label}">Packs</a></li>
                 </ul>
             </div>
         </div>
