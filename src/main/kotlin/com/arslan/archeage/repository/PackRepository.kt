@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query
 
 interface PackRepository : JpaRepository<Pack,Long>{
 
-    @Query("SELECT distinct p FROM Pack p JOIN FETCH p.prices pr JOIN FETCH p.recipes r JOIN FETCH r.materials m JOIN FETCH m.item WHERE p.region = :region AND pr.archeageServer = :server")
-    fun packs(region: Region,server: ArcheageServer) : List<Pack>
+    @Query("SELECT distinct p FROM Pack p LEFT JOIN FETCH p.prices pr LEFT JOIN FETCH p.recipes r LEFT JOIN FETCH r.materials m LEFT JOIN FETCH m.item WHERE p.region = :region AND pr.archeageServer = :server AND p.creationLocation.continent = :continent")
+    fun packs(region: Region,server: ArcheageServer,continent: Continent) : List<Pack>
 
 }

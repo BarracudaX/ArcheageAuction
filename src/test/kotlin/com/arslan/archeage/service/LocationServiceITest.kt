@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 
 class LocationServiceITest(
     private val locationService: LocationService,
-    private val locationRepository: LocationRepository
 ) : AbstractITest() {
 
     @Test

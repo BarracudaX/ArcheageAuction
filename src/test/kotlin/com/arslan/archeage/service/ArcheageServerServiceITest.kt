@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class ArcheageServerServiceITest(
-    private val archeageServerService: ArcheageServerService,
-    private val archeageServerRepository: ArcheageServerRepository
+    private val archeageServerService: ArcheageServerService
 ) : AbstractITest() {
 
     @Test

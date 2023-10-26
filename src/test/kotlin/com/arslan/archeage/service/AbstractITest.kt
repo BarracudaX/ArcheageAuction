@@ -1,6 +1,11 @@
 package com.arslan.archeage.service
 
 import com.arslan.archeage.AbstractTest
+import com.arslan.archeage.repository.ArcheageServerRepository
+import com.arslan.archeage.repository.ItemPriceRepository
+import com.arslan.archeage.repository.LocationRepository
+import com.arslan.archeage.repository.PackRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails
 import org.springframework.boot.autoconfigure.service.connection.ConnectionDetails
 import org.springframework.boot.test.context.SpringBootTest
@@ -19,6 +24,18 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @SpringBootTest
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 abstract class AbstractITest : AbstractTest(){
+
+    @Autowired
+    protected lateinit var packRepository: PackRepository
+
+    @Autowired
+    protected lateinit var itemPriceRepository: ItemPriceRepository
+
+    @Autowired
+    protected lateinit var locationRepository: LocationRepository
+
+    @Autowired
+    protected lateinit var archeageServerRepository: ArcheageServerRepository
 
     companion object{
 

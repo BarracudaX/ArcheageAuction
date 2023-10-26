@@ -12,9 +12,10 @@ class Pack(
 
     name: String,
 
-    description: String,
+    description: String
+) : Item(name, description, creationLocation.region){
 
-    region: Region,
 
 
-) : Item(name, description, region)
+
+}
