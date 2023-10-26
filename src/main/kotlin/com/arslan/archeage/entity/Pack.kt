@@ -14,5 +14,7 @@ class Pack(
 
     description: String,
 
-    region: Region
+    region: Region,
+
+
 ) : Item(name, description, region)

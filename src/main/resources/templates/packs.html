@@ -55,7 +55,7 @@
                                                      th:text="#{page.continent.label}">Continent:</label></div>
                         <div class="col-auto">
                             <select class="form-select" id="continent">
-                                <option value="east" th:each="continent : ${T(com.arslan.web.Continent).values()}"
+                                <option value="east" th:each="continent : ${T(com.arslan.archeage.Continent).values()}"
                                         th:value="${continent.name()}"
                                         th:text="${#messages.msg('page.continent.'+continent.name())}">East
                                 </option>

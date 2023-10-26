@@ -1,21 +1,11 @@
 package com.arslan.archeage.entity
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.MapsId
+import jakarta.persistence.*
 
-@Entity
+@Embeddable
 class CraftingMaterial(
     var quantity: Int,
 
-    @Id
     @ManyToOne
-    @MapsId("itemID")
     var item: Item,
-
-    @Id
-    @ManyToOne
-    @MapsId("recipeID")
-    var recipe: Recipe
 )

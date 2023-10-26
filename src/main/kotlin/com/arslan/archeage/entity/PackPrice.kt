@@ -5,7 +5,7 @@ import jakarta.persistence.ManyToOne
 
 @Entity
 class PackPrice(
-    item: Item,
+    item: Pack,
 
     archeageServer: ArcheageServer,
 

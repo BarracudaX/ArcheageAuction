@@ -18,6 +18,9 @@ open class Item(
     @OneToMany(mappedBy = "craftable")
     open var recipes: MutableSet<Recipe> = mutableSetOf(),
 
+    @OneToMany(mappedBy = "item")
+    open var prices: MutableSet<ItemPrice> = mutableSetOf(),
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ITEMS_SEQUENCE_GENERATOR")
     open var id: Long? = null
