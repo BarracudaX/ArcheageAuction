@@ -2,6 +2,12 @@ package com.arslan.archeage.service
 
 import com.arslan.archeage.entity.User
 import com.arslan.archeage.repository.UserRepository
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -21,7 +27,7 @@ class ArcheageAuthenticationProviderITest(
 
     @Test
     fun `should throw UsernameNotFoundException when provided non existing principal`() {
-        assertThrows<UsernameNotFoundException> {
+        shouldThrow<UsernameNotFoundException> {
             authenticationProvider.authenticate(UsernamePasswordAuthenticationToken("non-existing-principal","any"))
         }
     }
@@ -31,7 +37,7 @@ class ArcheageAuthenticationProviderITest(
         val (principal,password) = "any_principal" to "any_password"
         userRepository.save(User(principal,passwordEncoder.encode(password)))
 
-        assertThrows<BadCredentialsException> { authenticationProvider.authenticate(UsernamePasswordAuthenticationToken(principal,password.plus("1"))) }
+        shouldThrow<BadCredentialsException> { authenticationProvider.authenticate(UsernamePasswordAuthenticationToken(principal,password.plus("1"))) }
     }
 
     @Test
@@ -41,11 +47,11 @@ class ArcheageAuthenticationProviderITest(
 
         val result = authenticationProvider.authenticate(UsernamePasswordAuthenticationToken(principal,password))
 
-        assertTrue(result.isAuthenticated)
-        assertEquals(principal,result.principal)
-        assertEquals("",result.credentials)
-        assertEquals(1,result.authorities.size)
-        assertEquals(SimpleGrantedAuthority(user.role.name),result.authorities.iterator().next())
+        result.isAuthenticated.shouldBeTrue()
+        result.principal shouldBe principal
+        result.credentials shouldBe ""
+        result.authorities shouldHaveSize 1
+        result.authorities.shouldContainExactly(SimpleGrantedAuthority(user.role.name))
     }
 
 

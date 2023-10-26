@@ -4,6 +4,8 @@ import com.arslan.archeage.Continent
 import com.arslan.archeage.entity.Location
 import com.arslan.archeage.entity.Region
 import com.arslan.archeage.repository.LocationRepository
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -18,7 +20,7 @@ class LocationServiceITest(
 
         locationRepository.save(Location("ANY",Continent.EAST, Region.CIS))
 
-        assertTrue(locationService.continentLocations(Continent.WEST).isEmpty())
+        locationService.continentLocations(Continent.WEST).shouldBeEmpty()
     }
 
     @Test
@@ -27,18 +29,18 @@ class LocationServiceITest(
         val expectedWestContinent = locationRepository.saveAll(listOf(Location("ANY_3",Continent.WEST,Region.CIS)))
         val expectedNorthContinent = locationRepository.saveAll(listOf(Location("ANY_5",Continent.NORTH,Region.CIS)))
 
-        assertEquals(expectedEastContinent,locationService.continentLocations(Continent.EAST))
-        assertEquals(expectedWestContinent,locationService.continentLocations(Continent.WEST))
-        assertEquals(expectedNorthContinent,locationService.continentLocations(Continent.NORTH))
+        locationService.continentLocations(Continent.EAST).shouldContainExactlyInAnyOrder(expectedEastContinent)
+        locationService.continentLocations(Continent.WEST).shouldContainExactlyInAnyOrder(expectedWestContinent)
+        locationService.continentLocations(Continent.NORTH).shouldContainExactlyInAnyOrder(expectedNorthContinent)
     }
 
     @Test
     fun `should return empty list when requested factories of continent that does not have any`() {
-        assertTrue(locationService.continentFactories(Continent.EAST).isEmpty())
+        locationService.continentFactories(Continent.EAST).shouldBeEmpty()
 
-        locationRepository.save(Location("NOT_A_FACTORY",Continent.EAST,Region.CIS,false))
+        locationRepository.save(Location("NOT_A_FACTORY_LOCATION",Continent.EAST,Region.CIS,false))
 
-        assertTrue(locationService.continentFactories(Continent.EAST).isEmpty())
+        locationService.continentFactories(Continent.EAST).shouldBeEmpty()
     }
 
     @Test
@@ -50,9 +52,9 @@ class LocationServiceITest(
         locationRepository.save(Location("WEST_NOT_FACTORY",Continent.WEST,Region.EUROPE,false))
         locationRepository.save(Location("NORTH_NOT_FACTORY",Continent.NORTH,Region.EUROPE,false))
 
-        assertEquals(expectedEastFactories,locationService.continentFactories(Continent.EAST))
-        assertEquals(expectedWestFactories,locationService.continentFactories(Continent.WEST))
-        assertEquals(expectedNorthFactories,locationService.continentFactories(Continent.NORTH))
+        locationService.continentFactories(Continent.EAST).shouldContainExactlyInAnyOrder(expectedEastFactories)
+        locationService.continentFactories(Continent.WEST).shouldContainExactlyInAnyOrder(expectedWestFactories)
+        locationService.continentFactories(Continent.NORTH).shouldContainExactlyInAnyOrder(expectedNorthFactories)
     }
 
 
