@@ -3,4 +3,22 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+    <changeSet id="1" author="barracuda">
+        <createTable tableName="packs">
+            <column name="id" type="bigint" >
+                <constraints primaryKey="true"  foreignKeyName="fk_packs_items" references="items(id)"/>
+            </column>
+            <column name="creation_location_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_packs_locations" references="locations(id)" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="barracuda">
+        <loadData tableName="packs" file="csv/packs.csv">
+            <column name="creation_location_id" header="creation_location_id" type="NUMERIC" />
+            <column name="id" header="id" type="NUMERIC" />
+        </loadData>
+    </changeSet>
+
 </databaseChangeLog>

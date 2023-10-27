@@ -2,7 +2,6 @@ package com.arslan.archeage.entity
 
 import jakarta.persistence.*
 
-@SequenceGenerators(SequenceGenerator(name = "USERS_SEQUENCE_GENERATOR", sequenceName = "USERS_ID_SEQUENCE_GENERATOR"))
 @Table(name = "USERS")
 @Entity
 class User(
@@ -14,6 +13,6 @@ class User(
     var role: UserRole = UserRole.USER,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USERS_SEQUENCE_GENERATOR")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     var id: Long? = null
 )

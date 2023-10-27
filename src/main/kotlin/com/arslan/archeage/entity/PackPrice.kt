@@ -2,7 +2,9 @@ package com.arslan.archeage.entity
 
 import jakarta.persistence.Entity
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
 
+@Table(name = "pack_prices")
 @Entity
 class PackPrice(
     item: Pack,

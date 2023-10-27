@@ -3,4 +3,56 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+    <changeSet id="1" author="barracuda">
+        <createTable tableName="recipes">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="produced_quantity" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="craftable_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_recipes_items" references="items(id)" />
+            </column>
+        </createTable>
+        <createTable tableName="recipes_sequence_generator">
+            <column name="next_val" type="bigint">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <insert tableName="recipes_sequence_generator">
+            <column name="next_val">1</column>
+        </insert>
+    </changeSet>
+
+    <changeSet id="2" author="barracuda">
+        <createTable tableName="recipe_materials">
+            <column name="item_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_recipe_materials_items" references="items(id)" />
+            </column>
+            <column name="recipe_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_recipe_materials_recipes" references="recipes(id)" />
+            </column>
+            <column name="quantity" type="integer">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="3" author="barracuda">
+        <loadData tableName="recipes" file="csv/recipes.csv">
+            <column name="produced_quantity" header="produced_quantity" type="NUMERIC" />
+            <column name="craftable_id" header="craftable_id" type="NUMERIC" />
+            <column name="id" header="id" type="NUMERIC" />
+        </loadData>
+        <update tableName="recipes_sequence_generator">
+            <column name="next_val">82</column>
+        </update>
+        <loadData tableName="recipe_materials" file="csv/recipe_materials.csv">
+            <column name="quantity" header="quantity" type="NUMERIC" />
+            <column name="item_id" header="item_id" type="NUMERIC" />
+            <column name="recipe_id" header="recipe_id" type="NUMERIC" />
+        </loadData>
+    </changeSet>
+
 </databaseChangeLog>

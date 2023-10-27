@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import java.time.Instant
 
 @Entity
-@Table(name = "ITEM_PRICES")
+@Table(name = "item_prices")
 @Inheritance(strategy = InheritanceType.JOINED)
 open class ItemPrice(
     @ManyToOne(optional = false)

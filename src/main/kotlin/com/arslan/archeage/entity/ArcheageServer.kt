@@ -2,6 +2,7 @@ package com.arslan.archeage.entity
 
 import jakarta.persistence.*
 
+@Table(name = "archeage_servers")
 @Entity
 class ArcheageServer(
     var name: String,
