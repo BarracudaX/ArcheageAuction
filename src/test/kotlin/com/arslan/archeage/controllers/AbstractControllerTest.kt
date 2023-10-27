@@ -5,6 +5,7 @@ import com.arslan.archeage.config.InfrastructureConfiguration
 import com.arslan.archeage.config.SecurityConfiguration
 import com.arslan.archeage.repository.ArcheageServerRepository
 import com.arslan.archeage.service.ArcheageServerService
+import com.arslan.archeage.service.ItemPriceService
 import com.arslan.archeage.service.LocationService
 import com.arslan.archeage.service.PackService
 import com.ninjasquad.springmockk.MockkBean
@@ -33,4 +34,7 @@ abstract class AbstractControllerTest : AbstractTest() {
 
     @MockkBean
     protected lateinit var archeageServerRepositoryMock: ArcheageServerRepository
+
+    @MockkBean
+    protected lateinit var itemPriceServiceMock: ItemPriceService
 }

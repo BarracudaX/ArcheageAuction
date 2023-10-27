@@ -66,9 +66,9 @@ class PackServiceITest(
         val westPackWithPriceOnDiffServer = packRepository.save(Pack(westLocation,"ANY_NAME_5","ANY_DESC_5")) //west pack with price on different server
         val eastPackWithPriceOnDiffServer = packRepository.save(Pack(eastLocation,"ANY_NAME_6","ANY_DESC_65")) //east pack with price on different server
         val northPackWithPriceOnDiffServer = packRepository.save(Pack(northLocation,"ANY_NAME_7","ANY_DESC_7")) //north pack with price on different server
-        packRepository.save(Pack(westLocation,"ANY_NAME_5","ANY_DESC_5")) //west pack without price should not be included
-        packRepository.save(Pack(eastLocation,"ANY_NAME_6","ANY_DESC_65")) //east pack without price should not be included
-        packRepository.save(Pack(northLocation,"ANY_NAME_7","ANY_DESC_7")) //north pack without price should not be included
+        packRepository.save(Pack(westLocation,"ANY_NAME_8","ANY_DESC_5")) //west pack without price should not be included in the resul
+        packRepository.save(Pack(eastLocation,"ANY_NAME_9","ANY_DESC_65")) //east pack without price should not be included in the resul
+        packRepository.save(Pack(northLocation,"ANY_NAME_10","ANY_DESC_7")) //north pack without price should not be included in the resul
         itemPriceRepository.save(PackPrice(westPackWithPriceOnDiffServer,differentServer,Price(10,10,10),westPackWithPriceOnDiffServer.creationLocation))
         itemPriceRepository.save(PackPrice(eastPackWithPriceOnDiffServer,differentServer,Price(10,10,10),eastPackWithPriceOnDiffServer.creationLocation))
         itemPriceRepository.save(PackPrice(northPackWithPriceOnDiffServer,differentServer,Price(10,10,10),northPackWithPriceOnDiffServer.creationLocation))

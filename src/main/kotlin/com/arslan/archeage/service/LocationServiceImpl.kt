@@ -11,7 +11,15 @@ import org.springframework.transaction.annotation.Transactional
 class LocationServiceImpl(private val locationRepository: LocationRepository) : LocationService {
 
     @Transactional(readOnly = true)
-    override fun continentLocations(continent: Continent): List<Location> = locationRepository.findByContinent(continent)
-    override fun continentFactories(continent: Continent): List<Location> = locationRepository.findByContinentAndHasFactoryIsTrue(continent)
+    override fun continentLocations(continent: Continent): List<Location> {
+        if(ArcheageServerContextHolder.getServerContext() == null) return emptyList()
+
+        return locationRepository.findByContinentAndRegion(continent,ArcheageServerContextHolder.getServerContext()!!.region)
+    }
+    override fun continentFactories(continent: Continent): List<Location>{
+        if(ArcheageServerContextHolder.getServerContext() == null) return emptyList()
+        
+        return locationRepository.findByContinentAndHasFactoryIsTrueAndRegion(continent,ArcheageServerContextHolder.getServerContext()!!.region)
+    }
 
 }

@@ -111,7 +111,11 @@
                     <td th:text="${pack.creationLocation}" class="text-center">Location X</td>
                     <td th:text="${pack.destinationLocation}" class="text-center">Location Y</td>
                     <td th:text="${pack.sellPrice.gold+#messages.msg('page.gold')+' '+pack.sellPrice.silver+#messages.msg('page.silver')+' '+pack.sellPrice.copper+#messages.msg('page.copper')}" class="text-center">1g 1s 1c</td>
-                    <td class="text-center">100%</td>
+                    <td class="text-center">
+                        <select class="form-select">
+                            <option th:each="number : ${#numbers.sequence(80,130)}" th:value="${number}" th:text="|${number}%|" th:selected="${number == 100}">100%</option>
+                        </select>
+                    </td>
                 </tr>
             </tbody>
         </table>
