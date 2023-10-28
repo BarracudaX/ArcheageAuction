@@ -82,7 +82,7 @@
         </div>
     </div>
     <div class="container-fluid p-1 mt-5">
-        <div class="row">
+        <div class="row w-100">
             <h4 th:text="#{page.recipes}" class="text-center col">Recipes</h4>
             <h4 th:text="#{page.pack.name}" class="text-center col">Pack Name</h4>
             <h4 th:text="#{page.pack.creation.location}" class="text-center col">Creation Location</h4>
@@ -93,7 +93,7 @@
             <hr class="mt-1" />
         </div>
         <div th:each="pack : ${packs}" >
-            <div class="row">
+            <div class="row w-100">
                 <div class="d-flex justify-content-center col">
                     <button class="btn btn-success" type="button" th:attr="data-bs-target=|#recipe_${pack.recipeDTO.id}_${pack.destinationLocation.replace(' ','_')}|,aria-controls=|recipe_${pack.recipeDTO.id}_${pack.destinationLocation}|" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">+</button>
                 </div>
