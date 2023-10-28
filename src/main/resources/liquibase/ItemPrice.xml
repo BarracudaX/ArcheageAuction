@@ -41,7 +41,7 @@
         <renameTable oldTableName="item_prices_sequence_generator" newTableName="item_prices_seq" />
     </changeSet>
 
-    <changeSet id="3" author="barracuda">
+    <changeSet id="3" author="barracuda" context="dev">
         <loadData tableName="item_prices" file="csv/item_prices.csv">
             <column name="copper" header="copper" type="NUMERIC" />
             <column name="silver" header="silver" type="NUMERIC" />

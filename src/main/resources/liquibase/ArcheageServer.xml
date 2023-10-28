@@ -27,7 +27,7 @@
         <renameTable oldTableName="archeage_servers_sequence_generator" newTableName="archeage_servers_seq" />
     </changeSet>
     
-    <changeSet id="3" author="barracuda">
+    <changeSet id="3" author="barracuda" context="dev">
         <loadData tableName="archeage_servers" file="csv/archeage_servers.csv">
             <column name="id" type="NUMERIC" header="id" />
             <column name="name" type="STRING" header="name" />

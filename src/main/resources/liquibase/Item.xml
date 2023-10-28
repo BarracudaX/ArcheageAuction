@@ -28,7 +28,7 @@
         </insert>
     </changeSet>
 
-    <changeSet id="2" author="barracuda">
+    <changeSet id="2" author="barracuda" context="dev">
         <loadData tableName="items" file="csv/items.csv">
             <column name="id" header="id" type="NUMERIC" />
             <column name="description" header="description" type="STRING" />

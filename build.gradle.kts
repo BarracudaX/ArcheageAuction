@@ -1,10 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.liquibase.gradle.Activity
 
 plugins {
     id("org.springframework.boot") version "3.1.4"
     id("io.spring.dependency-management") version "1.1.3"
-    id("org.liquibase.gradle") version "2.2.0"
     kotlin("jvm") version "1.8.21"
     kotlin("plugin.spring") version "1.8.21"
     kotlin("plugin.jpa") version "1.8.21"
@@ -16,16 +14,6 @@ version = "1.0-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
-}
-
-liquibase{
-    activities{
-        register("main"){
-            arguments = mapOf(
-                "defaults-file" to "./liquibase.properties"
-            )
-        }
-    }
 }
 
 repositories {
@@ -52,12 +40,8 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus:1.11.5")
     implementation("org.slf4j:slf4j-api:2.0.9")
     implementation("ch.qos.logback:logback-classic:1.4.11")
+    implementation("org.liquibase:liquibase-core:4.24.0")
 
-
-    //liquibase
-    liquibaseRuntime("org.liquibase:liquibase-core:4.24.0")
-    liquibaseRuntime("com.mysql:mysql-connector-j")
-    liquibaseRuntime("info.picocli:picocli:4.7.5")
 
     //test
     testImplementation("org.springframework.boot:spring-boot-starter-test")

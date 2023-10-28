@@ -14,7 +14,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="2" author="barracuda">
+    <changeSet id="2" author="barracuda" context="dev">
         <loadData tableName="pack_prices" file="csv/pack_prices.csv">
             <column name="id" header="id" type="NUMERIC"/>
             <column name="sell_location_id" header="sell_location_id" type="NUMERIC"/>

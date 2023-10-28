@@ -40,9 +40,7 @@ abstract class AbstractITest : AbstractTest(){
     companion object{
 
         @JvmStatic
-        val mysql = MySQLContainer("mysql:latest")
-            .withInitScript("test.sql")
-            .withReuse(true)
+        val mysql = MySQLContainer("mysql:latest").withReuse(true)
 
         @DynamicPropertySource
         @JvmStatic
@@ -51,6 +49,10 @@ abstract class AbstractITest : AbstractTest(){
             registry.add("spring.datasource.url"){ mysql.jdbcUrl }
             registry.add("spring.datasource.username"){ mysql.username }
             registry.add("spring.datasource.password"){ mysql.password }
+            registry.add("spring.datasource.url"){ mysql.jdbcUrl }
+            registry.add("spring.liquibase.user"){ mysql.username }
+            registry.add("spring.liquibase.password"){ mysql.password }
+            registry.add("spring.liquibase.url"){ mysql.jdbcUrl }
         }
     }
 

@@ -33,7 +33,7 @@
         </insert>
     </changeSet>
 
-    <changeSet id="3" author="barracuda">
+    <changeSet id="3" author="barracuda" context="dev">
         <loadData tableName="locations" file="csv/locations.csv">
             <column name="has_factory" header="has_factory" type="NUMERIC" />
             <column name="id" header="id" type="NUMERIC"/>

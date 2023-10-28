@@ -39,7 +39,7 @@
         </createTable>
     </changeSet>
     
-    <changeSet id="3" author="barracuda">
+    <changeSet id="3" author="barracuda" context="dev">
         <loadData tableName="recipes" file="csv/recipes.csv">
             <column name="produced_quantity" header="produced_quantity" type="NUMERIC" />
             <column name="craftable_id" header="craftable_id" type="NUMERIC" />
