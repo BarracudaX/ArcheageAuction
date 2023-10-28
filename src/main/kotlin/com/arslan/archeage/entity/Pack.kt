@@ -13,9 +13,4 @@ class Pack(
     name: String,
 
     description: String
-) : Item(name, description, creationLocation.region){
-
-
-
-
-}
+) : Item(name, description, creationLocation.region)

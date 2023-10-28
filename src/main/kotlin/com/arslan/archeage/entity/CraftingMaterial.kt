@@ -8,4 +8,18 @@ class CraftingMaterial(
 
     @ManyToOne
     var item: Item,
-)
+){
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CraftingMaterial
+
+        return item == other.item
+    }
+
+    override fun hashCode(): Int {
+        return item.hashCode()
+    }
+}

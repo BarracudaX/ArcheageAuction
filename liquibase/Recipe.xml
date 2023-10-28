@@ -55,4 +55,28 @@
         </loadData>
     </changeSet>
 
+    <changeSet id="4" author="barracuda">
+        <dropForeignKeyConstraint baseTableName="recipe_materials" constraintName="fk_recipe_materials_recipes" />
+        <addForeignKeyConstraint baseTableName="recipe_materials" baseColumnNames="recipe_id" constraintName="fk_recipe_materials_recipes" referencedTableName="recipes"
+                                 referencedColumnNames="id" onDelete="CASCADE" />
+    </changeSet>
+
+    <changeSet id="5" author="barracuda">
+        <delete tableName="recipes" >
+            <where>id in (2,4,6,9,13,17,19,22,25,28,31,34,47,40)</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="6" author="barracuda">
+        <delete tableName="recipes" >
+            <where>id = 37</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="7" author="barracuda">
+        <delete tableName="items" >
+            <where>id = 74</where>
+        </delete>
+    </changeSet>
+
 </databaseChangeLog>

@@ -49,78 +49,65 @@
     <div>
         <div class="container-fluid">
             <div class="row mt-2">
-                <div class="col-4">
-                    <div class="row">
-                        <div class="col-auto"><label class="form-label m-0" for="continent"
-                                                     th:text="#{page.continent.label}">Continent:</label></div>
-                        <div class="col-auto">
-                            <select class="form-select" id="continent">
-                                <option value="east" th:each="continent : ${T(com.arslan.archeage.Continent).values()}"
-                                        th:value="${continent.name()}"
-                                        th:text="${#messages.msg('page.continent.'+continent.name())}">East
-                                </option>
-                                <option value="west" th:remove="all">West</option>
-                                <option value="north" th:remove="all">North</option>
-                            </select>
-                        </div>
-                    </div>
+                <div class="col-4 d-flex align-items-center">
+                    <label class="form-label m-0" for="continent" th:text="#{page.continent.label}">Continent:</label>
+                    <select class="form-select" id="continent">
+                        <option value="east" th:each="continent : ${T(com.arslan.archeage.Continent).values()}"
+                                th:value="${continent.name()}"
+                                th:text="${#messages.msg('page.continent.'+continent.name())}">East
+                        </option>
+                        <option value="west" th:remove="all">West</option>
+                        <option value="north" th:remove="all">North</option>
+                    </select>
                 </div>
-                <div class="col-4">
-                    <div class="row">
-                        <div class="col-auto"><label class="form-label m-0" for="departure_location" th:text="#{page.departure.location.label}">Departure Location:</label></div>
-                        <div class="col-auto">
-                            <select class="form-select" id="departure_location">
-                                <option value="all" th:text="#{page.locations.all}">All Locations</option>
-                                <option value="east" th:each="location : ${locations}" th:value="${location.name}" th:text="${#strings.capitalizeWords(location.name)}">Location1:</option>
-                                <option value="west" th:remove="all">Location2:</option>
-                                <option value="north" th:remove="all">Location3:</option>
-                            </select>
-                        </div>
-                    </div>
+                <div class="col-4 d-flex align-items-center">
+                    <label class="form-label m-0" for="departure_location" th:text="#{page.departure.location.label}">Departure Location:</label>
+                    <select class="form-select" id="departure_location">
+                        <option value="all" th:text="#{page.locations.all}">All Locations</option>
+                        <option value="east" th:each="location : ${locations}" th:value="${location.name}" th:text="${#strings.capitalizeWords(location.name)}">Location1:</option>
+                        <option value="west" th:remove="all">Location2:</option>
+                        <option value="north" th:remove="all">Location3:</option>
+                    </select>
                 </div>
-                <div class="col-4">
-                    <div class="row">
-                        <div class="col-auto"><label class="form-label m-0" for="destination_location" th:text="#{page.destination.location.label}">Destination Location:</label></div>
-                        <div class="col-auto">
-                            <select class="form-select" id="destination_location">
-                                <option value="all" th:text="#{page.factories.all}">All Factories</option>
-                                <option value="east" th:each="location : ${factories}" th:value="${location.name}" th:text="${location.name}">Location1:</option>
-                                <option value="west" th:remove="all">Location2:</option>
-                                <option value="north" th:remove="all">Location3:</option>
-                            </select>
-                        </div>
-                    </div>
+                <div class="col-4 d-flex align-items-center">
+                    <label class="form-label text-center" for="destination_location" th:text="#{page.destination.location.label}">Destination Location:</label>
+                    <select class="form-select" id="destination_location">
+                        <option value="all" th:text="#{page.factories.all}">All Factories</option>
+                        <option value="east" th:each="location : ${factories}" th:value="${location.name}" th:text="${location.name}">Location1:</option>
+                        <option value="west" th:remove="all">Location2:</option>
+                        <option value="north" th:remove="all">Location3:</option>
+                    </select>
                 </div>
             </div>
         </div>
     </div>
     <div class="container-fluid p-1 mt-5">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th th:text="#{page.pack.name}" class="text-center">Pack Name</th>
-                    <th th:text="#{page.pack.creation.location}" class="text-center">Creation Location</th>
-                    <th th:text="#{page.pack.destination.location}" class="text-center">Destination Location</th>
-                    <th th:text="#{page.pack.sell.price}" class="text-center">Sell Price</th>
-                    <th class="text-center">%</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="pack : ${packs}">
-                    <td th:text="${pack.name}" class="text-center">Pack Name</td>
-                    <td th:text="${pack.creationLocation}" class="text-center">Location X</td>
-                    <td th:text="${pack.destinationLocation}" class="text-center">Location Y</td>
-                    <td th:text="${pack.sellPrice.gold+#messages.msg('page.gold')+' '+pack.sellPrice.silver+#messages.msg('page.silver')+' '+pack.sellPrice.copper+#messages.msg('page.copper')}" class="text-center">1g 1s 1c</td>
-                    <td class="text-center">
-                        <select class="form-select">
-                            <option th:each="number : ${#numbers.sequence(80,130)}" th:value="${number}" th:text="|${number}%|" th:selected="${number == 100}">100%</option>
-                        </select>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-<!--        <button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Pack Name</button>-->
+        <div class="row">
+            <h4 th:text="#{page.recipes}" class="text-center col">Recipes</h4>
+            <h4 th:text="#{page.pack.name}" class="text-center col">Pack Name</h4>
+            <h4 th:text="#{page.pack.creation.location}" class="text-center col">Creation Location</h4>
+            <h4 th:text="#{page.pack.destination.location}" class="text-center col">Destination Location</h4>
+            <h4 th:text="#{page.pack.sell.price}" class="text-center col">Sell Price</h4>
+            <h4 th:text="#{page.pack.profit}" class="text-center col">Profit</h4>
+            <h4 class="text-center col">%</h4>
+            <hr class="mt-1" />
+        </div>
+        <div th:each="pack : ${packs}" class="row">
+            <div class="d-flex justify-content-center col">
+                <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">+</button>
+            </div>
+            <div th:text="${pack.name}" class="text-center col">Pack Name</div>
+            <div th:text="${pack.creationLocation}" class="text-center col">Location X</div>
+            <div th:text="${pack.destinationLocation}" class="text-center col">Location Y</div>
+            <div th:text="${pack.sellPrice.gold+#messages.msg('page.gold')+' '+pack.sellPrice.silver+#messages.msg('page.silver')+' '+pack.sellPrice.copper+#messages.msg('page.copper')}" class="text-center col">1g 1s 1c</div>
+            <div th:text="${pack.profit().gold+#messages.msg('page.gold')+' '+pack.profit().silver+#messages.msg('page.silver')+' '+pack.profit().copper+#messages.msg('page.copper')}" class="text-center col"></div>
+            <select class="form-select col">
+                <option th:each="number : ${#numbers.sequence(80,130)}" th:value="${number}" th:text="|${number}%|" th:selected="${number == 100}">100%</option>
+            </select>
+            <hr class="mt-1" />
+        </div>
     </div>
+
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"

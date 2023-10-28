@@ -30,8 +30,13 @@ class ViewController(private val locationService: LocationService, private val p
             .associateBy{ itemPrice -> itemPrice.item.name }
 
         val packDTOs = packs.flatMap { pack ->
-            pack.prices.filterIsInstance<PackPrice>().map { packPrice -> PackDTO(pack.name,pack.creationLocation.name,packPrice.sellLocation.name,packPrice.price,pack.recipes.map { recipe -> recipe.toDTO(prices) }) }
-        }
+            pack.recipes.map { recipe -> recipe to pack }
+        }.flatMap { (recipe,pack) ->
+            pack.prices.filterIsInstance<PackPrice>().map { price -> Triple(pack,recipe,price) }
+        }.map { (pack,recipe,price) ->
+            PackDTO(pack.name,pack.creationLocation.name,price.sellLocation.name,price.price,recipe.toDTO(prices))
+        }.sortedByDescending(PackDTO::profit)
+
         model.addAttribute("locations",locationService.continentLocations(continent))
         model.addAttribute("factories",locationService.continentFactories(continent))
         model.addAttribute("packs",packDTOs)
