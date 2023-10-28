@@ -25,6 +25,8 @@ data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Pr
     }
 
     operator fun times(i: Int) : Price {
+        if(i < 0) throw IllegalArgumentException("Multiplier must be zero or positive number.")
+
         return Price(gold*i+silver*i/100,(silver*i+copper*i/100)%100,copper*i%100)
     }
 
