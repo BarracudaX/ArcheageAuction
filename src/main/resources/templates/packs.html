@@ -92,18 +92,44 @@
             <h4 class="text-center col">%</h4>
             <hr class="mt-1" />
         </div>
-        <div th:each="pack : ${packs}" class="row">
-            <div class="d-flex justify-content-center col">
-                <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">+</button>
+        <div th:each="pack : ${packs}" >
+            <div class="row">
+                <div class="d-flex justify-content-center col">
+                    <button class="btn btn-success" type="button" th:attr="data-bs-target=|#recipe_${pack.recipeDTO.id}_${pack.destinationLocation.replace(' ','_')}|,aria-controls=|recipe_${pack.recipeDTO.id}_${pack.destinationLocation}|" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">+</button>
+                </div>
+                <div th:text="${pack.name}" class="text-center col">Pack Name</div>
+                <div th:text="${pack.creationLocation}" class="text-center col">Location X</div>
+                <div th:text="${pack.destinationLocation}" class="text-center col">Location Y</div>
+                <div th:text="${pack.sellPrice.gold+#messages.msg('page.gold')+' '+pack.sellPrice.silver+#messages.msg('page.silver')+' '+pack.sellPrice.copper+#messages.msg('page.copper')}" class="text-center col">1g 1s 1c</div>
+                <div th:text="${pack.profit().gold+#messages.msg('page.gold')+' '+pack.profit().silver+#messages.msg('page.silver')+' '+pack.profit().copper+#messages.msg('page.copper')}" class="text-center col"></div>
+                <select class="form-select col">
+                    <option th:each="number : ${#numbers.sequence(80,130)}" th:value="${number}" th:text="|${number}%|" th:selected="${number == 100}">100%</option>
+                </select>
             </div>
-            <div th:text="${pack.name}" class="text-center col">Pack Name</div>
-            <div th:text="${pack.creationLocation}" class="text-center col">Location X</div>
-            <div th:text="${pack.destinationLocation}" class="text-center col">Location Y</div>
-            <div th:text="${pack.sellPrice.gold+#messages.msg('page.gold')+' '+pack.sellPrice.silver+#messages.msg('page.silver')+' '+pack.sellPrice.copper+#messages.msg('page.copper')}" class="text-center col">1g 1s 1c</div>
-            <div th:text="${pack.profit().gold+#messages.msg('page.gold')+' '+pack.profit().silver+#messages.msg('page.silver')+' '+pack.profit().copper+#messages.msg('page.copper')}" class="text-center col"></div>
-            <select class="form-select col">
-                <option th:each="number : ${#numbers.sequence(80,130)}" th:value="${number}" th:text="|${number}%|" th:selected="${number == 100}">100%</option>
-            </select>
+            <div class="row m-0 mt-4 collapse" id="collapseExample" th:id="|recipe_${pack.recipeDTO.id}_${pack.destinationLocation.replace(' ','_')}|">
+                <div class="row">
+                    <h4 th:text="#{page.produced.quantity}" class="text-center col">Produced quantity</h4>
+                    <h4 th:text="#{page.recipe.cost}" class="text-center col">Cost</h4>
+                </div>
+                <div class="row">
+                    <h4 th:text="${pack.recipeDTO.quantity}" class="text-center col">1</h4>
+                    <h4 th:text="${pack.recipeDTO.cost().gold+#messages.msg('page.gold')+' '+pack.recipeDTO.cost().silver+#messages.msg('page.silver')+' '+pack.recipeDTO.cost().copper+#messages.msg('page.copper')}" class="text-center col">1g 1s 1c</h4>
+                </div>
+                <div class="row">
+                    <h4 th:text="#{page.material.name}" class="text-center col">Material's Name</h4>
+                    <h4 th:text="#{page.quantity}" class="text-center col">Quantity</h4>
+                    <h4 th:text="#{page.unit.price}" class="text-center col">Unit's Price</h4>
+                    <h4 th:text="#{page.total.cost}" class="text-center col">Total Price</h4>
+                </div>
+                <div class="row" th:each="material : ${pack.recipeDTO.materials}">
+                    <div th:text="${material.itemDTO.name}" class="text-center col">Item</div>
+                    <div th:text="${material.quantity}" class="text-center col">300</div>
+                    <div th:if="${material.price != null}" th:text="${material.price.gold+#messages.msg('page.gold')+' '+material.price.silver+#messages.msg('page.silver')+' '+material.price.copper+#messages.msg('page.copper')}" class="text-center col">1g 1s 1c</div>
+                    <div th:if="${material.price == null}" class="text-center col">-</div>
+                    <div th:if="${material.price != null}" th:text="${material.price.times(material.quantity).gold+#messages.msg('page.gold')+' '+material.price.times(material.quantity).silver+#messages.msg('page.silver')+' '+material.price.times(material.quantity).copper+#messages.msg('page.copper')}" class="text-center col">1g 1s 1c</div>
+                    <div th:if="${material.price == null}" class="text-center col">-</div>
+                </div>
+            </div>
             <hr class="mt-1" />
         </div>
     </div>
