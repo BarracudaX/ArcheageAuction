@@ -41,7 +41,7 @@ class SecurityConfiguration {
             .authorizeHttpRequests { authorize ->
                 authorize
                     .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                    .requestMatchers(HttpMethod.GET,"/locations","/","/packs").permitAll()
+                    .requestMatchers(HttpMethod.GET,"/locations","/","/packs","/favicon.ico").permitAll()
                     .requestMatchers(HttpMethod.GET,"/resource/**").permitAll()
             }
             .anonymous {  }
