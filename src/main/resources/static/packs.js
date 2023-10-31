@@ -32,3 +32,11 @@ function changeDestinationLocation(){
 
     window.location.href = url.toString()
 }
+
+function nextPrice(itemID){
+    console.log(`Next price for item ${itemID}`)
+}
+
+function previousPrice(itemID){
+    console.log(`Previous price for item ${itemID}`)
+}

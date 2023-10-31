@@ -4,8 +4,10 @@ import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.service.ArcheageServerContextHolder
 import com.arslan.archeage.service.ArcheageServerService
 import jakarta.servlet.http.HttpServletRequest
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ModelAttribute
+import java.util.TimeZone
 
 @ControllerAdvice
 class ArcheageControllerAdvice(private val archeageServerService: ArcheageServerService) {
@@ -18,4 +20,6 @@ class ArcheageControllerAdvice(private val archeageServerService: ArcheageServer
     @ModelAttribute("currentURL")
     fun currentURL(httpServletRequest: HttpServletRequest) : String = httpServletRequest.requestURL.toString()
 
+    @ModelAttribute("timezone")
+    fun timezone() : TimeZone = LocaleContextHolder.getTimeZone()
 }

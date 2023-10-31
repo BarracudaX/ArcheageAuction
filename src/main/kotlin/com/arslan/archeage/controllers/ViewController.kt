@@ -74,6 +74,7 @@ class ViewController(
         model.addAttribute("selectedContinent",continent)
         model.addAttribute("departureLocation",departureLocation)
         model.addAttribute("destinationLocation",destinationLocation)
+        model.addAttribute("prices",prices)
 
         return "packs"
     }

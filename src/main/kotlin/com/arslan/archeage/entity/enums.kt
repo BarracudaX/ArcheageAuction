@@ -4,8 +4,8 @@ import java.util.Locale
 
 enum class UserRole { ADMIN, USER }
 
-enum class SupportedLanguages(val locale: Locale) {
-    ENGLISH(Locale.ENGLISH), RUSSIAN(Locale("ru","RU"));
+enum class SupportedLanguages(val locale: Locale,val displayName: String) {
+    ENGLISH(Locale.ENGLISH,"English"), RUSSIAN(Locale("ru","RU"),"Русский");
 }
 
 enum class Region{ EUROPE,CIS }
