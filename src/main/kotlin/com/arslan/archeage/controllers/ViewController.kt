@@ -30,51 +30,41 @@ class ViewController(
     @GetMapping("/packs")
     fun allPacksView(model: Model,continent: Optional<Continent>) : String{
         val useContinent = continent.getOrElse { Continent.values()[0] }
-        return preparePacksView(packService.packs(useContinent),model,useContinent,Optional.empty(),Optional.empty())
+        val packs = packService.packs(useContinent)
+        return preparePacksView(packs,model,useContinent,Optional.empty(),Optional.empty())
     }
 
     @GetMapping("/packs", params = ["departureLocation","destinationLocation"])
     fun packs(model: Model, @RequestParam continent: Optional<Continent>, @RequestParam departureLocation: String, @RequestParam destinationLocation: String): String {
         val useContinent = continent.getOrElse { Continent.values()[0] }
-        return preparePacksView(packService.packs(useContinent,departureLocation,destinationLocation),model,useContinent, Optional.of(destinationLocation),Optional.of(departureLocation))
+        val packs = packService.packs(useContinent,departureLocation,destinationLocation)
+        return preparePacksView(packs,model,useContinent, Optional.of(destinationLocation),Optional.of(departureLocation))
     }
 
     @GetMapping("/packs",params=["departureLocation"])
     fun packsWithDepartureLocation(model: Model,@RequestParam continent: Optional<Continent>,@RequestParam departureLocation: String) : String{
         val useContinent = continent.getOrElse { Continent.values()[0] }
+        val packs = packService.packsAt(useContinent,departureLocation)
 
-        return preparePacksView(packService.packsAt(useContinent,departureLocation),model,useContinent,Optional.empty(), Optional.of(departureLocation))
+        return preparePacksView(packs,model,useContinent,Optional.empty(), Optional.of(departureLocation))
     }
 
     @GetMapping("/packs",params = ["destinationLocation"])
     fun packsWithDestinationLocation(model: Model, @RequestParam continent: Optional<Continent>, @RequestParam destinationLocation: String) : String{
         val useContinent = continent.getOrElse { Continent.values()[0] }
+        val packs = packService.packsTo(useContinent,destinationLocation)
 
-        return preparePacksView(packService.packsTo(useContinent,destinationLocation),model,useContinent,Optional.of(destinationLocation), Optional.empty())
+        return preparePacksView(packs,model,useContinent,Optional.of(destinationLocation), Optional.empty())
     }
 
-    private fun preparePacksView(packs: List<Pack>, model: Model, continent: Continent, destinationLocation: Optional<String>, departureLocation: Optional<String>) : String{
-        val prices = itemPriceService
-            .latestPrices(packs.flatMap { pack -> pack.recipes.flatMap { recipe -> recipe.materials.map(CraftingMaterial::item) } })
-            .associateBy { itemPrice -> itemPrice.item.name }
-
-        val packDTOs = packs.flatMap { pack ->
-            pack.prices
-                .filterIsInstance<PackPrice>()
-                .flatMap { packPrice ->
-                    pack.recipes.map { recipe ->
-                        PackDTO(pack.name, pack.creationLocation.name, packPrice.sellLocation.name, packPrice.price, RecipeDTO(recipe.producedQuantity,recipe.materials.map { material -> material.toDTO(prices) },recipe.id!!))
-                    }
-                }
-        }.sortedByDescending(PackDTO::profit)
-
+    private fun preparePacksView(packs: List<PackDTO>, model: Model, continent: Continent, destinationLocation: Optional<String>, departureLocation: Optional<String>) : String{
         model.addAttribute("locations", locationService.continentLocations(continent).map(Location::name).minus(destinationLocation.getOrElse { "" }))
         model.addAttribute("factories", locationService.continentFactories(continent).map(Location::name).minus(departureLocation.getOrElse { "" }))
-        model.addAttribute("packs", packDTOs)
+        model.addAttribute("packs", packs)
         model.addAttribute("selectedContinent",continent)
         model.addAttribute("departureLocation",departureLocation)
         model.addAttribute("destinationLocation",destinationLocation)
-        model.addAttribute("prices",prices)
+        model.addAttribute("materials",packs.flatMap { pack -> pack.recipeDTO.materials }.filter{ material -> material.price != null })
 
         return "packs"
     }

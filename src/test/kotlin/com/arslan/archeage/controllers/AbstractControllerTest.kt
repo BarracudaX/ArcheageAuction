@@ -13,10 +13,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Import
 import org.springframework.security.authentication.AuthenticationProvider
+import org.springframework.test.context.TestConstructor
 
 
 @Import(InfrastructureConfiguration::class,SecurityConfiguration::class)
 @WebMvcTest
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @ComponentScan(basePackages = ["com.arslan.archeage.web"])
 abstract class AbstractControllerTest : AbstractTest() {
 

@@ -9,15 +9,15 @@ import org.springframework.data.jpa.repository.Query
 
 interface PackRepository : JpaRepository<Pack,Long>{
 
-    @Query("SELECT distinct p FROM Pack p LEFT JOIN FETCH p.prices pr JOIN FETCH pr.sellLocation JOIN FETCH pr.archeageServer JOIN FETCH p.creationLocation LEFT JOIN FETCH p.recipes r LEFT JOIN FETCH r.materials m LEFT JOIN FETCH m.item WHERE p.region = :region AND pr.archeageServer = :server AND p.creationLocation.continent = :continent")
-    fun allPacks(region: Region, server: ArcheageServer, continent: Continent) : List<Pack>
+    @Query("SELECT distinct p FROM Pack p LEFT JOIN FETCH p.prices pr JOIN FETCH pr.sellLocation JOIN FETCH pr.archeageServer JOIN FETCH p.creationLocation LEFT JOIN FETCH p.recipes r LEFT JOIN FETCH r.materials m LEFT JOIN FETCH m.item WHERE pr.archeageServer = :server AND p.creationLocation.continent = :continent")
+    fun allPacks(server: ArcheageServer, continent: Continent) : List<Pack>
 
-    @Query("SELECT distinct p FROM Pack p LEFT JOIN FETCH p.prices pr JOIN FETCH pr.sellLocation JOIN FETCH pr.archeageServer JOIN FETCH p.creationLocation LEFT JOIN FETCH p.recipes r LEFT JOIN FETCH r.materials m LEFT JOIN FETCH m.item WHERE p.region = :region AND pr.archeageServer = :server AND p.creationLocation.continent = :continent AND p.creationLocation.name = :departureLocation")
-    fun packsAt(region: Region,server: ArcheageServer,continent: Continent,departureLocation: String) : List<Pack>
+    @Query("SELECT distinct p FROM Pack p LEFT JOIN FETCH p.prices pr JOIN FETCH pr.sellLocation JOIN FETCH pr.archeageServer JOIN FETCH p.creationLocation LEFT JOIN FETCH p.recipes r LEFT JOIN FETCH r.materials m LEFT JOIN FETCH m.item WHERE pr.archeageServer = :server AND p.creationLocation.continent = :continent AND p.creationLocation.name = :departureLocation")
+    fun packsAt(server: ArcheageServer,continent: Continent,departureLocation: String) : List<Pack>
 
-    @Query("SELECT distinct p FROM Pack p LEFT JOIN FETCH p.prices pr JOIN FETCH pr.sellLocation JOIN FETCH pr.archeageServer JOIN FETCH p.creationLocation LEFT JOIN FETCH p.recipes r LEFT JOIN FETCH r.materials m LEFT JOIN FETCH m.item WHERE p.region = :region AND pr.archeageServer = :server AND p.creationLocation.continent = :continent AND treat(pr as PackPrice).sellLocation.name = :destinationLocation ")
-    fun packsTo(region: Region,server: ArcheageServer,continent: Continent,destinationLocation: String) : List<Pack>
+    @Query("SELECT distinct p FROM Pack p LEFT JOIN FETCH p.prices pr JOIN FETCH pr.sellLocation JOIN FETCH pr.archeageServer JOIN FETCH p.creationLocation LEFT JOIN FETCH p.recipes r LEFT JOIN FETCH r.materials m LEFT JOIN FETCH m.item WHERE pr.archeageServer = :server AND p.creationLocation.continent = :continent AND treat(pr as PackPrice).sellLocation.name = :destinationLocation ")
+    fun packsTo(server: ArcheageServer,continent: Continent,destinationLocation: String) : List<Pack>
 
-    @Query("SELECT distinct p FROM Pack p LEFT JOIN FETCH p.prices pr JOIN FETCH pr.sellLocation JOIN FETCH pr.archeageServer JOIN FETCH p.creationLocation LEFT JOIN FETCH p.recipes r LEFT JOIN FETCH r.materials m LEFT JOIN FETCH m.item WHERE p.region = :region AND pr.archeageServer = :server AND p.creationLocation.continent = :continent AND treat(pr as PackPrice).sellLocation.name = :destinationLocation AND p.creationLocation.name = :departureLocation")
-    fun packs(region: Region, server: ArcheageServer, continent: Continent,departureLocation: String,destinationLocation: String) : List<Pack>
+    @Query("SELECT distinct p FROM Pack p LEFT JOIN FETCH p.prices pr JOIN FETCH pr.sellLocation JOIN FETCH pr.archeageServer JOIN FETCH p.creationLocation LEFT JOIN FETCH p.recipes r LEFT JOIN FETCH r.materials m LEFT JOIN FETCH m.item WHERE pr.archeageServer = :server AND p.creationLocation.continent = :continent AND treat(pr as PackPrice).sellLocation.name = :destinationLocation AND p.creationLocation.name = :departureLocation")
+    fun packs(server: ArcheageServer, continent: Continent,departureLocation: String,destinationLocation: String) : List<Pack>
 }

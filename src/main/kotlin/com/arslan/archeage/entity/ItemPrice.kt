@@ -20,4 +20,10 @@ open class ItemPrice(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     open var id: Long? = null
-)
+){
+
+    init {
+        item.prices.add(this)
+    }
+
+}

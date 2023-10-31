@@ -37,7 +37,7 @@
         </loadData>
     </changeSet>
 
-    <changeSet id="3" author="barracuda">
+    <changeSet id="3" author="barracuda" context="dev">
         <update tableName="items_sequence_generator">
             <column name="next_val">142</column>
         </update>

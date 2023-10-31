@@ -53,7 +53,7 @@
         </loadData>
     </changeSet>
 
-    <changeSet id="4" author="barracuda">
+    <changeSet id="4" author="barracuda" context="dev">
         <update tableName="item_prices_seq">
             <column name="next_val">239</column>
         </update>

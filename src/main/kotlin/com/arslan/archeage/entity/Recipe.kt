@@ -17,4 +17,10 @@ class Recipe(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RECIPES_SEQUENCE_GENERATOR")
     var id: Long? = null
-)
+){
+
+    init {
+        craftable.recipes.add(this)
+    }
+
+}

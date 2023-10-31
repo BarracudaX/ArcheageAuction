@@ -47,24 +47,24 @@
             </div>
         </div>
     </nav>
-    <button class="btn btn-primary z-2 top-50 end-0 position-fixed p-1 z-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#prices" aria-controls="prices"><p class="vrt-text" th:text="#{page.prices}">Prices</p></button>
+    <button class="btn btn-primary z-2 top-50 end-0 position-fixed p-1 z-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#prices" aria-controls="prices"><p class="vrt-text" th:text="#{page.materials}">Prices</p></button>
     <div class="offcanvas offcanvas-end w-50" id="prices">
         <div class="offcanvas-header">
-            <div class="offcanvas-title" th:text="#{page.prices}">Prices</div>
+            <div class="offcanvas-title" th:text="#{page.materials}">Materials</div>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body p-1">
-            <div th:each="price : ${prices}" class="row">
+            <div th:each="material : ${materials}" class="row">
                 <div  class="col-5" >
-                    <label for="price_test" class="form-label p-0" th:text="${#strings.capitalize(price.key)}" th:for="|price-${price.value.id}|">Item Name:</label>
+                    <label for="price_test" class="form-label p-0" th:text="${#strings.capitalize(material.itemDTO.name)}" th:for="|material-${material.itemDTO.id}|">Item Name:</label>
                 </div>
                 <div class="col-7" >
-                    <input value="test" readonly id="price_test" th:id="|price-${price.value.id}|" th:value="${price.value.price.gold+#messages.msg('page.gold')+' '+price.value.price.silver+#messages.msg('page.silver')+' '+price.value.price.copper+#messages.msg('page.copper')+'/'+price.value.timestamp.atZone(timezone)}"/>
+                    <input value="test" readonly id="price_test" th:id="|material-${material.itemDTO.id}|" th:value="${material.price.gold+#messages.msg('page.gold')+' '+material.price.silver+#messages.msg('page.silver')+' '+material.price.copper+#messages.msg('page.copper')}"/>
                 </div>
 
                 <nav>
                     <ul class="pagination d-flex justify-content-between mt-2">
-                        <li class="page-item"><button th:attr="onclick=|nextPrice('${price.value.item.id}')|" class="btn page-link">Previous</button></li>
+                        <li class="page-item"><button th:attr="onclick=|nextPrice('${material.itemDTO.id}')|" class="btn page-link">Previous</button></li>
                         <li class="page-item"><button class="btn page-link" >Next</button></li>
                     </ul>
                 </nav>

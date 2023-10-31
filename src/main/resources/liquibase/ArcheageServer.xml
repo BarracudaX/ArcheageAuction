@@ -35,7 +35,7 @@
         </loadData>
     </changeSet>
 
-    <changeSet id="4" author="barracuda">
+    <changeSet id="4" author="barracuda" context="dev">
         <update tableName="archeage_servers_seq">
             <column name="next_val">12</column>
         </update>
