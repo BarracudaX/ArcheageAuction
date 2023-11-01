@@ -10,7 +10,7 @@ fun Item.toDTO() : ItemDTO = ItemDTO(name,id!!)
 
 fun List<Pack>.toDTO(prices: Map<String,ItemPrice>) : List<PackDTO> {
     return flatMap { pack ->
-        pack.prices
+        pack.prices()
             .filterIsInstance<PackPrice>()
             .flatMap { packPrice ->
                 pack.recipes.map { recipe ->

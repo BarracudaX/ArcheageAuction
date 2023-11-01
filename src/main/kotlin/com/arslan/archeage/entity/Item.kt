@@ -1,6 +1,7 @@
 package com.arslan.archeage.entity
 
 import jakarta.persistence.*
+import java.util.*
 
 @Entity
 @Table(name = "ITEMS", uniqueConstraints = [UniqueConstraint(name = "ITEMS_UNIQUE_NAME_CONSTRAINT", columnNames = ["name"])])
@@ -18,10 +19,19 @@ open class Item(
     @OneToMany(mappedBy = "craftable")
     open var recipes: MutableSet<Recipe> = mutableSetOf(),
 
-    @OneToMany(mappedBy = "item")
-    open var prices: MutableSet<ItemPrice> = mutableSetOf(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ITEMS_SEQUENCE_GENERATOR")
     open var id: Long? = null
-)
+){
+
+    @OneToMany(mappedBy = "item")
+    private var prices: MutableSet<ItemPrice> = mutableSetOf()
+
+    open fun addPrice(price: ItemPrice){
+        prices.add(price)
+    }
+
+    fun prices() : Set<ItemPrice> = Collections.unmodifiableSet(prices)
+
+}

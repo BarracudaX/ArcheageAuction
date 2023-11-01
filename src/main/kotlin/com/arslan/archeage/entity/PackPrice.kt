@@ -15,4 +15,10 @@ class PackPrice(
 
     @ManyToOne(optional = false)
     var sellLocation: Location
-) : ItemPrice(item, archeageServer, price)
+) : ItemPrice(item, archeageServer, price){
+
+    init {
+        item.addPrice(this)
+    }
+
+}

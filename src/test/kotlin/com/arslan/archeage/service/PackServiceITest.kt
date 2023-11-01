@@ -56,17 +56,17 @@ class PackServiceITest(
         ArcheageServerContextHolder.setServerContext(archeageServer)
         materials.add(itemRepository.save(Item("MATERIAL_1","MATERIAL_1",Region.EUROPE, mutableSetOf())).apply {
             val price = itemPriceRepository.save(ItemPrice(this,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE))))
-            prices.add(price)
+            addPrice(price)
             materialPrices[name] = price
         })
         materials.add(itemRepository.save(Item("MATERIAL_2","MATERIAL_2",Region.EUROPE, mutableSetOf())).apply {
             val price = itemPriceRepository.save(ItemPrice(this,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE))))
-            prices.add(price)
+            addPrice(price)
             materialPrices[name] = price
         })
         materials.add(itemRepository.save(Item("MATERIAL_3","MATERIAL_3",Region.EUROPE, mutableSetOf())).apply {
             val price = itemPriceRepository.save(ItemPrice(this,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE))))
-            prices.add(price)
+            addPrice(price)
             materialPrices[name] = price
         })
     }
@@ -182,11 +182,11 @@ class PackServiceITest(
         packRepository.save(Pack(northLocation,"ANY_NAME_12","ANY_DESC_12"))
             .apply { recipeRepository.save(Recipe(this,1,materials.map { CraftingMaterial(1,it) }.toMutableSet())) } //north pack without price should not be included in the resul
         packRepository.save(Pack(westLocation,"ANY_NAME_13","ANY_DESC_13"))
-            .apply { itemPriceRepository.save(ItemPrice(this,archeageServer,Price(1,1,1))) } //west pack without recipe should not be included in the resul
+            .apply { itemPriceRepository.save(PackPrice(this,archeageServer,Price(1,1,1),secondWestLocation)) } //west pack without recipe should not be included in the resul
         packRepository.save(Pack(eastLocation,"ANY_NAME_14","ANY_DESC_14"))
-            .apply { itemPriceRepository.save(ItemPrice(this,archeageServer,Price(1,1,1))) } //east pack without recipe should not be included in the resul
+            .apply { itemPriceRepository.save(PackPrice(this,archeageServer,Price(1,1,1),secondEastLocation)) } //east pack without recipe should not be included in the resul
         packRepository.save(Pack(northLocation,"ANY_NAME_15","ANY_DESC_15"))
-            .apply { itemPriceRepository.save(ItemPrice(this,archeageServer,Price(1,1,1))) } //north pack without recipe should not be included in the resul
+            .apply { itemPriceRepository.save(PackPrice(this,archeageServer,Price(1,1,1),secondNorthLocation)) } //north pack without recipe should not be included in the resul
         testEntityManager.flush()
     }
 

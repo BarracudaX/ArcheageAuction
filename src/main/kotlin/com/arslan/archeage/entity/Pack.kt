@@ -14,4 +14,10 @@ class Pack(
     name: String,
 
     description: String
-) : Item(name, description, creationLocation.region)
+) : Item(name, description, creationLocation.region){
+
+    override fun addPrice(price: ItemPrice) {
+        if(price !is PackPrice) throw IllegalArgumentException("Only pack prices are allowed for pack entities.")
+        super.addPrice(price)
+    }
+}

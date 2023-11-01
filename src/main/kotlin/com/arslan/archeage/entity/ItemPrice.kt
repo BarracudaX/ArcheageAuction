@@ -23,7 +23,7 @@ open class ItemPrice(
 ){
 
     init {
-        item.prices.add(this)
+        item.addPrice(this)
     }
 
 }
