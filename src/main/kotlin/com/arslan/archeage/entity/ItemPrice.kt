@@ -8,7 +8,7 @@ import java.time.Instant
 @Inheritance(strategy = InheritanceType.JOINED)
 open class ItemPrice(
     @ManyToOne(optional = false)
-    open var item: Item,
+    val item: Item,
 
     @ManyToOne(optional = false)
     open var archeageServer: ArcheageServer,

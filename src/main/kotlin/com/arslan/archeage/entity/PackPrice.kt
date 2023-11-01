@@ -18,6 +18,7 @@ class PackPrice(
 ) : ItemPrice(item, archeageServer, price){
 
     init {
+        if(!sellLocation.hasFactory) throw IllegalArgumentException("Sell location $sellLocation does not have a factory.")
         item.addPrice(this)
     }
 

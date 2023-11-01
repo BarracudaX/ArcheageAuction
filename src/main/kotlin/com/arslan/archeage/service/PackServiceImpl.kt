@@ -24,7 +24,7 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
         return convertPacksToDTOs(packRepository.packs(server, continent,departureLocation,destinationLocation))
     }
 
-    override fun packsAt(continent: Continent, departureLocation: String): List<PackDTO> {
+    override fun packsCreatedAt(continent: Continent, departureLocation: String): List<PackDTO> {
         if (ArcheageServerContextHolder.getServerContext() == null) return emptyList()
 
         val server = ArcheageServerContextHolder.getServerContext()!!
@@ -32,7 +32,7 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
         return convertPacksToDTOs(packRepository.packsAt(server,continent,departureLocation))
     }
 
-    override fun packsTo(continent: Continent, destinationLocation: String): List<PackDTO> {
+    override fun packsSoldAt(continent: Continent, destinationLocation: String): List<PackDTO> {
         if (ArcheageServerContextHolder.getServerContext() == null) return emptyList()
 
         val server = ArcheageServerContextHolder.getServerContext()!!

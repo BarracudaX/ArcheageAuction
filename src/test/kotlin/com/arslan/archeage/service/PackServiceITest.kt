@@ -6,7 +6,6 @@ import com.arslan.archeage.entity.*
 import com.arslan.archeage.toDTO
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -17,7 +16,7 @@ import kotlin.random.Random
 
 /**
  * All pack service method that return packs, return only those packs that have at least one price and at least one recipe.Also, pack service returns packs based on
- * the current value of that is held in ArcheageServerContextHolder - specifically, it returns packs that belong to the server of the held value.
+ * the current value that is held in ArcheageServerContextHolder - specifically, it returns packs that belong to the server of the held value.
  * Finally, all methods returning pack return them sorted by profit.
  * This is a precondition for all tests that are testing these methods.
  */
@@ -29,13 +28,19 @@ class PackServiceITest(
 
     private lateinit var secondWestLocation: Location
 
+    private lateinit var thirdWestLocation: Location
+
     private lateinit var eastLocation: Location
 
     private lateinit var secondEastLocation: Location
 
+    private lateinit var thirdEastLocation: Location
+
     private lateinit var northLocation: Location
 
     private lateinit var secondNorthLocation: Location
+
+    private lateinit var thirdNorthLocation: Location
 
     private lateinit var archeageServer: ArcheageServer
 
@@ -46,13 +51,16 @@ class PackServiceITest(
 
     @BeforeEach
     fun prepareTestContext(){
-        westLocation = locationRepository.save(Location("ANY_NAME_1",Continent.WEST, Region.EUROPE))
-        eastLocation = locationRepository.save(Location("ANY_NAME_2",Continent.EAST,Region.EUROPE))
-        northLocation = locationRepository.save(Location("ANY_NAME_3",Continent.NORTH,Region.EUROPE))
+        westLocation = locationRepository.save(Location("ANY_NAME_1",Continent.WEST, Region.EUROPE,true))
+        eastLocation = locationRepository.save(Location("ANY_NAME_2",Continent.EAST,Region.EUROPE,true))
+        northLocation = locationRepository.save(Location("ANY_NAME_3",Continent.NORTH,Region.EUROPE,true))
         archeageServer = archeageServerRepository.save(ArcheageServer("ANY_NAME",Region.EUROPE))
         secondWestLocation = locationRepository.save(Location("ANY_NAME_4",Continent.WEST,Region.EUROPE,true))
-        secondEastLocation = locationRepository.save(Location("ANY_NAME_123123",Continent.EAST,Region.EUROPE))
-        secondNorthLocation = locationRepository.save(Location("ANY_NAME_31231233",Continent.NORTH,Region.EUROPE))
+        secondEastLocation = locationRepository.save(Location("ANY_NAME_123123",Continent.EAST,Region.EUROPE,true))
+        secondNorthLocation = locationRepository.save(Location("ANY_NAME_31231233",Continent.NORTH,Region.EUROPE,true))
+        thirdWestLocation = locationRepository.save(Location("THIRD_WEST_LOCATION",Continent.WEST,Region.EUROPE,true))
+        thirdNorthLocation = locationRepository.save(Location("THIRD_NORTH_LOCATION",Continent.NORTH,Region.EUROPE,true))
+        thirdEastLocation = locationRepository.save(Location("THIRD_EAST_LOCATION",Continent.EAST,Region.EUROPE,true))
         ArcheageServerContextHolder.setServerContext(archeageServer)
         materials.add(itemRepository.save(Item("MATERIAL_1","MATERIAL_1",Region.EUROPE, mutableSetOf())).apply {
             val price = itemPriceRepository.save(ItemPrice(this,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE))))
@@ -84,8 +92,8 @@ class PackServiceITest(
 
         packService.packs(pack.creationLocation.continent).shouldBeEmpty()
         packService.packs(pack.creationLocation.continent,pack.creationLocation.name,packPrice.sellLocation.name).shouldBeEmpty()
-        packService.packsAt(pack.creationLocation.continent,pack.creationLocation.name).shouldBeEmpty()
-        packService.packsTo(pack.creationLocation.continent,packPrice.sellLocation.name).shouldBeEmpty()
+        packService.packsCreatedAt(pack.creationLocation.continent,pack.creationLocation.name).shouldBeEmpty()
+        packService.packsSoldAt(pack.creationLocation.continent,packPrice.sellLocation.name).shouldBeEmpty()
     }
 
 
@@ -99,8 +107,8 @@ class PackServiceITest(
 
         packService.packs(continent).shouldBeEmpty()
         packService.packs(continent,pack.creationLocation.name,packPrice.sellLocation.name).shouldBeEmpty()
-        packService.packsAt(continent,pack.creationLocation.name).shouldBeEmpty()
-        packService.packsTo(continent,packPrice.sellLocation.name).shouldBeEmpty()
+        packService.packsCreatedAt(continent,pack.creationLocation.name).shouldBeEmpty()
+        packService.packsSoldAt(continent,packPrice.sellLocation.name).shouldBeEmpty()
     }
 
 
@@ -122,7 +130,7 @@ class PackServiceITest(
     @Test
     fun `should only return packs of requested continent that have the provided departure location`() {
         preparePacksThatShouldNotBeIncludedInTheResult()
-        preparePackWithDifferentDepartureLocation()
+        preparePacksWithRandomDepartureLocation()
 
         val expectedWestLocations = packRepository.saveAll(listOf(Pack(westLocation,"ANY_PACK_NAME_2312","ANY_DESC"),Pack(westLocation,"ANY_PACK_NAME_1231232","ANY_DESC")))
         val expectedEastLocations = packRepository.saveAll(listOf(Pack(eastLocation,"ANY_PACK_NAME_4324","ANY_DESC"),Pack(eastLocation,"ANY_PACK_NAME_215123","ANY_DESC")))
@@ -130,9 +138,65 @@ class PackServiceITest(
 
         makePricesAndRecipesFor(expectedEastLocations.plus(expectedWestLocations).plus(expectedNorthLocations))
 
-        packService.packsAt(Continent.WEST,westLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedWestLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
-        packService.packsAt(Continent.EAST,eastLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedEastLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
-        packService.packsAt(Continent.NORTH,northLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedNorthLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packsCreatedAt(Continent.WEST,westLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedWestLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packsCreatedAt(Continent.EAST,eastLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedEastLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packsCreatedAt(Continent.NORTH,northLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedNorthLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+    }
+
+    /**
+     * Destination location = sell location.
+     */
+    @Test
+    fun `should only return packs of requested continent that have the provided destination location`() {
+        preparePacksThatShouldNotBeIncludedInTheResult()
+        preparePacksWithRandomDestinationLocation()
+
+        val expectedWestLocations = packRepository.saveAll(listOf(Pack(westLocation,"ANY_PACK_NAME_290923","ANY_DESC"),Pack(thirdWestLocation,"ANY_PACK_NAME_12311","ANY_DESC"))).map { pack ->
+            recipeRepository.save(Recipe(pack,1, materials.map { CraftingMaterial(Random.nextInt(0,10),it) }.toMutableSet()))
+            itemPriceRepository.save(PackPrice(pack,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),secondWestLocation))
+            pack
+        }
+        val expectedEastLocations = packRepository.saveAll(listOf(Pack(eastLocation,"ANY_PACK_NAME_34893","ANY_DESC"),Pack(thirdEastLocation,"ANY_PACK_NAME_231123","ANY_DESC"))).map { pack ->
+            recipeRepository.save(Recipe(pack,1, materials.map { CraftingMaterial(Random.nextInt(0,10),it) }.toMutableSet()))
+            itemPriceRepository.save(PackPrice(pack,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),secondEastLocation))
+            pack
+        }
+        val expectedNorthLocations = packRepository.saveAll(listOf(Pack(northLocation,"ANY_PACK_NAME_090123","ANY_DESC"),Pack(thirdNorthLocation,"ANY_PACK_NAME_909213","ANY_DESC"))).map { pack ->
+            recipeRepository.save(Recipe(pack,1, materials.map { CraftingMaterial(Random.nextInt(0,10),it) }.toMutableSet()))
+            itemPriceRepository.save(PackPrice(pack,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),secondNorthLocation))
+            pack
+        }
+
+        packService.packsSoldAt(Continent.WEST,secondWestLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedWestLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packsSoldAt(Continent.EAST,secondEastLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedEastLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packsSoldAt(Continent.NORTH,secondNorthLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedNorthLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+    }
+
+    @Test
+    fun `should return packs created at specified location and sold at specified location`() {
+        preparePacksThatShouldNotBeIncludedInTheResult()
+        preparePacksWithRandomDepartureLocation()
+        preparePacksWithRandomDestinationLocation()
+
+        val expectedWestLocations = packRepository.saveAll(listOf(Pack(westLocation,"ANY_PACK_NAME_87244","ANY_DESC"),Pack(westLocation,"ANY_PACK_NAME_123781","ANY_DESC"))).map { pack ->
+            recipeRepository.save(Recipe(pack,1, materials.map { CraftingMaterial(Random.nextInt(0,10),it) }.toMutableSet()))
+            itemPriceRepository.save(PackPrice(pack,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),secondWestLocation))
+            pack
+        }
+        val expectedEastLocations = packRepository.saveAll(listOf(Pack(eastLocation,"ANY_PACK_NAME_39489143","ANY_DESC"),Pack(eastLocation,"ANY_PACK_NAME_13874873","ANY_DESC"))).map { pack ->
+            recipeRepository.save(Recipe(pack,1, materials.map { CraftingMaterial(Random.nextInt(0,10),it) }.toMutableSet()))
+            itemPriceRepository.save(PackPrice(pack,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),secondEastLocation))
+            pack
+        }
+        val expectedNorthLocations = packRepository.saveAll(listOf(Pack(northLocation,"ANY_PACK_NAME_49812315","ANY_DESC"),Pack(northLocation,"ANY_PACK_NAME_437887823","ANY_DESC"))).map { pack ->
+            recipeRepository.save(Recipe(pack,1, materials.map { CraftingMaterial(Random.nextInt(0,10),it) }.toMutableSet()))
+            itemPriceRepository.save(PackPrice(pack,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),secondNorthLocation))
+            pack
+        }
+
+        packService.packs(Continent.WEST,westLocation.name,secondWestLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedWestLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packs(Continent.EAST,eastLocation.name,secondEastLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedEastLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packs(Continent.NORTH,northLocation.name,secondNorthLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedNorthLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
     }
 
     private fun makePricesAndRecipesFor(packs: List<Pack>){
@@ -142,26 +206,51 @@ class PackServiceITest(
         }
     }
 
-    private fun preparePackWithDifferentDepartureLocation(){
+    private fun preparePacksWithRandomDestinationLocation(){
+        val randomWestLocation = locationRepository.save(Location("ANY_LOCATION_NAME_1",Continent.WEST,Region.EUROPE,true))
+        val randomEastLocation =  locationRepository.save(Location("ANY_LOCATION_NAME_2",Continent.EAST,Region.EUROPE,true))
+        val randomNorthLocation =  locationRepository.save(Location("ANY_LOCATION_NAME_2",Continent.NORTH,Region.EUROPE,true))
+
+        packRepository.save(Pack(westLocation,"ANY_NAME_232","ANY_DESC")).let { pack ->
+            recipeRepository.save(Recipe(pack,1,materials.map { CraftingMaterial(1,it) }.toMutableSet()))
+            itemPriceRepository.save(PackPrice(pack,archeageServer,Price(1,1,1),randomWestLocation))
+        }
+        packRepository.save(Pack(eastLocation,"ANY_NAME_5234","ANY_DESC")).let { pack ->
+            recipeRepository.save(Recipe(pack,1,materials.map { CraftingMaterial(1,it) }.toMutableSet()))
+            itemPriceRepository.save(PackPrice(pack,archeageServer,Price(1,1,1),randomEastLocation))
+        }
+        packRepository.save(Pack(northLocation,"ANY_NAME_123512","ANY_DESC")).let { pack ->
+            recipeRepository.save(Recipe(pack,1,materials.map { CraftingMaterial(1,it) }.toMutableSet()))
+            itemPriceRepository.save(PackPrice(pack,archeageServer,Price(1,1,1),randomNorthLocation))
+        }
+    }
+
+    private fun preparePacksWithRandomDepartureLocation(){
         val randomWestLocation = locationRepository.save(Location("ANY_LOCATION_NAME_1",Continent.WEST,Region.EUROPE))
         val randomEastLocation =  locationRepository.save(Location("ANY_LOCATION_NAME_2",Continent.EAST,Region.EUROPE))
         val randomNorthLocation =  locationRepository.save(Location("ANY_LOCATION_NAME_2",Continent.NORTH,Region.EUROPE))
 
-        packRepository.save(Pack(randomWestLocation,"ANY_NAME_232","ANY_DESC")).let { pack ->
+        packRepository.save(Pack(randomWestLocation,"ANY_NAME_4309043","ANY_DESC")).let { pack ->
             recipeRepository.save(Recipe(pack,1,materials.map { CraftingMaterial(1,it) }.toMutableSet()))
             itemPriceRepository.save(PackPrice(pack,archeageServer,Price(1,1,1),secondWestLocation))
         }
-        packRepository.save(Pack(randomEastLocation,"ANY_NAME_5234","ANY_DESC")).let { pack ->
+        packRepository.save(Pack(randomEastLocation,"ANY_NAME_313414","ANY_DESC")).let { pack ->
             recipeRepository.save(Recipe(pack,1,materials.map { CraftingMaterial(1,it) }.toMutableSet()))
             itemPriceRepository.save(PackPrice(pack,archeageServer,Price(1,1,1),secondEastLocation))
         }
-        packRepository.save(Pack(randomNorthLocation,"ANY_NAME_123512","ANY_DESC")).let { pack ->
+        packRepository.save(Pack(randomNorthLocation,"ANY_NAME_12354234","ANY_DESC")).let { pack ->
             recipeRepository.save(Recipe(pack,1,materials.map { CraftingMaterial(1,it) }.toMutableSet()))
             itemPriceRepository.save(PackPrice(pack,archeageServer,Price(1,1,1),secondNorthLocation))
         }
         testEntityManager.flush()
     }
 
+    /**
+     * These packs are excluded by default for one of the following reasons:
+     * a)They have recipe and price, but price belongs to different server.
+     * b)They have recipe but not a price.
+     * c)They have price but not a recipe.
+     */
     private fun preparePacksThatShouldNotBeIncludedInTheResult(){
         //packs that have price for different server should not be included if user's chosen server is different.
         //packs that do not have any price, should not be returned.

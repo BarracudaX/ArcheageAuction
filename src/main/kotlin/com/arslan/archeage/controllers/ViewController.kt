@@ -2,12 +2,10 @@ package com.arslan.archeage.controllers
 
 import com.arslan.archeage.Continent
 import com.arslan.archeage.PackDTO
-import com.arslan.archeage.RecipeDTO
 import com.arslan.archeage.entity.*
 import com.arslan.archeage.service.ItemPriceService
 import com.arslan.archeage.service.LocationService
 import com.arslan.archeage.service.PackService
-import com.arslan.archeage.toDTO
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -44,7 +42,7 @@ class ViewController(
     @GetMapping("/packs",params=["departureLocation"])
     fun packsWithDepartureLocation(model: Model,@RequestParam continent: Optional<Continent>,@RequestParam departureLocation: String) : String{
         val useContinent = continent.getOrElse { Continent.values()[0] }
-        val packs = packService.packsAt(useContinent,departureLocation)
+        val packs = packService.packsCreatedAt(useContinent,departureLocation)
 
         return preparePacksView(packs,model,useContinent,Optional.empty(), Optional.of(departureLocation))
     }
@@ -52,7 +50,7 @@ class ViewController(
     @GetMapping("/packs",params = ["destinationLocation"])
     fun packsWithDestinationLocation(model: Model, @RequestParam continent: Optional<Continent>, @RequestParam destinationLocation: String) : String{
         val useContinent = continent.getOrElse { Continent.values()[0] }
-        val packs = packService.packsTo(useContinent,destinationLocation)
+        val packs = packService.packsSoldAt(useContinent,destinationLocation)
 
         return preparePacksView(packs,model,useContinent,Optional.of(destinationLocation), Optional.empty())
     }
