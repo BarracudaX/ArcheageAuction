@@ -37,11 +37,20 @@ class SecurityConfiguration {
     fun defaultHttpSecurityConfigurer(authenticationProvider: AuthenticationProvider) : HttpSecurityConfigurer = object :
         HttpSecurityConfigurer {
         override fun configure(httpSecurity: HttpSecurity): HttpSecurity = httpSecurity
-            .formLogin(Customizer.withDefaults())
+            .formLogin{form ->
+                form
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login")
+            }.logout { logout ->
+                logout
+                    .logoutUrl("/logout")
+                    .invalidateHttpSession(true)
+                    .logoutSuccessUrl("/login")
+            }
             .authorizeHttpRequests { authorize ->
                 authorize
                     .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                    .requestMatchers(HttpMethod.GET,"/locations","/","/packs","/favicon.ico").permitAll()
+                    .requestMatchers(HttpMethod.GET,"/locations","/","/packs","/favicon.ico","/login","/logout","/error").permitAll()
                     .requestMatchers(HttpMethod.GET,"/resource/**").permitAll()
             }
             .anonymous {  }
@@ -56,9 +65,7 @@ class SecurityConfiguration {
             return httpSecurity
                 .authorizeHttpRequests{ authorize ->
                     authorize.requestMatchers(EndpointRequest.to("prometheus")).permitAll()
-                }
-                .addFilterBefore(DevFilter(),AuthorizationFilter::class.java)
-                .csrf { csrf -> csrf.disable() }
+                }.csrf { csrf -> csrf.disable() }
         }
     }
 
@@ -81,11 +88,4 @@ class SecurityConfiguration {
         return httpSecurity.build()
     }
 
-    class DevFilter : Filter{
-        override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
-            SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext().apply { authentication = TestingAuthenticationToken("test@email.com","Test123!",listOf()) })
-            chain.doFilter(request,response)
-        }
-
-    }
 }

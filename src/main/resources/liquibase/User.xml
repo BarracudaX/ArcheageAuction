@@ -19,7 +19,7 @@
             <column name="next_val" type="bigint" />
         </createTable>
         <insert tableName="users_id_sequence_generator">
-            <column name="next_val">1</column>
+            <column name="next_val">2</column>
         </insert>
     </changeSet>
     
@@ -45,4 +45,13 @@
         <renameTable oldTableName="users_sequence_generator" newTableName="users_seq"/>
     </changeSet>
 
+    <changeSet id="8" author="barracuda">
+        <insert tableName="users">
+            <column name="id">1</column>
+            <column name="email">test@email.com</column>
+            <column name="password">$2a$10$1B.wNvl1/GGINUQlgo866.tix74youwMVVy8lNAWom4KrzzcO9C22</column>
+            <column name="role">USER</column>
+        </insert>
+    </changeSet>
+    
 </databaseChangeLog>

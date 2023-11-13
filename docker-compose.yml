@@ -9,13 +9,13 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
-  prometheus:
-    image: bitnami/prometheus:latest
-    ports:
-      - "9090:9090"
-    volumes:
-      - prometheus_data:/opt/bitnami/prometheus/data
-      - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+#  prometheus:
+#    image: bitnami/prometheus:latest
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - prometheus_data:/opt/bitnami/prometheus/data
+#      - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
 volumes:
   mysql_data:
   prometheus_data:

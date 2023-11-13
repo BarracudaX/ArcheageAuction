@@ -15,10 +15,9 @@ import org.junit.jupiter.params.provider.MethodSource
 import kotlin.random.Random
 
 /**
- * All pack service method that return packs, return only those packs that have at least one price and at least one recipe.Also, pack service returns packs based on
+ * All PackService methods that return packs, return only those packs that have at least one price and at least one recipe.Also, pack service returns packs based on
  * the current value that is held in ArcheageServerContextHolder - specifically, it returns packs that belong to the server of the held value.
  * Finally, all methods returning pack return them sorted by profit.
- * This is a precondition for all tests that are testing these methods.
  */
 class PackServiceITest(
     private val packService: PackService,
@@ -247,7 +246,7 @@ class PackServiceITest(
 
     /**
      * These packs are excluded by default for one of the following reasons:
-     * a)They have recipe and price, but price belongs to different server.
+     * a)They have recipe and price, but price belongs to different server from the default server used in tests.
      * b)They have recipe but not a price.
      * c)They have price but not a recipe.
      */

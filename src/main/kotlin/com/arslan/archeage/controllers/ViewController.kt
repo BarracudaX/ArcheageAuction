@@ -22,6 +22,9 @@ class ViewController(
     private val itemPriceService: ItemPriceService
 ) {
 
+    @GetMapping("/login")
+    fun loginPage() : String = "login"
+
     @GetMapping
     fun homePage(): String = "index"
 
