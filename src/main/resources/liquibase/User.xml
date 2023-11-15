@@ -53,5 +53,9 @@
             <column name="role">USER</column>
         </insert>
     </changeSet>
+
+    <changeSet id="9" author="barracuda">
+        <addUniqueConstraint tableName="users" columnNames="email" />
+    </changeSet>
     
 </databaseChangeLog>

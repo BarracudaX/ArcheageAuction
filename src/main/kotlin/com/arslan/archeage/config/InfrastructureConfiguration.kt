@@ -9,6 +9,7 @@ import org.springframework.context.event.ContextClosedEvent
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.nio.file.Files
+import java.security.SecureRandom
 import kotlin.io.path.Path
 
 @Configuration

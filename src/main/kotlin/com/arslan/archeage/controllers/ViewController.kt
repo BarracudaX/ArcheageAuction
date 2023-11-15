@@ -28,6 +28,12 @@ class ViewController(
     @GetMapping
     fun homePage(): String = "index"
 
+    @GetMapping("/register")
+    fun registerPage(model: Model) : String {
+        model.addAttribute("registrationForm",RegistrationForm())
+        return "register"
+    }
+
     @GetMapping("/packs")
     fun allPacksView(model: Model,continent: Optional<Continent>) : String{
         val useContinent = continent.getOrElse { Continent.values()[0] }

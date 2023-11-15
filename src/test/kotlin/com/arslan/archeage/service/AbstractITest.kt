@@ -46,6 +46,7 @@ abstract class AbstractITest : AbstractTest(){
     @Autowired
     protected lateinit var testEntityManager: TestEntityManager
 
+
     companion object{
 
         @JvmStatic
