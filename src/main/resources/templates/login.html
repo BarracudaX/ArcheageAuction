@@ -50,6 +50,7 @@
     <div class="alert alert-danger mt-2" th:if="${param.keySet().contains('error')}" th:text="#{page.invalid.credentials.error}">Test</div>
     <div class="d-flex justify-content-center">
         <form class="mt-4 w-50 p-2" th:action="@{/login}" method="post">
+            <input hidden="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <div class="row">
                 <div class="col-4">
                     <label for="inputEmail" class="col-form-label" th:text="#{page.email.label}">Email:</label>

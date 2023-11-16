@@ -66,7 +66,7 @@ class SecurityConfiguration {
             return httpSecurity
                 .authorizeHttpRequests{ authorize ->
                     authorize.requestMatchers(EndpointRequest.to("prometheus")).permitAll()
-                }.csrf { csrf -> csrf.disable() }
+                }
         }
     }
 
