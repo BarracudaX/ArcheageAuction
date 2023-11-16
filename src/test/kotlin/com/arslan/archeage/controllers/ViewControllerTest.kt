@@ -65,6 +65,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             .andExpect {
                 status { isOk() }
                 view { name("register") }
+                model { attributeExists("registrationForm") }
             }
     }
 
