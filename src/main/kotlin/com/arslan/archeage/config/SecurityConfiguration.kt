@@ -50,8 +50,9 @@ class SecurityConfiguration {
             .authorizeHttpRequests { authorize ->
                 authorize
                     .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                    .requestMatchers(HttpMethod.GET,"/locations","/","/packs","/favicon.ico","/login","/logout","/error","/register","/resource/**").permitAll()
-                    .requestMatchers(HttpMethod.POST,"/register").permitAll()
+                    .requestMatchers(HttpMethod.GET,"/locations","/","/packs","/favicon.ico","/logout","/error","/resource/**").permitAll()
+                    .requestMatchers(HttpMethod.GET,"/register","/login").anonymous()
+                    .requestMatchers(HttpMethod.POST,"/register").anonymous()
             }
             .anonymous {  }
             .authenticationProvider(authenticationProvider)

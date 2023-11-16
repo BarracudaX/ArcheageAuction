@@ -3,9 +3,11 @@ package com.arslan.archeage.controllers
 import com.arslan.archeage.Continent
 import com.arslan.archeage.PackDTO
 import com.arslan.archeage.entity.*
+import com.arslan.archeage.materialsWithPrice
 import com.arslan.archeage.service.ItemPriceService
 import com.arslan.archeage.service.LocationService
 import com.arslan.archeage.service.PackService
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,12 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam
 import java.util.Optional
 import kotlin.jvm.optionals.getOrElse
 
-@RequestMapping("/")
+@RequestMapping("/",produces = [MediaType.TEXT_HTML_VALUE])
 @Controller
 class ViewController(
     private val locationService: LocationService,
-    private val packService: PackService,
-    private val itemPriceService: ItemPriceService
+    private val packService: PackService
 ) {
 
     @GetMapping("/login")
@@ -71,7 +72,7 @@ class ViewController(
         model.addAttribute("selectedContinent",continent)
         model.addAttribute("departureLocation",departureLocation)
         model.addAttribute("destinationLocation",destinationLocation)
-        model.addAttribute("materials",packs.flatMap { pack -> pack.recipeDTO.materials }.filter{ material -> material.price != null })
+        model.addAttribute("materials",packs.materialsWithPrice())
 
         return "packs"
     }

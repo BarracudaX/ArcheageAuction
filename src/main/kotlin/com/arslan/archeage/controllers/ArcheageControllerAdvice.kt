@@ -12,7 +12,7 @@ import java.util.TimeZone
 @ControllerAdvice
 class ArcheageControllerAdvice(private val archeageServerService: ArcheageServerService) {
     @ModelAttribute("servers")
-    fun servers() : List<ArcheageServer?> = archeageServerService.servers().flatMap { (_,servers) -> servers.plus(null) } // null is used as group separator.
+    fun servers() : List<ArcheageServer?> = archeageServerService.servers().flatMap { (_,servers) -> servers.plus(null) } // null is used as separator for related servers - servers belonging to the same region.
 
     @ModelAttribute("server")
     fun server() : ArcheageServer? = ArcheageServerContextHolder.getServerContext()
