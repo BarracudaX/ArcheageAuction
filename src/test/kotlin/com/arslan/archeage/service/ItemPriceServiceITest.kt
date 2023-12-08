@@ -6,6 +6,7 @@ import com.arslan.archeage.entity.Region
 import com.arslan.archeage.entity.User
 import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.entity.item.UserPrice
+import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldHaveSize
@@ -94,5 +95,13 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
 
         result.shouldHaveSize(1)
         result[someItem.id!!].shouldBe(expectedPrice)
+    }
+
+    @Test
+    fun `should return empty result when requesting user prices of user that does not exist`() {
+        val idOfNonExistingUser = 12093L
+        userRepository.existsById(idOfNonExistingUser).shouldBeFalse()
+
+        itemPriceService.userPrices(listOf(someItem),idOfNonExistingUser).shouldBeEmpty()
     }
 }
