@@ -28,4 +28,12 @@ class UserPrice(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     var id: Long? = null
-)
+){
+
+    init {
+        if(archeageServer.region != purchasableItem.region)
+            throw IllegalArgumentException("Cannot create purchasable item with archeage server whose region is different from item's region. Archeage server region:${archeageServer.region}, item's region:${purchasableItem.region}")
+        purchasableItem.addPrice(this)
+    }
+
+}

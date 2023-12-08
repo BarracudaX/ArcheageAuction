@@ -71,21 +71,19 @@ class PackServiceITest(
         thirdNorthLocation = locationRepository.save(Location("THIRD_NORTH_LOCATION",Continent.NORTH,Region.EUROPE,true))
         thirdEastLocation = locationRepository.save(Location("THIRD_EAST_LOCATION",Continent.EAST,Region.EUROPE,true))
         ArcheageServerContextHolder.setServerContext(archeageServer)
-        materials.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_1","MATERIAL_1",Region.EUROPE, mutableSetOf())).apply {
+        materials.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_1","MATERIAL_1",Region.EUROPE)).apply {
             val price = userPriceRepository.save(
                 UserPrice(this,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user)
             )
-            prices.add(price)
             materialPrices[id!!] = price
         })
-        materials.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_2","MATERIAL_2",Region.EUROPE, mutableSetOf())).apply {
+        materials.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_2","MATERIAL_2",Region.EUROPE)).apply {
             val price = userPriceRepository.save(UserPrice(this,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user))
-            prices.add(price)
             materialPrices[id!!] = price
         })
-        materials.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_3","MATERIAL_3",Region.EUROPE, mutableSetOf())).apply {
+        materials.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_3","MATERIAL_3",Region.EUROPE)).apply {
             val price = userPriceRepository.save(UserPrice(this,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user))
-            prices.add(price)
+            addPrice(price)
             materialPrices[id!!] = price
         })
     }

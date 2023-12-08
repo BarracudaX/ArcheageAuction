@@ -47,7 +47,7 @@ function handleResponse(data){
     document.getElementById("next_btn").disabled = !data.hasNext
     for (let i = 0; i < items.length; i++) {
         let item = document.createElement("div")
-        let price = prices[items[0].id]
+        let price = prices[`${items[i].id}`]
         item.className = "row gx-4 mt-2"
         item.innerHTML = `
                 <h4 class="text-center col-4 p-0 m-0">${items[i].name}</h4>
