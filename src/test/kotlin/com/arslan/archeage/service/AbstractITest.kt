@@ -3,20 +3,15 @@ package com.arslan.archeage.service
 import com.arslan.archeage.AbstractTest
 import com.arslan.archeage.repository.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails
-import org.springframework.boot.autoconfigure.service.connection.ConnectionDetails
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.context.TestConstructor
 import org.springframework.transaction.annotation.Transactional
 import org.testcontainers.containers.MySQLContainer
-import org.testcontainers.junit.jupiter.Container
-import org.testcontainers.junit.jupiter.Testcontainers
 
 @Transactional
 @ActiveProfiles("test")
@@ -29,7 +24,7 @@ abstract class AbstractITest : AbstractTest(){
     protected lateinit var packRepository: PackRepository
 
     @Autowired
-    protected lateinit var itemPriceRepository: ItemPriceRepository
+    protected lateinit var userPriceRepository: UserPriceRepository
 
     @Autowired
     protected lateinit var locationRepository: LocationRepository
@@ -38,13 +33,22 @@ abstract class AbstractITest : AbstractTest(){
     protected lateinit var archeageServerRepository: ArcheageServerRepository
 
     @Autowired
-    protected lateinit var recipeRepository: RecipeRepository
+    protected lateinit var itemRecipeRepository: ItemRecipeRepository
+
+    @Autowired
+    protected lateinit var packRecipeRepository: PackRecipeRepository
 
     @Autowired
     protected lateinit var itemRepository: ItemRepository
 
     @Autowired
+    protected lateinit var purchasableItemRepository: PurchasableItemRepository
+
+    @Autowired
     protected lateinit var testEntityManager: TestEntityManager
+
+    @Autowired
+    protected lateinit var userRepository: UserRepository
 
 
     companion object{

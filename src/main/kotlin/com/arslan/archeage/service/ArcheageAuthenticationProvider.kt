@@ -20,7 +20,7 @@ class ArcheageAuthenticationProvider(private val userRepository: UserRepository,
 
         if(!passwordEncoder.matches(authentication.credentials.toString(),user.password)) throw BadCredentialsException("Invalid credentials provided.")
 
-        return UsernamePasswordAuthenticationToken(user.email,"", listOf(SimpleGrantedAuthority(user.role.name)))
+        return UsernamePasswordAuthenticationToken(user.id,"", listOf(SimpleGrantedAuthority(user.role.name)))
     }
 
     override fun supports(authentication: Class<*>): Boolean = UsernamePasswordAuthenticationToken::class.java.isAssignableFrom(authentication)

@@ -18,12 +18,12 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <createTable tableName="items_sequence_generator">
+        <createTable tableName="items_seq">
             <column name="next_val" type="bigint">
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <insert tableName="items_sequence_generator">
+        <insert tableName="items_seq">
             <column name="next_val">1</column>
         </insert>
     </changeSet>
@@ -38,8 +38,8 @@
     </changeSet>
 
     <changeSet id="3" author="barracuda" context="dev">
-        <update tableName="items_sequence_generator">
-            <column name="next_val">142</column>
+        <update tableName="items_seq">
+            <column name="next_val">75</column>
         </update>
     </changeSet>
 

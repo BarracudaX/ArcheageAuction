@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="barracuda">
+        <createTable tableName="pack_recipes">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="craftable_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_pack_recipes_packs" references="packs(id)" />
+            </column>
+            <column name="produced_quantity" type="integer">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="barracuda">
+        <createTable tableName="pack_recipes_seq">
+            <column name="next_val" type="bigint">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="barracuda" context="dev">
+        <loadData tableName="pack_recipes" file="csv/pack_recipes.csv">
+            <column name="id" header="id" type="NUMERIC" />
+            <column name="craftable_id" header="craftable_id" type="NUMERIC" />
+            <column name="produced_quantity" header="produced_quantity" type="NUMERIC" />
+        </loadData>
+    </changeSet>
+
+    <changeSet id="4" author="barracuda">
+        <insert tableName="pack_recipes_seq">
+            <column name="next_val">82</column>
+        </insert>
+    </changeSet>
+
+    <changeSet id="5" author="barracuda">
+        <createTable tableName="pack_recipe_materials">
+            <column name="recipe_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_pack_recipe_materials_pack_recipes" references="pack_recipes(id)" />
+            </column>
+            <column name="quantity" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="item_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_pack_recipe_materials_items" references="items(id)" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="barracuda" context="dev">
+        <loadData tableName="pack_recipe_materials" file="csv/recipe_materials.csv">
+            <column name="quantity" header="quantity" type="NUMERIC" />
+            <column name="item_id" header="item_id" type="NUMERIC" />
+            <column name="recipe_id" header="recipe_id" type="NUMERIC" />
+        </loadData>
+    </changeSet>
+
+    <changeSet id="7" author="barracuda">
+        <renameColumn tableName="pack_recipe_materials" oldColumnName="recipe_id" newColumnName="pack_recipe_id" columnDataType="bigint" />
+    </changeSet>
+
+</databaseChangeLog>

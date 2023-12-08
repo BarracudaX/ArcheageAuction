@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="1" author="barracuda">
+        <createTable tableName="purchasable_items">
+            <column name="id" type="bigint"> <constraints primaryKey="true" /> </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="purchasable_items" baseColumnNames="id" constraintName="FK_PURCHASABLE_ITEMS_ITEMS" referencedTableName="items" referencedColumnNames="id" />
+    </changeSet>
+    <changeSet id="2" author="barracuda" context="dev">
+        <loadData tableName="purchasable_items" file="csv/purchasable_items.csv">
+            <column name="id" header="id" type="NUMERIC" />
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

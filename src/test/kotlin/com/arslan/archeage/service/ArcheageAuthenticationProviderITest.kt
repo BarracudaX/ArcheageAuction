@@ -21,8 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 
 class ArcheageAuthenticationProviderITest(
     private val authenticationProvider: ArcheageAuthenticationProvider,
-    private val passwordEncoder: PasswordEncoder,
-    private val userRepository: UserRepository
+    private val passwordEncoder: PasswordEncoder
 ) : AbstractITest() {
 
     @Test
@@ -42,13 +41,13 @@ class ArcheageAuthenticationProviderITest(
 
     @Test
     fun `should return authenticated Authentication with user's role as granted authority and empty credentials on successful authentication`() {
-        val (principal,password) = "any_principal" to "any_password"
-        val user = userRepository.save(User(principal,passwordEncoder.encode(password)))
+        val (username,password) = "any_principal" to "any_password"
+        val user = userRepository.save(User(username,passwordEncoder.encode(password)))
 
-        val result = authenticationProvider.authenticate(UsernamePasswordAuthenticationToken(principal,password))
+        val result = authenticationProvider.authenticate(UsernamePasswordAuthenticationToken(username,password))
 
         result.isAuthenticated.shouldBeTrue()
-        result.principal shouldBe principal
+        result.principal shouldBe user.id!!
         result.credentials shouldBe ""
         result.authorities shouldHaveSize 1
         result.authorities.shouldContainExactly(SimpleGrantedAuthority(user.role.name))

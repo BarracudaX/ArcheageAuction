@@ -6,8 +6,10 @@
     <include file="/liquibase/ArcheageServer.xml" />
     <include file="/liquibase/Location.xml" />
     <include file="/liquibase/Item.xml" />
+    <include file="/liquibase/Purchasable_Item.xml" />
     <include file="/liquibase/Pack.xml" />
-    <include file="/liquibase/ItemPrice.xml" />
-    <include file="/liquibase/PackPrice.xml" />
-    <include file="/liquibase/Recipe.xml" />
+    <include file="/liquibase/User_Price.xml" />
+    <include file="/liquibase/Pack_Price.xml" />
+    <include file="/liquibase/Item_Recipe.xml" />
+    <include file="/liquibase/Pack_Recipe.xml" />
 </databaseChangeLog>

@@ -1,15 +1,16 @@
 package com.arslan.archeage.service
 
-import com.arslan.archeage.entity.Item
-import com.arslan.archeage.entity.ItemPrice
-import com.arslan.archeage.repository.ItemPriceRepository
+import com.arslan.archeage.entity.item.Item
+import com.arslan.archeage.entity.item.UserPrice
+import com.arslan.archeage.repository.UserPriceRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class ItemPriceServiceImpl(private val itemPriceRepository: ItemPriceRepository) : ItemPriceService {
+class ItemPriceServiceImpl(private val userPriceRepository: UserPriceRepository) : ItemPriceService {
 
-    override fun latestPrices(items: List<Item>): List<ItemPrice> = itemPriceRepository.latestPrices(items)
+    override fun latestPrices(items: List<Item>): List<UserPrice> = userPriceRepository.latestPrices(items)
+    override fun userPrices(items: List<Item>, userID: Long): Map<Long, UserPrice> = userPriceRepository.userPrices(items,userID).associateBy { it.id!! }
 
 }

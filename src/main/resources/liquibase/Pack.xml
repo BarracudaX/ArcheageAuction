@@ -6,7 +6,13 @@
     <changeSet id="1" author="barracuda">
         <createTable tableName="packs">
             <column name="id" type="bigint" >
-                <constraints primaryKey="true"  foreignKeyName="fk_packs_items" references="items(id)"/>
+                <constraints primaryKey="true" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false" />
             </column>
             <column name="creation_location_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_packs_locations" references="locations(id)" />
@@ -18,7 +24,20 @@
         <loadData tableName="packs" file="csv/packs.csv">
             <column name="creation_location_id" header="creation_location_id" type="NUMERIC" />
             <column name="id" header="id" type="NUMERIC" />
+            <column name="name" header="name" type="STRING" />
+            <column name="description" header="description" type="STRING" />
         </loadData>
+    </changeSet>
+    
+    <changeSet id="3" author="barracuda">
+        <createTable tableName="packs_seq">
+            <column name="next_val" type="bigint">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <insert tableName="packs_seq">
+            <column name="next_val">142</column>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>

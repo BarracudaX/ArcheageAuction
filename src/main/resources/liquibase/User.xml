@@ -43,12 +43,16 @@
 
     <changeSet id="7" author="barracuda">
         <renameTable oldTableName="users_sequence_generator" newTableName="users_seq"/>
+        <insert tableName="users_seq">
+            <column name="next_val">1</column>
+        </insert>
     </changeSet>
 
-    <changeSet id="8" author="barracuda">
+    <changeSet id="8" author="barracuda" context="dev">
         <insert tableName="users">
             <column name="id">1</column>
             <column name="email">test@email.com</column>
+<!--            Password is TestPass123!-->
             <column name="password">$2a$10$1B.wNvl1/GGINUQlgo866.tix74youwMVVy8lNAWom4KrzzcO9C22</column>
             <column name="role">USER</column>
         </insert>

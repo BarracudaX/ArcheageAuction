@@ -1,5 +1,6 @@
 package com.arslan.archeage.entity
 
+import com.arslan.archeage.entity.item.Item
 import jakarta.persistence.*
 
 @Embeddable

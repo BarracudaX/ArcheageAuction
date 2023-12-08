@@ -2,7 +2,9 @@ package com.arslan.archeage.service
 
 import com.arslan.archeage.*
 import com.arslan.archeage.entity.*
+import com.arslan.archeage.entity.pack.Pack
 import com.arslan.archeage.repository.PackRepository
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
@@ -41,9 +43,15 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
     }
 
     private fun convertPacksToDTOs(packs: List<Pack>) : List<PackDTO> {
-        val prices = itemPriceService
-            .latestPrices(packs.flatMap { pack -> pack.recipes.flatMap { recipe -> recipe.materials.map(CraftingMaterial::item) } })
-            .associateBy { itemPrice -> itemPrice.item.name }
+        val userID = SecurityContextHolder.getContext()?.authentication?.name?.toLongOrNull()
+        val materials = packs.flatMap { pack -> pack.recipes.flatMap { recipe -> recipe.materials.map(CraftingMaterial::item) } }
+        val prices = if(userID == null){
+            itemPriceService
+                .latestPrices(materials)
+                .associateBy { itemPrice -> itemPrice.purchasableItem.id!! }
+        }else{
+            itemPriceService.userPrices(materials,userID)
+        }
 
         return packs.toDTO(prices).sortedByDescending(PackDTO::profit)
     }

@@ -7,6 +7,7 @@ import com.arslan.archeage.materialsWithPrice
 import com.arslan.archeage.service.ItemPriceService
 import com.arslan.archeage.service.LocationService
 import com.arslan.archeage.service.PackService
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -25,6 +26,10 @@ class ViewController(
 
     @GetMapping("/login")
     fun loginPage() : String = "login"
+
+
+    @GetMapping("/profile")
+    fun profile(pageable: Pageable, model: Model) : String = "profile"
 
     @GetMapping
     fun homePage(): String = "index"

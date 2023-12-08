@@ -1,6 +1,7 @@
 package com.arslan.archeage
 
 import com.arslan.archeage.entity.Price
+import org.springframework.data.domain.Page
 
 enum class Continent{ EAST,WEST,NORTH }
 
@@ -24,5 +25,20 @@ data class RecipeDTO(val quantity: Int, val materials: List<CraftingMaterialDTO>
 
 data class CraftingMaterialDTO(val quantity: Int, val itemDTO: ItemDTO, val price: Price? = null)
 
-data class ItemDTO(val name: String,val id: Long)
+class ItemDTO(val name: String,val id: Long){
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ItemDTO
+
+        return id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+}
+
+data class UserPrices(val items: Page<ItemDTO>,val prices: Map<Long,Price>,val hasNext: Boolean,val hasPrevious: Boolean)

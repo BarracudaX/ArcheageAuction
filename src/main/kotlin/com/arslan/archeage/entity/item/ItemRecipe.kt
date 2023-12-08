@@ -1,16 +1,17 @@
-package com.arslan.archeage.entity
+package com.arslan.archeage.entity.item
 
+import com.arslan.archeage.entity.CraftingMaterial
 import jakarta.persistence.*
-import org.hibernate.annotations.BatchSize
 
 @Entity
-@Table(name = "RECIPES")
-class Recipe(
+@Table(name = "item_recipes")
+class ItemRecipe(
     @ManyToOne
     var craftable: Item,
 
     var producedQuantity: Int = 1,
 
+    @CollectionTable(name = "item_recipe_materials")
     @ElementCollection
     val materials: MutableSet<CraftingMaterial> = mutableSetOf(),
 
