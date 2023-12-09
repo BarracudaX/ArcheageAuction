@@ -16,7 +16,9 @@ class PackPrice(
     @ManyToOne(optional = false)
     var sellLocation: Location
 ){
-    init { if(!sellLocation.hasFactory) throw IllegalArgumentException("Sell location $sellLocation does not have a factory.") }
+    init {
+        if(!sellLocation.hasFactory) throw IllegalArgumentException("Sell location $sellLocation does not have a factory.")
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

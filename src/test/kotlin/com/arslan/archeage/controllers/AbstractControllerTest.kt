@@ -45,9 +45,6 @@ abstract class AbstractControllerTest : AbstractTest() {
     @MockkBean
     protected lateinit var userServiceMock: UserService
 
-    @MockkBean
-    protected lateinit var itemServiceMock:ItemService
-
     protected val availableServers = mapOf(
         Region.EUROPE to listOf(ArcheageServer("ANY_EU_SERVER_1",Region.EUROPE,1),ArcheageServer("ANY_EU_SERVER_2",Region.EUROPE,2)),
         Region.CIS to listOf(ArcheageServer("ANY_CIS_SERVER_1",Region.CIS,3),ArcheageServer("ANY_CIS_SERVER_2",Region.CIS,4)),

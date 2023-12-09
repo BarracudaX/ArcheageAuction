@@ -2,13 +2,17 @@ package com.arslan.archeage.service
 
 import com.arslan.archeage.*
 import com.arslan.archeage.entity.*
+import com.arslan.archeage.entity.item.Item
 import com.arslan.archeage.entity.pack.Pack
+import com.arslan.archeage.repository.PackRecipeRepository
 import com.arslan.archeage.repository.PackRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
-class PackServiceImpl(private val packRepository: PackRepository,private val itemPriceService: ItemPriceService) : PackService {
+class PackServiceImpl(private val packRepository: PackRepository,private val itemPriceService: ItemPriceService,private val packRecipeRepository: PackRecipeRepository) : PackService {
 
     override fun packs(continent: Continent): List<PackDTO> {
         if (ArcheageServerContextHolder.getServerContext() == null) return emptyList()
@@ -41,6 +45,8 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
 
         return convertPacksToDTOs(packRepository.packsTo(server,continent,destinationLocation))
     }
+
+    override fun purchasableCraftingMaterials(pageable: Pageable,archeageServer: ArcheageServer): Page<Item> = packRecipeRepository.findAllPurchasableCraftingMaterials(pageable,archeageServer.region)
 
     private fun convertPacksToDTOs(packs: List<Pack>) : List<PackDTO> {
         val userID = SecurityContextHolder.getContext()?.authentication?.name?.toLongOrNull()

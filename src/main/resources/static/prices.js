@@ -4,29 +4,38 @@ let pageSize = 20
 
 document.addEventListener("DOMContentLoaded", function () {
     fetch(`/user/price?page=${currentPage}&size=${pageSize}`)
-        .then(response => response.json())
-        .then(data => { handleResponse(data) })
+        .then(response => handleResponse(response))
+        .then(data => { handleData(data) })
+        .catch(reason => addError(reason.message))
 })
+
+async function handleResponse(response) {
+    if (response.status === 200) {
+        return await response.json()
+    } else{
+        throw Error(await response.text())
+    }
+}
 
 function nextPrices(){
     fetch(`/user/price?page=${currentPage+1}&size=${pageSize}`)
-        .then(response => response.json())
+        .then(response => handleResponse(response))
         .then(data => {
             currentPage = currentPage + 1
-            handleResponse(data)
-        })
+            handleData(data)
+        }).catch(reason => addError(reason.message))
 }
 
 function previousPrices(){
     fetch(`/user/price?page=${currentPage - 1}&size=${pageSize}`)
-        .then(response => response.json())
+        .then(response => handleResponse(response))
         .then(data => {
             currentPage = currentPage - 1
-            handleResponse(data)
-        })
+            handleData(data)
+        }).catch(reason => addError(reason.message))
 }
 
-function handleResponse(data){
+function handleData(data){
     let container = document.getElementById("user_price_list")
     container.innerHTML = ''
     let fragment = document.createDocumentFragment()

@@ -17,7 +17,7 @@ import java.lang.Exception
 class ArcheageServerContextHandlerInterceptor(private val resolver: ArcheageServerResolver) : HandlerInterceptor{
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        //first check in context,and only after use the resolver. Because if the user changed the server in the current request, the resolver will return the previous serve value from the request.
+        //first check in context,and only after use the resolver. Because if the user changed the server in the current request, the resolver will return the previous server value from the request.
         val currentServer = ArcheageServerContextHolder.getServerContext() ?: resolver.resolveArcheageServer(request)
 
         if(currentServer != null){
