@@ -14,36 +14,20 @@ import org.springframework.stereotype.Service
 @Service
 class PackServiceImpl(private val packRepository: PackRepository,private val itemPriceService: ItemPriceService,private val packRecipeRepository: PackRecipeRepository) : PackService {
 
-    override fun packs(continent: Continent): List<PackDTO> {
-        if (ArcheageServerContextHolder.getServerContext() == null) return emptyList()
-
-        val server = ArcheageServerContextHolder.getServerContext()!!
-
-        return convertPacksToDTOs(packRepository.allPacks(server, continent))
+    override fun packs(continent: Continent,archeageServer: ArcheageServer): List<PackDTO> {
+        return convertPacksToDTOs(packRepository.allPacks(archeageServer, continent))
     }
 
-    override fun packs(continent: Continent, departureLocation: String, destinationLocation: String): List<PackDTO> {
-        if (ArcheageServerContextHolder.getServerContext() == null) return emptyList()
-
-        val server = ArcheageServerContextHolder.getServerContext()!!
-
-        return convertPacksToDTOs(packRepository.packs(server, continent,departureLocation,destinationLocation))
+    override fun packs(continent: Continent, departureLocation: String, destinationLocation: String,archeageServer: ArcheageServer): List<PackDTO> {
+        return convertPacksToDTOs(packRepository.packs(archeageServer, continent,departureLocation,destinationLocation))
     }
 
-    override fun packsCreatedAt(continent: Continent, departureLocation: String): List<PackDTO> {
-        if (ArcheageServerContextHolder.getServerContext() == null) return emptyList()
-
-        val server = ArcheageServerContextHolder.getServerContext()!!
-
-        return convertPacksToDTOs(packRepository.packsAt(server,continent,departureLocation))
+    override fun packsCreatedAt(continent: Continent, departureLocation: String,archeageServer: ArcheageServer): List<PackDTO> {
+        return convertPacksToDTOs(packRepository.packsAt(archeageServer,continent,departureLocation))
     }
 
-    override fun packsSoldAt(continent: Continent, destinationLocation: String): List<PackDTO> {
-        if (ArcheageServerContextHolder.getServerContext() == null) return emptyList()
-
-        val server = ArcheageServerContextHolder.getServerContext()!!
-
-        return convertPacksToDTOs(packRepository.packsTo(server,continent,destinationLocation))
+    override fun packsSoldAt(continent: Continent, destinationLocation: String,archeageServer: ArcheageServer): List<PackDTO> {
+        return convertPacksToDTOs(packRepository.packsTo(archeageServer,continent,destinationLocation))
     }
 
     override fun purchasableCraftingMaterials(pageable: Pageable,archeageServer: ArcheageServer): Page<Item> = packRecipeRepository.findAllPurchasableCraftingMaterials(pageable,archeageServer.region)

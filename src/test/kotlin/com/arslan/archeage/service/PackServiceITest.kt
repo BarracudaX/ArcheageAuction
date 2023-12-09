@@ -70,7 +70,6 @@ class PackServiceITest(
         thirdWestLocation = locationRepository.save(Location("THIRD_WEST_LOCATION",Continent.WEST,Region.EUROPE,true))
         thirdNorthLocation = locationRepository.save(Location("THIRD_NORTH_LOCATION",Continent.NORTH,Region.EUROPE,true))
         thirdEastLocation = locationRepository.save(Location("THIRD_EAST_LOCATION",Continent.EAST,Region.EUROPE,true))
-        ArcheageServerContextHolder.setServerContext(archeageServer)
         materials.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_1","MATERIAL_1",Region.EUROPE)).apply {
             val price = userPriceRepository.save(
                 UserPrice(this,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user)
@@ -93,20 +92,6 @@ class PackServiceITest(
         ArcheageServerContextHolder.clear()
     }
 
-    @Test
-    fun `should return empty list when trying to retrieve packs of continent with empty archeage server context holder`() {
-        ArcheageServerContextHolder.clear()
-        val pack = packRepository.save(Pack(westLocation,"ANY_NAME","ANY_DESCR"))
-        val packPrice = PackPrice(archeageServer,Price(1,1,1),secondWestLocation)
-        pack.prices.add(packPrice)
-
-        packService.packs(pack.creationLocation.continent).shouldBeEmpty()
-        packService.packs(pack.creationLocation.continent,pack.creationLocation.name,packPrice.sellLocation.name).shouldBeEmpty()
-        packService.packsCreatedAt(pack.creationLocation.continent,pack.creationLocation.name).shouldBeEmpty()
-        packService.packsSoldAt(pack.creationLocation.continent,packPrice.sellLocation.name).shouldBeEmpty()
-    }
-
-
     @MethodSource("continents")
     @ParameterizedTest
     fun `should return empty list when trying to retrieve packs of continent which does not have any packs`(continent: Continent) {
@@ -116,10 +101,10 @@ class PackServiceITest(
         val packPrice = PackPrice(archeageServer, Price(1,1,1),secondWestLocation)
         pack.prices.add(packPrice)
 
-        packService.packs(continent).shouldBeEmpty()
-        packService.packs(continent,pack.creationLocation.name,packPrice.sellLocation.name).shouldBeEmpty()
-        packService.packsCreatedAt(continent,pack.creationLocation.name).shouldBeEmpty()
-        packService.packsSoldAt(continent,packPrice.sellLocation.name).shouldBeEmpty()
+        packService.packs(continent,archeageServer).shouldBeEmpty()
+        packService.packs(continent,pack.creationLocation.name,packPrice.sellLocation.name,archeageServer).shouldBeEmpty()
+        packService.packsCreatedAt(continent,pack.creationLocation.name,archeageServer).shouldBeEmpty()
+        packService.packsSoldAt(continent,packPrice.sellLocation.name,archeageServer).shouldBeEmpty()
     }
 
 
@@ -142,9 +127,9 @@ class PackServiceITest(
 
        makePricesAndRecipesFor(expectedEastPacks.plus(expectedWestPacks).plus(expectedNorthPacks))
 
-        packService.packs(Continent.WEST).shouldNotBeEmpty().shouldContainExactly(expectedWestPacks.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
-        packService.packs(Continent.EAST).shouldNotBeEmpty().shouldContainExactly(expectedEastPacks.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
-        packService.packs(Continent.NORTH).shouldNotBeEmpty().shouldContainExactly(expectedNorthPacks.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packs(Continent.WEST,archeageServer).shouldNotBeEmpty().shouldContainExactly(expectedWestPacks.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packs(Continent.EAST,archeageServer).shouldNotBeEmpty().shouldContainExactly(expectedEastPacks.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packs(Continent.NORTH,archeageServer).shouldNotBeEmpty().shouldContainExactly(expectedNorthPacks.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
     }
 
     @Test
@@ -167,9 +152,9 @@ class PackServiceITest(
 
         makePricesAndRecipesFor(expectedEastLocations.plus(expectedWestLocations).plus(expectedNorthLocations))
 
-        packService.packsCreatedAt(Continent.WEST,westLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedWestLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
-        packService.packsCreatedAt(Continent.EAST,eastLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedEastLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
-        packService.packsCreatedAt(Continent.NORTH,northLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedNorthLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packsCreatedAt(Continent.WEST,westLocation.name,archeageServer).shouldNotBeEmpty().shouldContainExactly(expectedWestLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packsCreatedAt(Continent.EAST,eastLocation.name,archeageServer).shouldNotBeEmpty().shouldContainExactly(expectedEastLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packsCreatedAt(Continent.NORTH,northLocation.name,archeageServer).shouldNotBeEmpty().shouldContainExactly(expectedNorthLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
     }
 
     /**
@@ -205,9 +190,9 @@ class PackServiceITest(
             pack
         }
 
-        packService.packsSoldAt(Continent.WEST,secondWestLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedWestLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
-        packService.packsSoldAt(Continent.EAST,secondEastLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedEastLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
-        packService.packsSoldAt(Continent.NORTH,secondNorthLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedNorthLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packsSoldAt(Continent.WEST,secondWestLocation.name,archeageServer).shouldNotBeEmpty().shouldContainExactly(expectedWestLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packsSoldAt(Continent.EAST,secondEastLocation.name,archeageServer).shouldNotBeEmpty().shouldContainExactly(expectedEastLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packsSoldAt(Continent.NORTH,secondNorthLocation.name,archeageServer).shouldNotBeEmpty().shouldContainExactly(expectedNorthLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
     }
 
     @Test
@@ -241,9 +226,9 @@ class PackServiceITest(
             pack
         }
 
-        packService.packs(Continent.WEST,westLocation.name,secondWestLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedWestLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
-        packService.packs(Continent.EAST,eastLocation.name,secondEastLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedEastLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
-        packService.packs(Continent.NORTH,northLocation.name,secondNorthLocation.name).shouldNotBeEmpty().shouldContainExactly(expectedNorthLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packs(Continent.WEST,westLocation.name,secondWestLocation.name,archeageServer).shouldNotBeEmpty().shouldContainExactly(expectedWestLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packs(Continent.EAST,eastLocation.name,secondEastLocation.name,archeageServer).shouldNotBeEmpty().shouldContainExactly(expectedEastLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
+        packService.packs(Continent.NORTH,northLocation.name,secondNorthLocation.name,archeageServer).shouldNotBeEmpty().shouldContainExactly(expectedNorthLocations.toDTO(materialPrices).sortedByDescending(PackDTO::profit))
     }
 
     private fun makePricesAndRecipesFor(packs: List<Pack>){

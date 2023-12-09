@@ -57,9 +57,9 @@ abstract class AbstractControllerTest : AbstractTest() {
         every { archeageServerServiceMock.servers() } returns availableServers
     }
 
-    fun ModelResultMatchersDsl.assertCommonModelAttributesForAllControllers(){
+    fun ModelResultMatchersDsl.assertCommonModelAttributesForAllControllers(archeageServer: ArcheageServer){
         attribute("servers",availableServers.flatMap { (_,servers) -> servers.plus(null) })
-        attribute("server",null)
+        attribute("server",archeageServer)
         attributeExists("currentURL")
         attributeExists("timezone")
     }

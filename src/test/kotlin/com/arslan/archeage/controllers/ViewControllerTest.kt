@@ -1,12 +1,15 @@
 package com.arslan.archeage.controllers
 
 import com.arslan.archeage.*
+import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.Location
 import com.arslan.archeage.entity.Price
 import com.arslan.archeage.entity.Region
+import com.arslan.archeage.service.ArcheageServerContextHolder
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -27,6 +30,13 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
     ))
     private val defaultContinent = Continent.values()[0]
 
+    private lateinit var usersArcheageServer: ArcheageServer
+
+    @BeforeEach
+    fun setUpTestContext(){
+        usersArcheageServer = availableServers[Region.CIS]!![0]
+        ArcheageServerContextHolder.setServerContext(usersArcheageServer)
+    }
 
     @WithAnonymousUser
     @Test
@@ -81,7 +91,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
     fun `should return packs view with all required model attributes containing all packs using default continent`() {
         val continentLocations = createContinentLocations(defaultContinent)
         val continentFactories = createContinentFactories(defaultContinent)
-        every { packServiceMock.packs(defaultContinent) } returns packs
+        every { packServiceMock.packs(defaultContinent,usersArcheageServer) } returns packs
         every { locationServiceMock.continentLocations(defaultContinent) } returns continentLocations
         every { locationServiceMock.continentFactories(defaultContinent) } returns continentFactories
 
@@ -91,7 +101,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
                 commonPacksAssertions(defaultContinent,continentLocations,continentFactories)
             }
         verifyAll {
-            packServiceMock.packs(defaultContinent)
+            packServiceMock.packs(defaultContinent,usersArcheageServer)
             locationServiceMock.continentLocations(defaultContinent)
             locationServiceMock.continentFactories(defaultContinent)
         }
@@ -102,7 +112,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
     fun `should return packs view with all required model attributes containing all packs of the requested continent`(requestedContinent: Continent) {
         val continentLocations = createContinentLocations(requestedContinent)
         val continentFactories = createContinentFactories(requestedContinent)
-        every { packServiceMock.packs(requestedContinent) } returns packs
+        every { packServiceMock.packs(requestedContinent,usersArcheageServer) } returns packs
         every { locationServiceMock.continentLocations(requestedContinent) } returns continentLocations
         every { locationServiceMock.continentFactories(requestedContinent) } returns continentFactories
 
@@ -112,7 +122,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
                 commonPacksAssertions(requestedContinent,continentLocations,continentFactories)
             }
         verifyAll {
-            packServiceMock.packs(requestedContinent)
+            packServiceMock.packs(requestedContinent,usersArcheageServer)
             locationServiceMock.continentLocations(requestedContinent)
             locationServiceMock.continentFactories(requestedContinent)
         }
@@ -127,7 +137,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         val continentLocations = createContinentLocations(defaultContinent)
         val continentFactories = createContinentFactories(defaultContinent)
         val departureLocation = continentFactories[2].name
-        every { packServiceMock.packsCreatedAt(defaultContinent,departureLocation) } returns packs
+        every { packServiceMock.packsCreatedAt(defaultContinent,departureLocation,usersArcheageServer) } returns packs
         every { locationServiceMock.continentLocations(defaultContinent) } returns continentLocations
         every { locationServiceMock.continentFactories(defaultContinent) } returns continentFactories
 
@@ -138,7 +148,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             }
 
         verifyAll {
-            packServiceMock.packsCreatedAt(defaultContinent,departureLocation)
+            packServiceMock.packsCreatedAt(defaultContinent,departureLocation,usersArcheageServer)
             locationServiceMock.continentLocations(defaultContinent)
             locationServiceMock.continentFactories(defaultContinent)
         }
@@ -150,7 +160,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         val continentLocations = createContinentLocations(requestedContinent)
         val continentFactories = createContinentFactories(requestedContinent)
         val departureLocation = continentFactories[2].name
-        every { packServiceMock.packsCreatedAt(requestedContinent,departureLocation) } returns packs
+        every { packServiceMock.packsCreatedAt(requestedContinent,departureLocation,usersArcheageServer) } returns packs
         every { locationServiceMock.continentLocations(requestedContinent) } returns continentLocations
         every { locationServiceMock.continentFactories(requestedContinent) } returns continentFactories
 
@@ -161,7 +171,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             }
 
         verifyAll {
-            packServiceMock.packsCreatedAt(requestedContinent,departureLocation)
+            packServiceMock.packsCreatedAt(requestedContinent,departureLocation,usersArcheageServer)
             locationServiceMock.continentLocations(requestedContinent)
             locationServiceMock.continentFactories(requestedContinent)
         }
@@ -176,7 +186,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         val continentLocations = createContinentLocations(defaultContinent)
         val continentFactories = createContinentFactories(defaultContinent)
         val destinationLocation = continentLocations[2].name
-        every { packServiceMock.packsSoldAt(defaultContinent,destinationLocation) } returns packs
+        every { packServiceMock.packsSoldAt(defaultContinent,destinationLocation,usersArcheageServer) } returns packs
         every { locationServiceMock.continentLocations(defaultContinent) } returns continentLocations
         every { locationServiceMock.continentFactories(defaultContinent) } returns continentFactories
 
@@ -187,7 +197,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             }
 
         verifyAll {
-            packServiceMock.packsSoldAt(defaultContinent,destinationLocation)
+            packServiceMock.packsSoldAt(defaultContinent,destinationLocation,usersArcheageServer)
             locationServiceMock.continentLocations(defaultContinent)
             locationServiceMock.continentFactories(defaultContinent)
         }
@@ -199,7 +209,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         val continentLocations = createContinentLocations(requestedContinent)
         val continentFactories = createContinentFactories(requestedContinent)
         val destinationLocation = continentLocations[2].name
-        every { packServiceMock.packsSoldAt(requestedContinent,destinationLocation) } returns packs
+        every { packServiceMock.packsSoldAt(requestedContinent,destinationLocation,usersArcheageServer) } returns packs
         every { locationServiceMock.continentLocations(requestedContinent) } returns continentLocations
         every { locationServiceMock.continentFactories(requestedContinent) } returns continentFactories
 
@@ -210,7 +220,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             }
 
         verifyAll {
-            packServiceMock.packsSoldAt(requestedContinent,destinationLocation)
+            packServiceMock.packsSoldAt(requestedContinent,destinationLocation,usersArcheageServer)
             locationServiceMock.continentLocations(requestedContinent)
             locationServiceMock.continentFactories(requestedContinent)
         }
@@ -224,7 +234,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         val departureLocation = continentFactories[2].name
         every { locationServiceMock.continentLocations(defaultContinent) } returns continentLocations
         every { locationServiceMock.continentFactories(defaultContinent) } returns continentFactories
-        every { packServiceMock.packs(defaultContinent,departureLocation,destinationLocation) } returns packs
+        every { packServiceMock.packs(defaultContinent,departureLocation,destinationLocation,usersArcheageServer) } returns packs
 
         mockMvc
             .get("/packs?destinationLocation=${destinationLocation}&departureLocation=${departureLocation}")
@@ -233,7 +243,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             }
 
         verifyAll {
-            packServiceMock.packs(defaultContinent,departureLocation,destinationLocation)
+            packServiceMock.packs(defaultContinent,departureLocation,destinationLocation,usersArcheageServer)
             locationServiceMock.continentLocations(defaultContinent)
             locationServiceMock.continentFactories(defaultContinent)
         }
@@ -248,7 +258,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         val departureLocation = continentFactories[2].name
         every { locationServiceMock.continentLocations(requestedContinent) } returns continentLocations
         every { locationServiceMock.continentFactories(requestedContinent) } returns continentFactories
-        every { packServiceMock.packs(requestedContinent,departureLocation,destinationLocation) } returns packs
+        every { packServiceMock.packs(requestedContinent,departureLocation,destinationLocation,usersArcheageServer) } returns packs
 
         mockMvc
             .get("/packs?destinationLocation=${destinationLocation}&departureLocation=${departureLocation}&continent=${requestedContinent.name}")
@@ -257,7 +267,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             }
 
         verifyAll {
-            packServiceMock.packs(requestedContinent,departureLocation,destinationLocation)
+            packServiceMock.packs(requestedContinent,departureLocation,destinationLocation,usersArcheageServer)
             locationServiceMock.continentLocations(requestedContinent)
             locationServiceMock.continentFactories(requestedContinent)
         }
@@ -286,7 +296,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             attribute("departureLocation",departureLocation)
             attribute("destinationLocation",destinationLocation)
             attribute("materials",packs.materialsWithPrice())
-            assertCommonModelAttributesForAllControllers()
+            assertCommonModelAttributesForAllControllers(usersArcheageServer)
             size(7+numberOfCommonModelAttributes)
         }
     }
