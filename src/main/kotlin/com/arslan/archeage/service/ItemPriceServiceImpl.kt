@@ -1,5 +1,6 @@
 package com.arslan.archeage.service
 
+import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.item.Item
 import com.arslan.archeage.entity.item.UserPrice
 import com.arslan.archeage.repository.UserPriceRepository
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class ItemPriceServiceImpl(private val userPriceRepository: UserPriceRepository) : ItemPriceService {
 
-    override fun latestPrices(items: List<Item>): List<UserPrice> = userPriceRepository.latestPrices(items,ArcheageServerContextHolder.getServerContext()!!)
-    override fun userPrices(items: List<Item>, userID: Long): Map<Long, UserPrice> = userPriceRepository.userPrices(items,userID,ArcheageServerContextHolder.getServerContext()!!).associateBy { it.purchasableItem.id!! }
+    override fun latestPrices(items: List<Item>,archeageServer: ArcheageServer): List<UserPrice> = userPriceRepository.latestPrices(items,archeageServer)
+    override fun userPrices(items: List<Item>, userID: Long,archeageServer: ArcheageServer): Map<Long, UserPrice> = userPriceRepository.userPrices(items,userID,archeageServer).associateBy { it.purchasableItem.id!! }
 
 }

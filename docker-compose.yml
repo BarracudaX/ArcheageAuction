@@ -11,6 +11,16 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+  elasticsearch:
+    image: elasticsearch:8.11.1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
 #  prometheus:
 #    image: bitnami/prometheus:latest
 #    ports:
@@ -21,3 +31,4 @@ services:
 volumes:
   mysql_data:
   prometheus_data:
+  elasticsearch_data:

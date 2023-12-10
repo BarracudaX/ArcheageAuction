@@ -39,7 +39,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
 
     @Test
     fun `should return empty list when requesting latest prices for item that do not have any price specified`() {
-        itemPriceService.latestPrices(listOf(someItem,anotherItem)).shouldBeEmpty()
+        itemPriceService.latestPrices(listOf(someItem,anotherItem),currentUserArcheageServer).shouldBeEmpty()
     }
 
     @Test
@@ -47,7 +47,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
         userPriceRepository.save(UserPrice(someItem,currentUserArcheageServer,Price(1,1,1),someUser))
         val lastPrice = userPriceRepository.save(UserPrice(someItem,currentUserArcheageServer,Price(1,1,1),someUser))
 
-        val result = itemPriceService.latestPrices(listOf(someItem,anotherItem))
+        val result = itemPriceService.latestPrices(listOf(someItem,anotherItem),currentUserArcheageServer)
 
         result.shouldHaveSize(1)
         result[0] shouldBe lastPrice
@@ -58,7 +58,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
         val expectedPrice = userPriceRepository.save(UserPrice(someItem,currentUserArcheageServer,Price(1,1,1),someUser))
         userPriceRepository.save(UserPrice(someItem,anotherArcheageServer,Price(1,1,1),someUser))
 
-        val result = itemPriceService.latestPrices(listOf(someItem))
+        val result = itemPriceService.latestPrices(listOf(someItem),currentUserArcheageServer)
 
         result.shouldHaveSize(1)
         result.shouldContain(expectedPrice)
@@ -69,7 +69,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
         userPriceRepository.save(UserPrice(someItem,currentUserArcheageServer,Price(1,1,1),someUser))
         userPriceRepository.save(UserPrice(anotherItem,currentUserArcheageServer,Price(1,1,1),someUser))
 
-        itemPriceService.userPrices(listOf(someItem,anotherItem),anotherUser.id!!).shouldBeEmpty()
+        itemPriceService.userPrices(listOf(someItem,anotherItem),anotherUser.id!!,currentUserArcheageServer).shouldBeEmpty()
     }
 
     @Test
@@ -79,7 +79,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
         userPriceRepository.save(UserPrice(anotherItem,currentUserArcheageServer,Price(1,1,1),anotherUser))
         val expectedPrice = userPriceRepository.save(UserPrice(anotherItem,currentUserArcheageServer,Price(1,1,1),anotherUser))
 
-        val result = itemPriceService.userPrices(listOf(someItem,anotherItem),anotherUser.id!!)
+        val result = itemPriceService.userPrices(listOf(someItem,anotherItem),anotherUser.id!!,currentUserArcheageServer)
 
         result.shouldHaveSize(1)
         result.shouldHaveKey(anotherItem.id!!)
@@ -91,7 +91,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
         val expectedPrice = userPriceRepository.save(UserPrice(someItem,currentUserArcheageServer,Price(1,1,1),someUser))
         userPriceRepository.save(UserPrice(someItem,anotherArcheageServer,Price(2,2,2),someUser))
 
-        val result = itemPriceService.userPrices(listOf(someItem),someUser.id!!)
+        val result = itemPriceService.userPrices(listOf(someItem),someUser.id!!,currentUserArcheageServer)
 
         result.shouldHaveSize(1)
         result[someItem.id!!].shouldBe(expectedPrice)
@@ -102,6 +102,6 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
         val idOfNonExistingUser = 12093L
         userRepository.existsById(idOfNonExistingUser).shouldBeFalse()
 
-        itemPriceService.userPrices(listOf(someItem),idOfNonExistingUser).shouldBeEmpty()
+        itemPriceService.userPrices(listOf(someItem),idOfNonExistingUser,currentUserArcheageServer).shouldBeEmpty()
     }
 }

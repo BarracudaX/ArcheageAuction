@@ -2,6 +2,7 @@ package com.arslan.archeage.controllers
 
 import com.arslan.archeage.ArcheageContextHolderEmptyException
 import com.arslan.archeage.UserPrices
+import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.service.ArcheageServerContextHolder
 import com.arslan.archeage.service.ItemPriceService
 import com.arslan.archeage.service.PackService
@@ -19,13 +20,14 @@ import org.springframework.web.bind.annotation.RestController
 class UserPriceController(private val packService: PackService,private val itemPriceService: ItemPriceService) {
 
     @GetMapping
-    fun prices(pageable: Pageable): ResponseEntity<UserPrices> {
+    fun prices(pageable: Pageable,archeageServer: ArcheageServer?): ResponseEntity<UserPrices> {
+        if(archeageServer == null) throw ArcheageContextHolderEmptyException()
+
         val userID = SecurityContextHolder.getContext().authentication.name.toLong()
-        val archeageServer = ArcheageServerContextHolder.getServerContext() ?: throw ArcheageContextHolderEmptyException()
 
         val items = packService.purchasableCraftingMaterials(pageable,archeageServer)
         val itemsDTO = PageImpl(items.content.map { it.toDTO() },pageable,items.totalElements)
-        val prices = itemPriceService.userPrices(items.content,userID).mapValues { (_,value) -> value.price }
+        val prices = itemPriceService.userPrices(items.content,userID,archeageServer).mapValues { (_,value) -> value.price }
 
         return ResponseEntity.ok(UserPrices(itemsDTO,prices,items.hasNext(),items.hasPrevious()))
     }

@@ -82,7 +82,6 @@ class PackServiceITest(
         })
         materials.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_3","MATERIAL_3",Region.EUROPE)).apply {
             val price = userPriceRepository.save(UserPrice(this,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user))
-            addPrice(price)
             materialPrices[id!!] = price
         })
     }
