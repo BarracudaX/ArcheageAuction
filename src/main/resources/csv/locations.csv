@@ -1,29 +1,57 @@
-has_factory,id,continent,name,region
-1,1,EAST,solis headlands,EUROPE
-0,2,EAST,mahadevi,EUROPE
-1,3,EAST,villanelle,EUROPE
-0,4,EAST,silent forest,EUROPE
-1,5,EAST,ynystere,EUROPE
-0,6,EAST,rokhala mountains,EUROPE
-0,7,EAST,rookborne basin,EUROPE
-0,8,EAST,falcorth plains,EUROPE
-0,9,EAST,tigerspine mountains,EUROPE
-0,10,EAST,arcum iris,EUROPE
-0,11,EAST,sunbite wilds,EUROPE
-0,12,EAST,windscour savannah,EUROPE
-0,13,EAST,perinoor ruins,EUROPE
-0,14,EAST,hasla,EUROPE
-0,15,EAST,багровый каньон,CIS
-0,16,EAST,долина талых снегов,CIS
-0,17,EAST,древний лес,CIS
-1,18,EAST,инистра,CIS
-0,19,EAST,махадеби,CIS
-0,20,EAST,плато соколиной охоты,CIS
-1,21,EAST,полуостров рассвета,CIS
-1,22,EAST,поющая земля,CIS
-0,23,EAST,радужные пески,CIS
-0,24,EAST,рокочущие перевалы,CIS
-0,25,EAST,руины харихараллы,CIS
-0,26,EAST,саванна,CIS
-0,27,EAST,тигриный хребет,CIS
-0,28,EAST,хазира,CIS
+has_factory,id,continent,name,archeage_server_id
+1,1,EAST,solis headlands,3
+0,2,EAST,mahadevi,3
+1,3,EAST,villanelle,3
+0,4,EAST,silent forest,3
+1,5,EAST,ynystere,3
+0,6,EAST,rokhala mountains,3
+0,7,EAST,rookborne basin,3
+0,8,EAST,falcorth plains,3
+0,9,EAST,tigerspine mountains,3
+0,10,EAST,arcum iris,3
+0,11,EAST,sunbite wilds,3
+0,12,EAST,windscour savannah,3
+0,13,EAST,perinoor ruins,3
+0,14,EAST,hasla,3
+0,15,EAST,багровый каньон,1
+0,16,EAST,долина талых снегов,1
+0,17,EAST,древний лес,1
+1,18,EAST,инистра,1
+0,19,EAST,махадеби,1
+0,20,EAST,плато соколиной охоты,1
+1,21,EAST,полуостров рассвета,1
+1,22,EAST,поющая земля,1
+0,23,EAST,радужные пески,1
+0,24,EAST,рокочущие перевалы,1
+0,25,EAST,руины харихараллы,1
+0,26,EAST,саванна,1
+0,27,EAST,тигриный хребет,1
+0,28,EAST,хазира,1
+0,29,EAST,багровый каньон,2
+0,30,EAST,долина талых снегов,2
+0,31,EAST,древний лес,2
+1,32,EAST,инистра,2
+0,33,EAST,махадеби,2
+0,34,EAST,плато соколиной охоты,2
+1,35,EAST,полуостров рассвета,2
+1,36,EAST,поющая земля,2
+0,37,EAST,радужные пески,2
+0,38,EAST,рокочущие перевалы,2
+0,39,EAST,руины харихараллы,2
+0,40,EAST,саванна,2
+0,41,EAST,тигриный хребет,2
+0,42,EAST,хазира,2
+1,43,EAST,solis headlands,4
+0,44,EAST,mahadevi,4
+1,45,EAST,villanelle,4
+0,46,EAST,silent forest,4
+1,47,EAST,ynystere,4
+0,48,EAST,rokhala mountains,4
+0,49,EAST,rookborne basin,4
+0,50,EAST,falcorth plains,4
+0,51,EAST,tigerspine mountains,4
+0,52,EAST,arcum iris,4
+0,53,EAST,sunbite wilds,4
+0,54,EAST,windscour savannah,4
+0,55,EAST,perinoor ruins,4
+0,56,EAST,hasla,4

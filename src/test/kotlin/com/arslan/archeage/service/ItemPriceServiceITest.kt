@@ -2,7 +2,6 @@ package com.arslan.archeage.service
 
 import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.Price
-import com.arslan.archeage.entity.Region
 import com.arslan.archeage.entity.User
 import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.entity.item.UserPrice
@@ -28,12 +27,12 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
 
     @BeforeEach
     fun setUp() {
-        someItem = itemRepository.save(PurchasableItem("ANY_ITEM_NAME_1","ANY_ITEM_DESCRIPTION_1", Region.EUROPE))
-        anotherItem = itemRepository.save(PurchasableItem("ANY_ITEM_NAME_2","ANY_ITEM_DESCRIPTION_2", Region.EUROPE))
+        currentUserArcheageServer = archeageServerRepository.save(ArcheageServer("SOME_SERVER"))
+        anotherArcheageServer = archeageServerRepository.save(ArcheageServer("SOME_SERVER_1"))
+        someItem = itemRepository.save(PurchasableItem("ANY_ITEM_NAME_1","ANY_ITEM_DESCRIPTION_1",currentUserArcheageServer))
+        anotherItem = itemRepository.save(PurchasableItem("ANY_ITEM_NAME_2","ANY_ITEM_DESCRIPTION_2",currentUserArcheageServer))
         someUser = userRepository.save(User("ANY_EMAIL","ANY_PASSWORD"))
         anotherUser = userRepository.save(User("ANOTHER_EMAIL","ANY_PASSWORD"))
-        currentUserArcheageServer = archeageServerRepository.save(ArcheageServer("SOME_SERVER",Region.EUROPE))
-        anotherArcheageServer = archeageServerRepository.save(ArcheageServer("SOME_SERVER_1",Region.EUROPE))
         ArcheageServerContextHolder.setServerContext(currentUserArcheageServer)
     }
 

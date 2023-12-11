@@ -11,9 +11,6 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="region" type="enum ('CIS','EUROPE')">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
         <createTable tableName="archeage_servers_sequence_generator">
             <column name="next_val" type="bigint" />
@@ -31,14 +28,14 @@
         <loadData tableName="archeage_servers" file="csv/archeage_servers.csv">
             <column name="id" type="NUMERIC" header="id" />
             <column name="name" type="STRING" header="name" />
-            <column name="region" type="STRING" header="region" />
         </loadData>
     </changeSet>
 
     <changeSet id="4" author="barracuda" context="dev">
         <update tableName="archeage_servers_seq">
-            <column name="next_val">12</column>
+            <column name="next_val">5</column>
         </update>
     </changeSet>
+
 
 </databaseChangeLog>

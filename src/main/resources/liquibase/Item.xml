@@ -14,8 +14,8 @@
             <column name="name" type="varchar(255)" >
                 <constraints nullable="false" unique="true" uniqueConstraintName="ITEMS_UNIQUE_NAME_CONSTRAINT"/>
             </column>
-            <column name="region" type="enum ('CIS','EUROPE')">
-                <constraints nullable="false" />
+            <column name="archeage_server_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_items_archeage_servers" references="archeage_servers(id)" />
             </column>
         </createTable>
         <createTable tableName="items_seq">
@@ -33,7 +33,7 @@
             <column name="id" header="id" type="NUMERIC" />
             <column name="description" header="description" type="STRING" />
             <column name="name" header="name" type="STRING" />
-            <column name="region" header="region" type="STRING" />
+            <column name="archeage_server_id" header="archeage_server_id" type="NUMERIC" />
         </loadData>
     </changeSet>
 
@@ -41,6 +41,10 @@
         <update tableName="items_seq">
             <column name="next_val">75</column>
         </update>
+    </changeSet>
+
+    <changeSet id="4" author="barracuda">
+        <dropUniqueConstraint tableName="items" constraintName="ITEMS_UNIQUE_NAME_CONSTRAINT" />
     </changeSet>
 
 </databaseChangeLog>

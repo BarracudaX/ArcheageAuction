@@ -1,5 +1,6 @@
 package com.arslan.archeage.entity.pack
 
+import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.Location
 import jakarta.persistence.*
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed
@@ -17,11 +18,24 @@ class Pack(
     @OneToMany(mappedBy = "craftable")
     var recipes: MutableSet<PackRecipe> = mutableSetOf(),
 
-    @CollectionTable(name = "pack_prices", joinColumns = [JoinColumn(name = "pack_id")])
-    @ElementCollection
-    var prices: MutableSet<PackPrice> = mutableSetOf(),
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long? = null
-)
+){
+
+
+    @CollectionTable(name = "pack_prices", joinColumns = [JoinColumn(name = "pack_id")])
+    @ElementCollection
+    private var prices: MutableSet<PackPrice> = mutableSetOf()
+
+    fun addPrice(price: PackPrice) : Boolean{
+        if(price.sellLocation.archeageServer != creationLocation.archeageServer)
+            throw IllegalArgumentException("Cannot add pack price with sell location that belongs to different archeage server than the pack's create location.Sell location archeage server id: ${price.sellLocation.archeageServer.id},create location archeage server id: ${creationLocation.archeageServer.id}")
+
+        return prices.add(price)
+    }
+
+    fun prices() : Set<PackPrice> = prices
+
+}

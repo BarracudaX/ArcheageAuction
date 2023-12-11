@@ -1,6 +1,7 @@
 package com.arslan.archeage.controllers
 
 import com.arslan.archeage.Continent
+import com.arslan.archeage.CraftingMaterialDTO
 import com.arslan.archeage.PackDTO
 import com.arslan.archeage.entity.*
 import com.arslan.archeage.materialsWithPrice
@@ -44,45 +45,63 @@ class ViewController(
     @GetMapping("/packs")
     fun allPacksView(model: Model,continent: Optional<Continent>,archeageServer: ArcheageServer?) : String{
         val useContinent = continent.getOrElse { Continent.values()[0] }
-        if(archeageServer == null) return preparePacksView(emptyList(),model,useContinent)
+        if(archeageServer == null) return prepareEmptyPacksView(model,useContinent)
         val packs = packService.packs(useContinent,archeageServer)
-        return preparePacksView(packs,model,useContinent,Optional.empty(),Optional.empty())
+        return preparePacksView(packs,model,useContinent, archeageServer = archeageServer)
     }
 
     @GetMapping("/packs", params = ["departureLocation","destinationLocation"])
-    fun packs(model: Model, @RequestParam continent: Optional<Continent>, @RequestParam departureLocation: String, @RequestParam destinationLocation: String,archeageServer: ArcheageServer?): String {
+    fun packs(model: Model, @RequestParam continent: Optional<Continent>, @RequestParam departureLocation: Long, @RequestParam destinationLocation: Long,archeageServer: ArcheageServer?): String {
         val useContinent = continent.getOrElse { Continent.values()[0] }
-        if(archeageServer == null) return preparePacksView(emptyList(),model,useContinent,Optional.of(destinationLocation),Optional.of(departureLocation))
+        if(archeageServer == null) return prepareEmptyPacksView(model,useContinent,Optional.of(destinationLocation),Optional.of(departureLocation))
         val packs = packService.packs(useContinent,departureLocation,destinationLocation,archeageServer)
-        return preparePacksView(packs,model,useContinent, Optional.of(destinationLocation),Optional.of(departureLocation))
+        return preparePacksView(packs,model,useContinent, Optional.of(destinationLocation),Optional.of(departureLocation), archeageServer = archeageServer)
     }
 
     @GetMapping("/packs",params=["departureLocation"])
-    fun packsWithDepartureLocation(model: Model,@RequestParam continent: Optional<Continent>,@RequestParam departureLocation: String,archeageServer: ArcheageServer?) : String{
+    fun packsWithDepartureLocation(model: Model,@RequestParam continent: Optional<Continent>,@RequestParam departureLocation: Long,archeageServer: ArcheageServer?) : String{
         val useContinent = continent.getOrElse { Continent.values()[0] }
-        if(archeageServer == null) return preparePacksView(emptyList(),model,useContinent,departureLocation = Optional.of(departureLocation))
+        if(archeageServer == null) return prepareEmptyPacksView(model,useContinent,departureLocation = Optional.of(departureLocation))
         val packs = packService.packsCreatedAt(useContinent,departureLocation,archeageServer)
 
-        return preparePacksView(packs,model,useContinent,Optional.empty(), Optional.of(departureLocation))
+        return preparePacksView(packs,model,useContinent,Optional.empty(), Optional.of(departureLocation), archeageServer = archeageServer)
     }
 
     @GetMapping("/packs",params = ["destinationLocation"])
-    fun packsWithDestinationLocation(model: Model, @RequestParam continent: Optional<Continent>, @RequestParam destinationLocation: String,archeageServer: ArcheageServer?) : String{
+    fun packsWithDestinationLocation(model: Model, @RequestParam continent: Optional<Continent>, @RequestParam destinationLocation: Long,archeageServer: ArcheageServer?) : String{
         val useContinent = continent.getOrElse { Continent.values()[0] }
-        if(archeageServer == null) return preparePacksView(emptyList(),model,useContinent,destinationLocation = Optional.of(destinationLocation))
+        if(archeageServer == null) return prepareEmptyPacksView(model,useContinent,destinationLocation = Optional.of(destinationLocation))
         val packs = packService.packsSoldAt(useContinent,destinationLocation,archeageServer)
 
-        return preparePacksView(packs,model,useContinent,Optional.of(destinationLocation))
+        return preparePacksView(packs,model,useContinent,Optional.of(destinationLocation), archeageServer = archeageServer)
     }
 
-    private fun preparePacksView(packs: List<PackDTO>, model: Model, continent: Continent, destinationLocation: Optional<String> = Optional.empty(), departureLocation: Optional<String> = Optional.empty()) : String{
-        model.addAttribute("locations", locationService.continentLocations(continent).map(Location::name).minus(destinationLocation.getOrElse { "" }))
-        model.addAttribute("factories", locationService.continentFactories(continent).map(Location::name).minus(departureLocation.getOrElse { "" }))
+    private fun preparePacksView(packs: List<PackDTO>, model: Model, continent: Continent, destinationLocation: Optional<Long> = Optional.empty(), departureLocation: Optional<Long> = Optional.empty(),archeageServer: ArcheageServer) : String{
+        model.addAttribute(
+            "locations",
+            locationService.continentLocations(continent,archeageServer).filter { location -> destinationLocation.isEmpty || (destinationLocation.isPresent && destinationLocation.get() != location.id) }
+        )
+        model.addAttribute(
+            "factories",
+            locationService.continentFactories(continent,archeageServer).filter { location -> departureLocation.isEmpty || (departureLocation.isPresent && departureLocation.get() != location.id) }
+        )
         model.addAttribute("packs", packs)
         model.addAttribute("selectedContinent",continent)
         model.addAttribute("departureLocation",departureLocation)
         model.addAttribute("destinationLocation",destinationLocation)
         model.addAttribute("materials",packs.materialsWithPrice())
+
+        return "packs"
+    }
+
+    private fun prepareEmptyPacksView(model: Model, continent: Continent, destinationLocation: Optional<Long> = Optional.empty(), departureLocation: Optional<Long> = Optional.empty()) : String{
+        model.addAttribute("locations", emptyList<Location>())
+        model.addAttribute("factories", emptyList<Location>())
+        model.addAttribute("packs", emptyList<PackDTO>())
+        model.addAttribute("selectedContinent",continent)
+        model.addAttribute("departureLocation",departureLocation)
+        model.addAttribute("destinationLocation",destinationLocation)
+        model.addAttribute("materials", emptyList<CraftingMaterialDTO>())
 
         return "packs"
     }

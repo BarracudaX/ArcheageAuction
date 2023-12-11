@@ -22,7 +22,7 @@ class ArcheageServerContextHandlerInterceptor(private val resolver: ArcheageServ
 
         if(currentServer != null){
             ArcheageServerContextHolder.setServerContext(currentServer)
-            MDC.put("archeage-server","${currentServer.region}-${currentServer.name}")
+            MDC.put("archeage-server", currentServer.name)
         }
 
 

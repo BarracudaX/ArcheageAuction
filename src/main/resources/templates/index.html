@@ -31,7 +31,6 @@
                             <!--/*@thymesVar id="servers" type="java.util.List<com.arslan.archeage.entity.ArcheageServer>"*/-->
                             <li th:each="server : ${servers}">
                                 <a th:if="${server != null}" class="dropdown-item" href="#" th:text="${server.name}" th:href="@{|${currentURL}?server=${server.id}}">Test</a>
-                                <hr th:if="${server == null}" class="dropdown-divider" />
                             </li>
                             <li th:remove="all"><a class="dropdown-item" href="#" >Test</a></li>
                         </ul>

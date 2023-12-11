@@ -26,15 +26,18 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="3" author="barracuda">
+        <dropForeignKeyConstraint baseTableName="pack_prices" constraintName="fk_pack_prices_archeage_servers"/>
+        <dropColumn tableName="pack_prices" columnName="archeage_server_id"/>
+    </changeSet>
+
     <changeSet id="2" author="barracuda" context="dev">
         <loadData tableName="pack_prices" file="csv/pack_prices.csv">
-            <column name="sell_location_id" header="sell_location_id" type="NUMERIC" />
             <column name="copper" header="copper" type="NUMERIC" />
             <column name="gold" header="gold" type="NUMERIC" />
             <column name="silver" header="silver" type="NUMERIC" />
             <column name="pack_id" header="pack_id" type="NUMERIC" />
-            <column name="archeage_server_id" header="archeage_server_id" type="NUMERIC" />
-            <column name="timestamp" header="timestamp" type="DATE" />
+            <column name="sell_location_id" header="sell_location_id" type="NUMERIC" />
         </loadData>
     </changeSet>
     

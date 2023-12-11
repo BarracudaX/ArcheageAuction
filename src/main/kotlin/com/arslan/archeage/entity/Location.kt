@@ -11,8 +11,8 @@ class Location(
     @Enumerated(EnumType.STRING)
     val continent: Continent,
 
-    @Enumerated(EnumType.STRING)
-    val region: Region,
+    @ManyToOne
+    val archeageServer: ArcheageServer,
 
     val hasFactory: Boolean = false,
 
@@ -35,7 +35,7 @@ class Location(
     }
 
     override fun toString(): String {
-        return "Location(name='$name', continent=$continent, region=$region, hasFactory=$hasFactory, id=$id)"
+        return "Location(name='$name', continent=$continent, hasFactory=$hasFactory, id=$id)"
     }
 
 

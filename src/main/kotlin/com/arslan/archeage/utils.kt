@@ -14,13 +14,13 @@ fun Item.toDTO(): ItemDTO = ItemDTO(name, id!!)
 
 fun List<Pack>.toDTO(prices: Map<Long, UserPrice>): List<PackDTO> {
     return flatMap { pack ->
-        pack.prices
+        pack.prices()
             .flatMap { packPrice ->
                 pack.recipes
                     .filter { recipe ->
-                        prices.keys.containsAll(recipe.materials.map(CraftingMaterial::item).filterIsInstance<PurchasableItem>().map(PurchasableItem::id))
+                        prices.keys.containsAll(recipe.materials().map(CraftingMaterial::item).filterIsInstance<PurchasableItem>().map(PurchasableItem::id))
                     }.map { recipe ->
-                        PackDTO(pack.name, pack.creationLocation.name, packPrice.sellLocation.name, packPrice.price, RecipeDTO(recipe.producedQuantity, recipe.materials.map { material -> material.toDTO(prices) }, recipe.id!!))
+                        PackDTO(pack.name, pack.creationLocation.name, packPrice.sellLocation.name, packPrice.price, RecipeDTO(recipe.producedQuantity, recipe.materials().map { material -> material.toDTO(prices) }, recipe.id!!))
                     }
             }
     }

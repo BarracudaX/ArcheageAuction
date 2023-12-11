@@ -1,6 +1,5 @@
 package com.arslan.archeage.web
 
-import com.arslan.archeage.entity.Region
 import com.arslan.archeage.repository.ArcheageServerRepository
 import com.arslan.archeage.service.ArcheageServerContextHolder
 import jakarta.servlet.http.HttpServletRequest

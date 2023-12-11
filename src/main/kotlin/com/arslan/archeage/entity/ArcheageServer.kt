@@ -7,9 +7,6 @@ import jakarta.persistence.*
 class ArcheageServer(
     var name: String,
 
-    @Enumerated(EnumType.STRING)
-    var region: Region,
-
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long? = null
@@ -28,7 +25,7 @@ class ArcheageServer(
     }
 
     override fun toString(): String {
-        return "ArcheageServer(name='$name', region=$region, id=$id)"
+        return "ArcheageServer(name='$name', id=$id)"
     }
 
 }

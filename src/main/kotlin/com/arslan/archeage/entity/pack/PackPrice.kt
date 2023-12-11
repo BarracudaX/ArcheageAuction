@@ -8,9 +8,6 @@ import org.hibernate.annotations.Parent
 
 @Embeddable
 class PackPrice(
-    @ManyToOne(optional = false)
-    var archeageServer: ArcheageServer,
-
     var price: Price,
 
     @ManyToOne(optional = false)

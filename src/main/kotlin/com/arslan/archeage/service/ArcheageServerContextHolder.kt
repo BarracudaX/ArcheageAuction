@@ -1,7 +1,6 @@
 package com.arslan.archeage.service
 
 import com.arslan.archeage.entity.ArcheageServer
-import com.arslan.archeage.entity.Region
 
 class ArcheageServerContextHolder {
 

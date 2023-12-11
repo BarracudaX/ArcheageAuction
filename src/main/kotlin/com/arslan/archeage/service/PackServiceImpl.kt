@@ -18,23 +18,23 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
         return convertPacksToDTOs(packRepository.allPacks(archeageServer, continent),archeageServer)
     }
 
-    override fun packs(continent: Continent, departureLocation: String, destinationLocation: String,archeageServer: ArcheageServer): List<PackDTO> {
-        return convertPacksToDTOs(packRepository.packs(archeageServer, continent,departureLocation,destinationLocation),archeageServer)
+    override fun packs(continent: Continent, departureLocationID: Long, destinationLocation: Long, archeageServer: ArcheageServer): List<PackDTO> {
+        return convertPacksToDTOs(packRepository.packs(archeageServer, continent,departureLocationID,destinationLocation),archeageServer)
     }
 
-    override fun packsCreatedAt(continent: Continent, departureLocation: String,archeageServer: ArcheageServer): List<PackDTO> {
-        return convertPacksToDTOs(packRepository.packsAt(archeageServer,continent,departureLocation),archeageServer)
+    override fun packsCreatedAt(continent: Continent, departureLocationID: Long, archeageServer: ArcheageServer): List<PackDTO> {
+        return convertPacksToDTOs(packRepository.packsAt(archeageServer,continent,departureLocationID),archeageServer)
     }
 
-    override fun packsSoldAt(continent: Continent, destinationLocation: String,archeageServer: ArcheageServer): List<PackDTO> {
-        return convertPacksToDTOs(packRepository.packsTo(archeageServer,continent,destinationLocation),archeageServer)
+    override fun packsSoldAt(continent: Continent, destinationLocationID: Long, archeageServer: ArcheageServer): List<PackDTO> {
+        return convertPacksToDTOs(packRepository.packsTo(archeageServer,continent,destinationLocationID),archeageServer)
     }
 
-    override fun purchasableCraftingMaterials(pageable: Pageable,archeageServer: ArcheageServer): Page<Item> = packRecipeRepository.findAllPurchasableCraftingMaterials(pageable,archeageServer.region)
+    override fun purchasableCraftingMaterials(pageable: Pageable,archeageServer: ArcheageServer): Page<Item> = packRecipeRepository.findAllPurchasableCraftingMaterials(pageable,archeageServer)
 
     private fun convertPacksToDTOs(packs: List<Pack>,archeageServer: ArcheageServer) : List<PackDTO> {
         val userID = SecurityContextHolder.getContext()?.authentication?.name?.toLongOrNull()
-        val materials = packs.flatMap { pack -> pack.recipes.flatMap { recipe -> recipe.materials.map(CraftingMaterial::item) } }
+        val materials = packs.flatMap { pack -> pack.recipes.flatMap { recipe -> recipe.materials().map(CraftingMaterial::item) } }
         val prices = if(userID == null){
             itemPriceService
                 .latestPrices(materials,archeageServer)

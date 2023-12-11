@@ -4,7 +4,6 @@ import com.arslan.archeage.AbstractTest
 import com.arslan.archeage.config.InfrastructureConfiguration
 import com.arslan.archeage.config.SecurityConfiguration
 import com.arslan.archeage.entity.ArcheageServer
-import com.arslan.archeage.entity.Region
 import com.arslan.archeage.repository.ArcheageServerRepository
 import com.arslan.archeage.service.*
 import com.ninjasquad.springmockk.MockkBean
@@ -45,9 +44,9 @@ abstract class AbstractControllerTest : AbstractTest() {
     @MockkBean
     protected lateinit var userServiceMock: UserService
 
-    protected val availableServers = mapOf(
-        Region.EUROPE to listOf(ArcheageServer("ANY_EU_SERVER_1",Region.EUROPE,1),ArcheageServer("ANY_EU_SERVER_2",Region.EUROPE,2)),
-        Region.CIS to listOf(ArcheageServer("ANY_CIS_SERVER_1",Region.CIS,3),ArcheageServer("ANY_CIS_SERVER_2",Region.CIS,4)),
+    protected val availableServers = listOf(
+        ArcheageServer("ANY_EU_SERVER_1", 1),ArcheageServer("ANY_EU_SERVER_2", 2),
+        ArcheageServer("ANY_CIS_SERVER_1", 3),ArcheageServer("ANY_CIS_SERVER_2", 4)
     )
 
     protected val numberOfCommonModelAttributes = 4
@@ -58,7 +57,7 @@ abstract class AbstractControllerTest : AbstractTest() {
     }
 
     fun ModelResultMatchersDsl.assertCommonModelAttributesForAllControllers(archeageServer: ArcheageServer){
-        attribute("servers",availableServers.flatMap { (_,servers) -> servers.plus(null) })
+        attribute("servers",availableServers)
         attribute("server",archeageServer)
         attributeExists("currentURL")
         attributeExists("timezone")
