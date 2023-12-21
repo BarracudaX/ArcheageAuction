@@ -1,7 +1,9 @@
 package com.arslan.archeage.entity
 
 import jakarta.persistence.Embeddable
+import kotlinx.serialization.Serializable
 
+@Serializable
 @Embeddable
 data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Price>{
 

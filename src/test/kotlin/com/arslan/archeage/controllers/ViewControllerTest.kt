@@ -24,7 +24,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
 
     private val viewEndpoints = arrayOf("/login","/register","/packs")
     private val packs = listOf(PackDTO("ANY_PACK_NAME","ANY_CREATION_LOCATION","ANY_DESTINATION_LOCATION", Price(1,1,1),
-        RecipeDTO(1,listOf(CraftingMaterialDTO(1, ItemDTO("ANY_ITEM_NAME",1),Price(2,2,2)),CraftingMaterialDTO(1, ItemDTO("ANY_ITEM_NAME_2",2))),1)
+        RecipeDTO(1,listOf(CraftingMaterialDTO(1, ItemDTO("ANY_ITEM_NAME",1,Price(2,2,2))),CraftingMaterialDTO(1, ItemDTO("ANY_ITEM_NAME_2",2))),1)
     ))
     private val defaultContinent = Continent.values()[0]
 

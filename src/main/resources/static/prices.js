@@ -17,7 +17,7 @@ async function handleResponse(response) {
     }
 }
 
-function nextPrices(){
+function nextPage(){
     fetch(`/user/price?page=${currentPage+1}&size=${pageSize}`)
         .then(response => handleResponse(response))
         .then(data => {
@@ -26,7 +26,7 @@ function nextPrices(){
         }).catch(reason => addError(reason.message))
 }
 
-function previousPrices(){
+function previousPage(){
     fetch(`/user/price?page=${currentPage - 1}&size=${pageSize}`)
         .then(response => handleResponse(response))
         .then(data => {
@@ -36,12 +36,19 @@ function previousPrices(){
 }
 
 function handleData(data){
-    let container = document.getElementById("user_price_list")
-    container.innerHTML = ''
+    let container = document.getElementById("pagination_container")
+    let previousPrices = document.getElementById("prices")
+    if(previousPrices != null){
+        let paginationButtons = document.getElementById("pagination_btns")
+        while(container.firstChild != paginationButtons){
+            container.removeChild(container.firstChild)
+        }
+    }
     let fragment = document.createDocumentFragment()
     let items = data.items.content
     let prices = data.prices
     let pricesDiv = document.createElement("div")
+    pricesDiv.id = "prices"
     let h2Label = document.createElement("h2")
     let hr = document.createElement("hr")
     h2Label.className = "text-center col m-0 p-0"
@@ -56,7 +63,7 @@ function handleData(data){
     document.getElementById("next_btn").disabled = !data.hasNext
     for (let i = 0; i < items.length; i++) {
         let item = document.createElement("div")
-        let price = prices[`${items[i].id}`]
+        let price = items[i].price
         item.className = "row gx-4 mt-2"
         item.innerHTML = `
                 <h4 class="text-center col-4 p-0 m-0">${items[i].name}</h4>
@@ -76,5 +83,5 @@ function handleData(data){
                 `
         fragment.appendChild(item)
     }
-    container.appendChild(fragment)
+    container.insertBefore(fragment,container.firstChild)
 }

@@ -26,10 +26,10 @@ class UserPriceController(private val packService: PackService,private val itemP
         val userID = SecurityContextHolder.getContext().authentication.name.toLong()
 
         val items = packService.purchasableCraftingMaterials(pageable,archeageServer)
-        val itemsDTO = PageImpl(items.content.map { it.toDTO() },pageable,items.totalElements)
         val prices = itemPriceService.userPrices(items.content,userID,archeageServer).mapValues { (_,value) -> value.price }
+        val itemsDTO = PageImpl(items.content.map { it.toDTO(prices[it.id!!]) },pageable,items.totalElements)
 
-        return ResponseEntity.ok(UserPrices(itemsDTO,prices,items.hasNext(),items.hasPrevious()))
+        return ResponseEntity.ok(UserPrices(itemsDTO,items.hasNext(),items.hasPrevious()))
     }
 
 }
