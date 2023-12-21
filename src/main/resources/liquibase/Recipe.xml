@@ -39,44 +39,21 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="3" author="barracuda">
-        <dropForeignKeyConstraint baseTableName="recipe_materials" constraintName="fk_recipe_materials_recipes" />
-        <addForeignKeyConstraint baseTableName="recipe_materials" baseColumnNames="recipe_id" constraintName="fk_recipe_materials_recipes" referencedTableName="recipes"
-                                 referencedColumnNames="id" onDelete="CASCADE" />
+    <changeSet id="3" author="barracuda" context="dev">
+        <loadData tableName="recipes" file="csv/recipes.csv" >
+            <column name="produced_quantity" header="produced_quantity" type="NUMERIC" />
+            <column name="craftable" header="craftable" type="NUMERIC" />
+            <column name="id" header="id" type="NUMERIC" />
+        </loadData>
     </changeSet>
 
-    <changeSet id="4" author="barracuda">
-        <delete tableName="recipes" >
-            <where>id in (2,4,6,9,13,17,19,22,25,28,31,34,47,40)</where>
-        </delete>
+    <changeSet id="4" author="barracuda" context="dev">
+        <loadData tableName="recipe_materials" file="csv/recipe_materials.csv">
+            <column name="quantity" header="quantity" type="NUMERIC"/>
+            <column name="item_id" header="item_id" type="NUMERIC"/>
+            <column name="recipe_id" header="recipe_id" type="NUMERIC"/>
+        </loadData>
     </changeSet>
 
-    <changeSet id="5" author="barracuda">
-        <delete tableName="recipes" >
-            <where>id = 37</where>
-        </delete>
-    </changeSet>
-
-    <changeSet id="7" author="barracuda">
-        <dropForeignKeyConstraint baseTableName="recipe_materials" constraintName="fk_recipe_materials_recipes" />
-    </changeSet>
-
-    <changeSet id="8" author="barracuda">
-        <renameTable oldTableName="recipes" newTableName="item_recipes"/>
-    </changeSet>
-
-    <changeSet id="9" author="barracuda">
-        <renameTable oldTableName="recipe_materials" newTableName="item_recipe_materials"/>
-    </changeSet>
-
-    <changeSet id="10" author="barracuda">
-        <addForeignKeyConstraint baseTableName="item_recipe_materials" baseColumnNames="recipe_id"
-                                 constraintName="fk_item_recipe_materials_item_recipes" referencedTableName="item_recipes"
-                                 referencedColumnNames="id" />
-    </changeSet>
-
-    <changeSet id="11" author="barracuda">
-        <renameColumn tableName="item_recipe_materials" oldColumnName="recipe_id" newColumnName="item_recipe_id" columnDataType="bigint" />
-    </changeSet>
 
 </databaseChangeLog>

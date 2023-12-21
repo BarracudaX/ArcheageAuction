@@ -5,10 +5,10 @@ import com.arslan.archeage.PackDTO
 import com.arslan.archeage.entity.*
 import com.arslan.archeage.entity.item.Item
 import com.arslan.archeage.entity.item.PurchasableItem
+import com.arslan.archeage.entity.item.Recipe
 import com.arslan.archeage.entity.item.UserPrice
 import com.arslan.archeage.entity.pack.Pack
 import com.arslan.archeage.entity.pack.PackPrice
-import com.arslan.archeage.entity.pack.PackRecipe
 import com.arslan.archeage.toDTO
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
@@ -18,7 +18,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
-import org.testcontainers.shaded.org.apache.commons.lang3.arch.Processor.Arch
 import kotlin.random.Random
 
 /**
@@ -216,7 +215,7 @@ class PackServiceITest(
             Pack(westLocation, "ANY_PACK_NAME_290923","ANY_DESC"),
             Pack(thirdWestLocation, "ANY_PACK_NAME_12311","ANY_DESC")
         )).map { pack ->
-            packRecipeRepository.save(PackRecipe(pack,1)).also {recipe ->
+            recipeRepository.save(Recipe(pack,1)).also {recipe ->
                 materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
             }
             pack.addPrice(PackPrice(Price(1,1,1), secondWestLocation))
@@ -226,7 +225,7 @@ class PackServiceITest(
             Pack(eastLocation, "ANY_PACK_NAME_34893","ANY_DESC"),
             Pack(thirdEastLocation, "ANY_PACK_NAME_231123","ANY_DESC")
         )).map { pack ->
-            packRecipeRepository.save(PackRecipe(pack,1)).also {recipe ->
+            recipeRepository.save(Recipe(pack,1)).also {recipe ->
                 materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
             }
             pack.addPrice(PackPrice(Price(1,1,1), secondEastLocation))
@@ -236,7 +235,7 @@ class PackServiceITest(
             Pack(northLocation, "ANY_PACK_NAME_090123","ANY_DESC"),
             Pack(thirdNorthLocation, "ANY_PACK_NAME_909213","ANY_DESC")
         )).map { pack ->
-            packRecipeRepository.save(PackRecipe(pack,1)).also {recipe ->
+            recipeRepository.save(Recipe(pack,1)).also {recipe ->
                 materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
             }
             pack.addPrice(PackPrice(Price(1,1,1), secondNorthLocation))
@@ -258,7 +257,7 @@ class PackServiceITest(
             Pack(westLocation, "ANY_PACK_NAME_87244","ANY_DESC"),
             Pack(westLocation, "ANY_PACK_NAME_123781","ANY_DESC")
         )).map { pack ->
-            packRecipeRepository.save(PackRecipe(pack,1)).also {recipe ->
+            recipeRepository.save(Recipe(pack,1)).also {recipe ->
                 materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
             }
             pack.addPrice(PackPrice(Price(1,1,1), secondWestLocation))
@@ -268,7 +267,7 @@ class PackServiceITest(
             Pack(eastLocation, "ANY_PACK_NAME_39489143","ANY_DESC"),
             Pack(eastLocation, "ANY_PACK_NAME_13874873","ANY_DESC")
         )).map { pack ->
-            packRecipeRepository.save(PackRecipe(pack,1)).also {recipe ->
+            recipeRepository.save(Recipe(pack,1)).also {recipe ->
                 materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
             }
             pack.addPrice(PackPrice(Price(1,1,1), secondEastLocation))
@@ -278,7 +277,7 @@ class PackServiceITest(
             Pack(northLocation, "ANY_PACK_NAME_49812315","ANY_DESC"),
             Pack(northLocation, "ANY_PACK_NAME_437887823","ANY_DESC")
         )).map { pack ->
-            packRecipeRepository.save(PackRecipe(pack,1)).also {recipe ->
+            recipeRepository.save(Recipe(pack,1)).also {recipe ->
                 materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
             }
             pack.addPrice(PackPrice(Price(1,1,1), secondNorthLocation))
@@ -293,7 +292,7 @@ class PackServiceITest(
     private fun makePricesAndRecipesFor(packs: List<Pack>){
         for(pack in packs){
             pack.addPrice(PackPrice(Price(1,1,1), pack.creationLocation))
-            packRecipeRepository.save(PackRecipe(pack,1)).also {recipe ->
+            recipeRepository.save(Recipe(pack,1)).also {recipe ->
                 materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
             }
         }
@@ -320,19 +319,19 @@ class PackServiceITest(
         ))
 
         packRepository.save(Pack(westLocation, "ANY_NAME_232","ANY_DESC")).let { pack ->
-           packRecipeRepository.save(PackRecipe(pack,1)).also {recipe ->
+           recipeRepository.save(Recipe(pack,1)).also {recipe ->
                materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
            }
             pack.addPrice(PackPrice(Price(1,1,1), randomWestLocation))
         }
         packRepository.save(Pack(eastLocation, "ANY_NAME_5234","ANY_DESC")).let { pack ->
-           packRecipeRepository.save(PackRecipe(pack,1)).also {recipe ->
+           recipeRepository.save(Recipe(pack,1)).also {recipe ->
                materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
            }
             pack.addPrice(PackPrice(Price(1,1,1), randomEastLocation))
         }
         packRepository.save(Pack(northLocation, "ANY_NAME_123512","ANY_DESC")).let { pack ->
-           packRecipeRepository.save(PackRecipe(pack,1)).also {recipe ->
+           recipeRepository.save(Recipe(pack,1)).also {recipe ->
                materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
            }
             pack.addPrice(PackPrice(Price(1,1,1), randomNorthLocation))
@@ -345,19 +344,19 @@ class PackServiceITest(
         val randomNorthLocation =  locationRepository.save(Location("ANY_LOCATION_NAME_2",Continent.NORTH,archeageServer))
 
         packRepository.save(Pack(randomWestLocation, "ANY_NAME_4309043","ANY_DESC")).let { pack ->
-            packRecipeRepository.save(PackRecipe(pack,1)).also {recipe ->
+            recipeRepository.save(Recipe(pack,1)).also {recipe ->
                 materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
             }
             pack.addPrice(PackPrice(Price(1,1,1),secondWestLocation))
         }
         packRepository.save(Pack(randomEastLocation, "ANY_NAME_313414","ANY_DESC")).let { pack ->
-            packRecipeRepository.save(PackRecipe(pack,1)).also {recipe ->
+            recipeRepository.save(Recipe(pack,1)).also {recipe ->
                 materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
             }
             pack.addPrice(PackPrice(Price(1,1,1), secondEastLocation))
         }
         packRepository.save(Pack(randomNorthLocation, "ANY_NAME_12354234","ANY_DESC")).let { pack ->
-            packRecipeRepository.save(PackRecipe(pack,1)).also {recipe ->
+            recipeRepository.save(Recipe(pack,1)).also {recipe ->
                 materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
             }
             pack.addPrice(PackPrice(Price(1,1,1), secondNorthLocation))
@@ -378,13 +377,13 @@ class PackServiceITest(
         val westPackWithPriceOnDiffServer = packRepository.save(Pack(westLocationOfDifferentServer, "ANY_NAME_7","ANY_DESC_7")) //west pack on different server
         val eastPackWithPriceOnDiffServer = packRepository.save(Pack(eastLocationOfDifferentServer, "ANY_NAME_8","ANY_DESC_8")) //east pack on different server
         val northPackWithPriceOnDiffServer = packRepository.save(Pack(northLocationOfDifferentServer, "ANY_NAME_9","ANY_DESC_9")) //north pack with price on different server
-        packRecipeRepository.save(PackRecipe(westPackWithPriceOnDiffServer,1)).also {recipe ->
+        recipeRepository.save(Recipe(westPackWithPriceOnDiffServer,1)).also {recipe ->
             materialsOfAnotherArcheageServer.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
         }
-        packRecipeRepository.save(PackRecipe(eastPackWithPriceOnDiffServer,1)).also {recipe ->
+        recipeRepository.save(Recipe(eastPackWithPriceOnDiffServer,1)).also {recipe ->
             materialsOfAnotherArcheageServer.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
         }
-        packRecipeRepository.save(PackRecipe(northPackWithPriceOnDiffServer,1)).also {recipe ->
+        recipeRepository.save(Recipe(northPackWithPriceOnDiffServer,1)).also {recipe ->
             materialsOfAnotherArcheageServer.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) }
         }
         westPackWithPriceOnDiffServer.addPrice(PackPrice(Price(1,1,1), westPackWithPriceOnDiffServer.creationLocation))
@@ -392,14 +391,14 @@ class PackServiceITest(
         northPackWithPriceOnDiffServer.addPrice(PackPrice(Price(1,1,1), northPackWithPriceOnDiffServer.creationLocation))
         packRepository.save(Pack(westLocation, "ANY_NAME_10","ANY_DESC_10"))
             .apply {
-                packRecipeRepository.save(PackRecipe(this,1)).also {recipe -> materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) } }
+                recipeRepository.save(Recipe(this,1)).also {recipe -> materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) } }
             }//west pack without price should not be included in the resul
         packRepository.save(Pack(eastLocation, "ANY_NAME_11","ANY_DESC_11"))
             .apply {
-                packRecipeRepository.save(PackRecipe(this,1)).also {recipe -> materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) } }
+                recipeRepository.save(Recipe(this,1)).also {recipe -> materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) } }
             } //east pack without price should not be included in the resul
         packRepository.save(Pack(northLocation, "ANY_NAME_12","ANY_DESC_12"))
-            .apply { packRecipeRepository.save(PackRecipe(this,1)).also {recipe -> materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) } } } //north pack without price should not be included in the resul
+            .apply { recipeRepository.save(Recipe(this,1)).also {recipe -> materials.forEach { recipe.addMaterial(CraftingMaterial(Random.nextInt(0,10),it)) } } } //north pack without price should not be included in the resul
         packRepository.save(Pack(westLocation, "ANY_NAME_13","ANY_DESC_13"))
             .apply { addPrice(PackPrice(Price(1,1,1), secondWestLocation)) } //west pack without recipe should not be included in the resul
         packRepository.save(Pack(eastLocation, "ANY_NAME_14","ANY_DESC_14"))

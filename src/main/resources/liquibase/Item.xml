@@ -39,7 +39,7 @@
 
     <changeSet id="3" author="barracuda" context="dev">
         <update tableName="items_seq">
-            <column name="next_val">75</column>
+            <column name="next_val">142</column>
         </update>
     </changeSet>
 

@@ -4,15 +4,15 @@ import com.arslan.archeage.*
 import com.arslan.archeage.entity.*
 import com.arslan.archeage.entity.item.Item
 import com.arslan.archeage.entity.pack.Pack
-import com.arslan.archeage.repository.PackRecipeRepository
 import com.arslan.archeage.repository.PackRepository
+import com.arslan.archeage.repository.RecipeRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
-class PackServiceImpl(private val packRepository: PackRepository,private val itemPriceService: ItemPriceService,private val packRecipeRepository: PackRecipeRepository) : PackService {
+class PackServiceImpl(private val packRepository: PackRepository,private val itemPriceService: ItemPriceService,private val recipeRepository: RecipeRepository) : PackService {
 
     override fun packs(continent: Continent,archeageServer: ArcheageServer): List<PackDTO> {
         return convertPacksToDTOs(packRepository.allPacks(archeageServer, continent),archeageServer)
@@ -30,11 +30,11 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
         return convertPacksToDTOs(packRepository.packsTo(archeageServer,continent,destinationLocationID),archeageServer)
     }
 
-    override fun purchasableCraftingMaterials(pageable: Pageable,archeageServer: ArcheageServer): Page<Item> = packRecipeRepository.findAllPurchasableCraftingMaterials(pageable,archeageServer)
+    override fun purchasableCraftingMaterials(pageable: Pageable,archeageServer: ArcheageServer): Page<Item> = recipeRepository.findAllPurchasableCraftingMaterials(pageable,archeageServer)
 
     private fun convertPacksToDTOs(packs: List<Pack>,archeageServer: ArcheageServer) : List<PackDTO> {
         val userID = SecurityContextHolder.getContext()?.authentication?.name?.toLongOrNull()
-        val materials = packs.flatMap { pack -> pack.recipes.flatMap { recipe -> recipe.materials().map(CraftingMaterial::item) } }
+        val materials = packs.flatMap { pack -> pack.recipes().flatMap { it.materials().map(CraftingMaterial::item) } }
         val prices = if(userID == null){
             itemPriceService
                 .latestPrices(materials,archeageServer)

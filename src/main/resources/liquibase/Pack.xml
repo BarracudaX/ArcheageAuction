@@ -8,44 +8,18 @@
             <column name="id" type="bigint" >
                 <constraints primaryKey="true" />
             </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false" />
-            </column>
-            <column name="description" type="varchar(255)">
-                <constraints nullable="false" />
-            </column>
             <column name="creation_location_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_packs_locations" references="locations(id)" />
             </column>
-            <column name="archeage_server_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_packs_archeage_servers" references="archeage_servers(id)" />
-            </column>
         </createTable>
-    </changeSet>
-
-    <changeSet id="4" author="barracuda">
-        <dropForeignKeyConstraint baseTableName="packs" constraintName="fk_packs_archeage_servers"/>
-        <dropColumn tableName="packs" columnName="archeage_server_id"/>
     </changeSet>
 
     <changeSet id="2" author="barracuda" context="dev" >
         <loadData tableName="packs" file="csv/packs.csv">
             <column name="creation_location_id" header="creation_location_id" type="NUMERIC" />
             <column name="id" header="id" type="NUMERIC" />
-            <column name="name" header="name" type="STRING" />
-            <column name="description" header="description" type="STRING" />
         </loadData>
     </changeSet>
-    
-    <changeSet id="3" author="barracuda">
-        <createTable tableName="packs_seq">
-            <column name="next_val" type="bigint">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        <insert tableName="packs_seq">
-            <column name="next_val">142</column>
-        </insert>
-    </changeSet>
+
 
 </databaseChangeLog>
