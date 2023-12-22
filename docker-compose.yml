@@ -21,6 +21,12 @@ services:
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
+#  jenkins:
+#    image: jenkins/jenkins:lts-jdk17
+#    environment:
+#      - JENKINS_OPTS=--httpPort=8085
+#    ports:
+#      - "8085:8085"
 #  prometheus:
 #    image: bitnami/prometheus:latest
 #    ports:

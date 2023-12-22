@@ -24,15 +24,4 @@ open class Item(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     open var id: Long? = null
-){
-
-    @OneToMany(mappedBy = "craftable")
-    private var recipes: MutableSet<Recipe> = mutableSetOf()
-
-    fun recipes() : Set<Recipe> = recipes
-
-    fun addRecipe(recipe: Recipe){
-        recipes.add(recipe)
-    }
-
-}
+)

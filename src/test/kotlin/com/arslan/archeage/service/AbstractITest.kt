@@ -32,9 +32,6 @@ abstract class AbstractITest : AbstractTest(){
     @Autowired
     protected lateinit var archeageServerRepository: ArcheageServerRepository
 
-    @Autowired
-    protected lateinit var recipeRepository: RecipeRepository
-
 
     @Autowired
     protected lateinit var itemRepository: ItemRepository

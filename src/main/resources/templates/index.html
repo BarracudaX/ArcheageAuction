@@ -35,7 +35,7 @@
                             <li th:remove="all"><a class="dropdown-item" href="#" >Test</a></li>
                         </ul>
                     </li>
-                    <li th:if="${server != null}" class="nav-item"><a class="nav-link" href="#" th:href="@{/packs}" th:text="#{page.packs.label}">Packs</a></li>
+                    <li th:if="${server != null}" class="nav-item"><a class="nav-link" href="#" th:href="@{/packs_view}" th:text="#{page.packs.label}">Packs</a></li>
                     <li class="nav-item" sec:authorize="isAnonymous()" ><a th:text="#{page.login.label}" th:href="@{/login}" class="nav-link" href="#">Login</a></li>
                     <li class="nav-item" sec:authorize="isAnonymous()" ><a th:text="#{page.register.label}" class="nav-link" th:href="@{/register}" href="#">Register</a></li>
                     <li class="nav-item" sec:authorize="isFullyAuthenticated()"><a th:text="#{page.profile.label}" th:href="@{/profile}" class="nav-link" href="#">Profile</a></li>

@@ -10,14 +10,13 @@ import org.springframework.data.domain.Pageable
 
 interface PackService {
 
-    fun packs(continent: Continent,archeageServer: ArcheageServer) : List<PackDTO>
+    fun packs(continent: Continent,archeageServer: ArcheageServer,pageable: Pageable) : Page<PackDTO>
 
-    fun packs(continent: Continent, departureLocationID: Long, destinationLocationID: Long, archeageServer: ArcheageServer) : List<PackDTO>
+    fun packs(destinationLocationID: Long,continent: Continent, departureLocationID: Long,  archeageServer: ArcheageServer,pageable: Pageable) : Page<PackDTO>
 
-    fun packsCreatedAt(continent: Continent, departureLocationID: Long, archeageServer: ArcheageServer) : List<PackDTO>
+    fun packsCreatedAt(continent: Continent, departureLocationID: Long, archeageServer: ArcheageServer,pageable: Pageable) : Page<PackDTO>
 
-    fun packsSoldAt(continent: Continent, destinationLocationID: Long, archeageServer: ArcheageServer) : List<PackDTO>
+    fun packsSoldAt(continent: Continent, destinationLocationID: Long, archeageServer: ArcheageServer,pageable: Pageable) : Page<PackDTO>
 
-    fun purchasableCraftingMaterials(pageable: Pageable,archeageServer: ArcheageServer) : Page<Item>
 
 }

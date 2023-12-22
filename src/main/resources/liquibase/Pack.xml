@@ -8,8 +8,23 @@
             <column name="id" type="bigint" >
                 <constraints primaryKey="true" />
             </column>
+            <column name="gold" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="silver" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="copper" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="sell_location_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_packs_sell_location_locations" references="locations(id)" />
+            </column>
+            <column name="produced_quantity" type="integer">
+                <constraints nullable="false" />
+            </column>
             <column name="creation_location_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_packs_locations" references="locations(id)" />
+                <constraints nullable="false" foreignKeyName="fk_packs_creation_location_locations" references="locations(id)" />
             </column>
         </createTable>
     </changeSet>
@@ -18,8 +33,33 @@
         <loadData tableName="packs" file="csv/packs.csv">
             <column name="creation_location_id" header="creation_location_id" type="NUMERIC" />
             <column name="id" header="id" type="NUMERIC" />
+            <column name="sell_location_id" header="sell_location_id" type="NUMERIC" />
+            <column name="gold" header="gold" type="NUMERIC" />
+            <column name="silver" header="silver" type="NUMERIC" />
+            <column name="copper" header="copper" type="NUMERIC" />
+            <column name="produced_quantity" header="produced_quantity" type="NUMERIC" />
         </loadData>
     </changeSet>
 
+    <changeSet id="3" author="barracuda">
+        <createTable tableName="pack_materials">
+            <column name="pack_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_pack_materials_packs" references="packs(id)" />
+            </column>
+            <column name="item_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_pack_materials_items" references="items(id)" />
+            </column>
+            <column name="quantity" type="integer">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
 
+    <changeSet id="4" author="barracuda" context="dev">
+        <loadData tableName="pack_materials" file="csv/pack_materials.csv">
+            <column name="quantity" header="quantity" type="NUMERIC"/>
+            <column name="item_id" header="item_id" type="NUMERIC"/>
+            <column name="pack_id" header="pack_id" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
 </databaseChangeLog>

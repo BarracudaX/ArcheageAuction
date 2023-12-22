@@ -2,28 +2,24 @@ package com.arslan.archeage
 
 import com.arslan.archeage.entity.*
 import com.arslan.archeage.entity.item.Item
-import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.entity.item.UserPrice
 import com.arslan.archeage.entity.pack.Pack
-import com.arslan.archeage.entity.pack.PackPrice
 
 fun CraftingMaterial.toDTO(prices: Map<Long, UserPrice>): CraftingMaterialDTO =
-    CraftingMaterialDTO(quantity, item.toDTO(prices[item.id!!]?.price))
+    CraftingMaterialDTO(quantity, item.toDTO(prices[item.id!!]?.price),prices[item.id!!]?.price?.times(quantity))
 
 fun Item.toDTO(price: Price?): ItemDTO = ItemDTO(name, id!!,price)
 
-fun List<Pack>.toDTO(prices: Map<Long, UserPrice>): List<PackDTO> {
-    return flatMap { pack ->
-        pack.prices()
-            .flatMap { packPrice ->
-                pack.recipes()
-                    .filter { recipe ->
-                        prices.keys.containsAll(recipe.materials().map(CraftingMaterial::item).filterIsInstance<PurchasableItem>().map(PurchasableItem::id))
-                    }.map { recipe ->
-                        PackDTO(pack.name, pack.creationLocation.name, packPrice.sellLocation.name, packPrice.price, RecipeDTO(recipe.producedQuantity, recipe.materials().map { material -> material.toDTO(prices) }, recipe.id!!))
-                    }
-            }
-    }
+fun Pack.toDTO(prices: Map<Long, UserPrice>) : PackDTO {
+    val cost = materials().fold(Price(0,0,0)){ cost,material -> cost + (prices[material.item.id!!]?.price ?: Price(0,0,0))*material.quantity }
+
+    val profit = price.price - cost
+
+    return PackDTO(name,creationLocation.name,price.sellLocation.name,price.price,producedQuantity,materials().map { it.toDTO(prices) } ,id!!,cost,profit)
 }
 
-fun List<PackDTO>.materialsWithPrice(): List<CraftingMaterialDTO> = flatMap { pack -> pack.recipeDTO.materials }.filter { material -> material.itemDTO.price != null }
+fun List<Pack>.toDTO(prices: Map<Long, UserPrice>): List<PackDTO> {
+    return map { pack -> pack.toDTO(prices) }
+}
+
+fun List<PackDTO>.materialsWithPrice(): List<CraftingMaterialDTO> = flatMap { pack -> pack.materials }.filter { material -> material.itemDTO.price != null }

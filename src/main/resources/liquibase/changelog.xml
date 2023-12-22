@@ -9,6 +9,4 @@
     <include file="/liquibase/Purchasable_Item.xml" />
     <include file="/liquibase/Pack.xml" />
     <include file="/liquibase/User_Price.xml" />
-    <include file="/liquibase/Pack_Price.xml" />
-    <include file="/liquibase/Recipe.xml" />
 </databaseChangeLog>

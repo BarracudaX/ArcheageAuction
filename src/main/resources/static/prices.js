@@ -9,13 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(reason => addError(reason.message))
 })
 
-async function handleResponse(response) {
-    if (response.status === 200) {
-        return await response.json()
-    } else{
-        throw Error(await response.text())
-    }
-}
 
 function nextPage(){
     fetch(`/user/price?page=${currentPage+1}&size=${pageSize}`)
@@ -40,9 +33,7 @@ function handleData(data){
     let previousPrices = document.getElementById("prices")
     if(previousPrices != null){
         let paginationButtons = document.getElementById("pagination_btns")
-        while(container.firstChild != paginationButtons){
-            container.removeChild(container.firstChild)
-        }
+        clearChildrenUntil(container,paginationButtons)
     }
     let fragment = document.createDocumentFragment()
     let items = data.items.content

@@ -12,7 +12,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="name" type="varchar(255)" >
-                <constraints nullable="false" unique="true" uniqueConstraintName="ITEMS_UNIQUE_NAME_CONSTRAINT"/>
+                <constraints nullable="false" />
             </column>
             <column name="archeage_server_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_items_archeage_servers" references="archeage_servers(id)" />
@@ -39,12 +39,8 @@
 
     <changeSet id="3" author="barracuda" context="dev">
         <update tableName="items_seq">
-            <column name="next_val">142</column>
+            <column name="next_val">301</column>
         </update>
-    </changeSet>
-
-    <changeSet id="4" author="barracuda">
-        <dropUniqueConstraint tableName="items" constraintName="ITEMS_UNIQUE_NAME_CONSTRAINT" />
     </changeSet>
 
 </databaseChangeLog>

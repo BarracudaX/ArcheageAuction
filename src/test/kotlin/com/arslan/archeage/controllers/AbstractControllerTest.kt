@@ -42,6 +42,9 @@ abstract class AbstractControllerTest : AbstractTest() {
     protected lateinit var itemPriceServiceMock: ItemPriceService
 
     @MockkBean
+    protected lateinit var itemService: ItemService
+
+    @MockkBean
     protected lateinit var userServiceMock: UserService
 
     protected val availableServers = listOf(

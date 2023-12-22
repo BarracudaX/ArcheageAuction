@@ -1,35 +1,34 @@
 package com.arslan.archeage
 
+import com.arslan.archeage.entity.Location
 import com.arslan.archeage.entity.Price
 import kotlinx.serialization.Serializable
 import org.springframework.data.domain.Page
 
 enum class Continent{ EAST,WEST,NORTH }
+@Serializable
+data class PackDTO(
+    val name: String,
+
+    val creationLocation: String,
+
+    val destinationLocation: String,
+
+    val sellPrice: Price,
+
+    val producedQuantity: Int,
+
+    val materials: List<CraftingMaterialDTO>,
+
+    val id : Long,
+
+    val cost: Price,
+
+    val profit: Price
+)
 
 @Serializable
-data class PackDTO(val name: String, val creationLocation: String, val destinationLocation: String, val sellPrice: Price, val recipeDTO: RecipeDTO){
-
-    val profit = sellPrice - recipeDTO.cost()
-
-
-}
-
-@Serializable
-data class RecipeDTO(val quantity: Int, val materials: List<CraftingMaterialDTO>, val id: Long) {
-
-    private var cost: Price? = null
-
-    fun cost() : Price{
-        if(cost == null)
-            cost =  materials.fold(Price(0,0,0)){ cost, material -> cost + (material.itemDTO.price ?: Price(0,0,0)) * material.quantity }
-
-        return cost!!
-    }
-
-}
-
-@Serializable
-data class CraftingMaterialDTO(val quantity: Int, val itemDTO: ItemDTO)
+data class CraftingMaterialDTO(val quantity: Int, val itemDTO: ItemDTO,val total: Price?)
 
 @Serializable
 class ItemDTO(val name: String,val id: Long,val price:Price? = null){
@@ -53,3 +52,9 @@ data class UserPrices(val items: Page<ItemDTO>,val hasNext: Boolean,val hasPrevi
 
 @Serializable
 data class Packs(val packs: List<PackDTO>,val hasNext: Boolean,val hasPrevious: Boolean)
+
+@Serializable
+data class LocationDTO(val name: String,val id: Long)
+
+@Serializable
+data class Locations(val continentLocations: List<LocationDTO>,val continentFactories: List<LocationDTO>)

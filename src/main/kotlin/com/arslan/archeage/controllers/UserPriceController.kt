@@ -5,6 +5,7 @@ import com.arslan.archeage.UserPrices
 import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.service.ArcheageServerContextHolder
 import com.arslan.archeage.service.ItemPriceService
+import com.arslan.archeage.service.ItemService
 import com.arslan.archeage.service.PackService
 import com.arslan.archeage.toDTO
 import org.springframework.data.domain.PageImpl
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RequestMapping("/user/price")
 @RestController
-class UserPriceController(private val packService: PackService,private val itemPriceService: ItemPriceService) {
+class UserPriceController(private val itemPriceService: ItemPriceService,private val itemService: ItemService) {
 
     @GetMapping
     fun prices(pageable: Pageable,archeageServer: ArcheageServer?): ResponseEntity<UserPrices> {
@@ -25,7 +26,7 @@ class UserPriceController(private val packService: PackService,private val itemP
 
         val userID = SecurityContextHolder.getContext().authentication.name.toLong()
 
-        val items = packService.purchasableCraftingMaterials(pageable,archeageServer)
+        val items = itemService.purchasableCraftingMaterials(pageable,archeageServer)
         val prices = itemPriceService.userPrices(items.content,userID,archeageServer).mapValues { (_,value) -> value.price }
         val itemsDTO = PageImpl(items.content.map { it.toDTO(prices[it.id!!]) },pageable,items.totalElements)
 
