@@ -8,7 +8,6 @@ import kotlinx.serialization.Serializable
 data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Price>{
 
     init {
-        if(gold < -99 || gold > 99) throw IllegalArgumentException("Gold property should be between [-99,99]. Provided value $gold.")
         if(silver < -99 || silver > 99) throw IllegalArgumentException("Silver property should be between [-99,99]. Provided value $silver.")
         if(copper < -99 || copper > 99) throw IllegalArgumentException("Copper property should be between [-99,99]. Provided value $copper.")
     }
