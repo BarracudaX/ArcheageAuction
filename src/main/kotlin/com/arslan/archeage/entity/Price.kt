@@ -3,6 +3,8 @@ package com.arslan.archeage.entity
 import jakarta.persistence.Embeddable
 import kotlinx.serialization.Serializable
 
+private enum class PriceValue{ POSITIVE,NEGATIVE,ZERO}
+
 @Serializable
 @Embeddable
 data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Price>{
@@ -10,6 +12,35 @@ data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Pr
     init {
         if(silver < -99 || silver > 99) throw IllegalArgumentException("Silver property should be between [-99,99]. Provided value $silver.")
         if(copper < -99 || copper > 99) throw IllegalArgumentException("Copper property should be between [-99,99]. Provided value $copper.")
+
+        val priceValue = if(gold != 0){
+            if(gold > 0){
+                PriceValue.POSITIVE
+            }else{
+                PriceValue.NEGATIVE
+            }
+        }else if(silver != 0){
+            if(silver > 0){
+                PriceValue.POSITIVE
+            }else{
+                PriceValue.NEGATIVE
+            }
+        }else if(copper != 0){
+            if(copper > 0){
+                PriceValue.POSITIVE
+            }else{
+                PriceValue.NEGATIVE
+            }
+        }else{
+            PriceValue.ZERO
+        }
+
+        when(priceValue){
+            PriceValue.POSITIVE -> if(gold < 0 || silver < 0 || copper < 0) throw IllegalArgumentException("Partially positive price not allowed: $gold gold, $silver silver, $copper copper.")
+            PriceValue.NEGATIVE -> if(gold > 0 || silver > 0 || copper > 0) throw IllegalArgumentException("Partially negative price not allowed: $gold gold, $silver silver, $copper copper.")
+            PriceValue.ZERO -> {}
+        }
+
     }
 
     companion object{
@@ -32,10 +63,7 @@ data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Pr
     }
 
     operator fun times(i: Int) : Price {
-        if(i < 0)
-            throw IllegalArgumentException("Multiplier must be zero or positive number.")
-
-        return Price(gold*i+silver*i/100,(silver*i+copper*i/100)%100,copper*i%100)
+        return fromCopper(totalCopper()*i)
     }
 
     override fun compareTo(other: Price): Int {
