@@ -60,19 +60,43 @@ function handleData(data){
                 <h4 class="text-center col-4 p-0 m-0">${items[i].name}</h4>
                 <div class="col-2 m-0 row ">
                     <label class="col p-0 text-center">${goldLabel}</label>
-                    <input type="number" class="form-input col p-0" min="0" value="${price !== undefined && price !== null ? price.gold : ''}" />
+                    <input id="item_${items[i].id}_gold" type="number" class="form-input col p-0" min="0" value="${price !== undefined && price !== null ? price.gold : ''}" />
                  </div>
                 <div class="col-2 m-0 row ">
                     <label class="col p-0 text-center">${silverLabel}</label>
-                    <input type="number" class="form-input col p-0" min="0" max="99" value="${price !== undefined && price !== null ? price.silver : ''}"  />
+                    <input id="item_${items[i].id}_silver" type="number" class="form-input col p-0" min="0" max="99" value="${price !== undefined && price !== null ? price.silver : ''}"  />
                 </div>
                  <div class="col-2 m-0 row ">
                     <label class="col p-0 text-center">${copperLabel}</label>
-                    <input type="number" class="form-input col p-0" min="0" max="99" value="${price !== undefined && price !== null ? price.copper : ''}" />
+                    <input id="item_${items[i].id}_copper" type="number" class="form-input col p-0" min="0" max="99" value="${price !== undefined && price !== null ? price.copper : ''}" />
                  </div>
-                 <button class="btn btn-primary col-2">${saveBtnLabel}</button>
+                 <button class="btn btn-primary col-2" onclick="savePrice(this)" id="item_${items[i].id}">${saveBtnLabel}</button>
                 `
         fragment.appendChild(item)
     }
     container.insertBefore(fragment,container.firstChild)
+}
+
+function savePrice(source){
+    const gold = document.getElementById(`${source.id}_gold`).value
+    const silver = document.getElementById(`${source.id}_silver`).value
+    const copper = document.getElementById(`${source.id}_copper`).value
+    const itemID = source.id.substring(source.id.indexOf("_")+1)
+    const csrfToken = document.querySelector("meta[name='_csrf']").content
+    const csrfHeaderName = document.querySelector("meta[name='_csrf_header']").content
+    const headers = new Headers()
+    headers.append(csrfHeaderName,csrfToken)
+    headers.append("Content-Type","application/json")
+    const request = {
+        itemID: itemID,
+        price:{
+            gold: gold,
+            silver: silver,
+            copper: copper
+        }
+    }
+    fetch("/user/price",{method : "POST",body : JSON.stringify(request),credentials : "same-origin",headers : headers})
+        .then((response) => handleResponse(response))
+        .then(response => addSuccess(response))
+        .catch(error => { addError(error.message) })
 }

@@ -18,7 +18,17 @@ function addError(error){
         ${error}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     `
-    document.getElementById("errors").appendChild(errorElement)
+    document.getElementById("messages").appendChild(errorElement)
+}
+
+function addSuccess(success){
+    const successElement = document.createElement("div")
+    successElement.className = "alert alert-success alert-dismissible fade show mt-1"
+    successElement.innerHTML = `
+        ${success}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `
+    document.getElementById("messages").appendChild(successElement)
 }
 
 function clearChildrenUntil(parent,stopChild){
@@ -29,7 +39,11 @@ function clearChildrenUntil(parent,stopChild){
 
 async function handleResponse(response) {
     if (response.status === 200) {
-        return await response.json()
+        if(response.headers.get("Content-Type") === "application/json"){
+            return await response.json()
+        }else{
+            return await response.text()
+        }
     } else{
         throw Error(await response.text())
     }

@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.intercept.AuthorizationFilter
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository
 
 @Configuration
 class SecurityConfiguration {
@@ -54,6 +55,7 @@ class SecurityConfiguration {
                     .requestMatchers(HttpMethod.GET,"/register","/login").anonymous()
                     .requestMatchers(HttpMethod.POST,"/register").anonymous()
                     .requestMatchers(HttpMethod.GET,"/profile","/user/price").fullyAuthenticated()
+                    .requestMatchers(HttpMethod.POST,"/user/price").fullyAuthenticated()
             }
             .anonymous {  }
             .authenticationProvider(authenticationProvider)

@@ -58,3 +58,6 @@ data class LocationDTO(val name: String,val id: Long)
 
 @Serializable
 data class Locations(val continentLocations: List<LocationDTO>,val continentFactories: List<LocationDTO>)
+
+@Serializable
+data class UserPriceDTO(val userID: Long? = null,val itemID: Long,val price: Price)

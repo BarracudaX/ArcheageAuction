@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en"  xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-<head th:replace="~{index::head_fragment(#{page.profile.label})}">
+<head th:replace="~{index::head_fragment(#{page.profile.label},~{::meta})}">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" >
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <script th:src="@{/resource/index.js}"  src="../static/index.js"></script>
   <link href="../static/style.css" th:href="@{/resource/style.css}" rel="stylesheet"/>
+  <meta name="_csrf" th:content="${_csrf.token}" id="csrf_meta"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" id="csrf_header_meta"/>
   <title th:text="${title ?: #messages.msg('page.title')}">Archeage Auction</title>
 </head>
 <body>
@@ -47,7 +49,7 @@
       </div>
     </div>
   </nav>
-  <div th:replace="~{index::errors}"></div>
+  <div th:replace="~{index::messages}"></div>
   <div th:replace="~{pagination::pagination_container}">
   </div>
 </div>
