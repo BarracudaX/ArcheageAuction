@@ -1,53 +1,55 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-<head th:fragment="head_fragment(title,additional)">
+<html lang="en"  xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head th:replace="~{common::head_fragment(#{page.title},~{})}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" >
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script th:src="@{/resource/index.js}"  src="../static/index.js"></script>
     <link href="../static/style.css" th:href="@{/resource/style.css}" rel="stylesheet"/>
     <title th:text="${title ?: #messages.msg('page.title')}">Archeage Auction</title>
-    <th:block th:replace="${additional}" />
 </head>
 <body>
 <div class="container-fluid p-0">
-    <nav class="navbar bg-dark navbar-expand-lg" data-bs-theme="dark" th:fragment="nav_fragment">
+    <nav class="navbar bg-dark navbar-expand-lg" data-bs-theme="dark" th:replace="~{common::nav_fragment}">
         <div class="container-fluid">
-            <a class="navbar-brand" th:if="${server != null}" href="#" th:href="@{/}" th:text="${#strings.capitalize(server.name)}">Navbar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="#" th:href="@{/}" th:text="${#strings.capitalize(server)}">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{page.language.label}">Language</a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false" th:text="#{page.language.label}">Language</a>
                         <ul class="dropdown-menu">
-                            <li th:each="language : ${T(com.arslan.archeage.entity.SupportedLanguages).values()}"><a class="dropdown-item" th:text="${language.displayName}" th:attr="onclick=|changeLocale('${language.locale.language}')|">Russian</a></li>
-                            <li th:remove="all"><a class="dropdown-item" href="#" >Test</a></li>
+                            <li th:each="language : ${T(com.arslan.web.entity.SupportedLanguages).values()}"><a
+                                    class="dropdown-item"
+                                    th:text="${#messages.msg('supported.language.'+language.name())}"
+                                    th:href="@{|/?locale=${language.locale.language}|}" href="#">Russian</a></li>
+                            <li th:remove="all"><a class="dropdown-item" href="#">Test</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{page.server.label}">Server</a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false" th:text="#{page.server.label}">Server</a>
                         <ul class="dropdown-menu">
-                            <!--/*@thymesVar id="servers" type="java.util.List<com.arslan.archeage.entity.ArcheageServer>"*/-->
-                            <li th:each="server : ${servers}">
-                                <a th:if="${server != null}" class="dropdown-item" href="#" th:text="${server.name}" th:href="@{|${currentURL}?server=${server.id}}">Test</a>
+                            <li th:each="server : ${servers}"><a class="dropdown-item" th:text="${server}"
+                                                                 th:href="@{|/?server=${server}|}" href="#">Server</a>
                             </li>
-                            <li th:remove="all"><a class="dropdown-item" href="#" >Test</a></li>
+                            <li th:remove="all"><a class="dropdown-item" href="#">Test</a></li>
                         </ul>
                     </li>
-                    <li th:if="${server != null}" class="nav-item"><a class="nav-link" href="#" th:href="@{/packs_view}" th:text="#{page.packs.label}">Packs</a></li>
-                    <li class="nav-item" sec:authorize="isAnonymous()" ><a th:text="#{page.login.label}" th:href="@{/login}" class="nav-link" href="#">Login</a></li>
-                    <li class="nav-item" sec:authorize="isAnonymous()" ><a th:text="#{page.register.label}" class="nav-link" th:href="@{/register}" href="#">Register</a></li>
-                    <li class="nav-item" sec:authorize="isFullyAuthenticated()"><a th:text="#{page.profile.label}" th:href="@{/profile}" class="nav-link" href="#">Profile</a></li>
-                    <form class="form-inline" sec:authorize="isFullyAuthenticated()" th:action="@{/logout}" method="post"><button th:text="#{page.logout.label}" type="submit" class="nav-link" >Logout</button></form>
+                    <li class="nav-item"><a class="nav-link" href="#" th:href="@{/packs}" th:text="#{page.packs.label}">Packs</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
+
 </div>
-<div th:fragment="messages" id="messages"></div>
-<div id="footer">
+<div th:replace="~{common::#footer}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </div>
 </body>
