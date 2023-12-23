@@ -37,7 +37,7 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
         val prices = if(userID == null){
             itemPriceService
                 .latestPrices(materials.filterIsInstance<PurchasableItem>(),archeageServer)
-                .associateBy { itemPrice -> itemPrice.purchasableItem.id!! }
+                .associateBy { itemPrice -> itemPrice.id.purchasableItem.id!! }
         }else{
             itemPriceService.userPrices(materials.filterIsInstance<PurchasableItem>(),userID,archeageServer)
         }

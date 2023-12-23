@@ -69,4 +69,13 @@
         <dropColumn tableName="user_prices" columnName="archeage_server_id" />
     </changeSet>
 
+    <changeSet id="9" author="barracuda">
+        <dropPrimaryKey tableName="user_prices"/>
+        <dropColumn tableName="user_prices" columnName="id" />
+    </changeSet>
+
+    <changeSet id="10" author="barracuda">
+        <addPrimaryKey tableName="user_prices" columnNames="user_id,item_id" />
+    </changeSet>
+
 </databaseChangeLog>

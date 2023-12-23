@@ -13,6 +13,6 @@ import org.springframework.transaction.annotation.Transactional
 class ItemPriceServiceImpl(private val userPriceRepository: UserPriceRepository) : ItemPriceService {
 
     override fun latestPrices(items: List<PurchasableItem>,archeageServer: ArcheageServer): List<UserPrice> = userPriceRepository.latestPrices(items,archeageServer)
-    override fun userPrices(items: List<PurchasableItem>, userID: Long,archeageServer: ArcheageServer): Map<Long, UserPrice> = userPriceRepository.userPrices(items,userID,archeageServer).associateBy { it.purchasableItem.id!! }
+    override fun userPrices(items: List<PurchasableItem>, userID: Long,archeageServer: ArcheageServer): Map<Long, UserPrice> = userPriceRepository.userPrices(items,userID,archeageServer).associateBy { it.id.purchasableItem.id!! }
 
 }

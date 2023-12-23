@@ -10,19 +10,10 @@ import java.time.Instant
 @Table(name = "user_prices")
 @Entity
 class UserPrice(
-
-    @JoinColumn(name = "item_id")
-    @ManyToOne(optional = false)
-    var purchasableItem: PurchasableItem,
+    @EmbeddedId
+    var id: UserPriceKey,
 
     var price: Price,
 
-    @ManyToOne
-    var user: User,
-
-    var timestamp: Instant = Instant.now(),
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    var id: Long? = null
+    var timestamp: Instant = Instant.now()
 )

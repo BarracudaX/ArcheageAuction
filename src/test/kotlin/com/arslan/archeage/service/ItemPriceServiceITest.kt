@@ -5,6 +5,7 @@ import com.arslan.archeage.entity.Price
 import com.arslan.archeage.entity.User
 import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.entity.item.UserPrice
+import com.arslan.archeage.entity.item.UserPriceKey
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
@@ -41,8 +42,8 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
 
     @Test
     fun `should return latest prices for items`() {
-        userPriceRepository.save(UserPrice(someItem, Price(1,1,1),someUser))
-        val lastPrice = userPriceRepository.save(UserPrice(someItem, Price(1,1,1),someUser))
+        userPriceRepository.save(UserPrice(UserPriceKey(someUser,someItem), Price(1,1,1)))
+        val lastPrice = userPriceRepository.save(UserPrice(UserPriceKey(someUser,someItem), Price(1,1,1)))
 
         val result = itemPriceService.latestPrices(listOf(someItem,anotherItem),currentUserArcheageServer)
 
@@ -52,18 +53,18 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
 
     @Test
     fun `should return empty list when requesting latest prices of specific user that have not specified any`() {
-        userPriceRepository.save(UserPrice(someItem, Price(1,1,1),someUser))
-        userPriceRepository.save(UserPrice(anotherItem, Price(1,1,1),someUser))
+        userPriceRepository.save(UserPrice(UserPriceKey(someUser,someItem), Price(1,1,1)))
+        userPriceRepository.save(UserPrice(UserPriceKey(someUser,anotherItem), Price(1,1,1)))
 
         itemPriceService.userPrices(listOf(someItem,anotherItem),anotherUser.id!!,currentUserArcheageServer).shouldBeEmpty()
     }
 
     @Test
     fun `should return latest user prices for items for which user have specified them`() {
-        userPriceRepository.save(UserPrice(someItem, Price(1,1,1),someUser))
-        userPriceRepository.save(UserPrice(anotherItem, Price(1,1,1),someUser))
-        userPriceRepository.save(UserPrice(anotherItem, Price(1,1,1),anotherUser))
-        val expectedPrice = userPriceRepository.save(UserPrice(anotherItem, Price(1,1,1),anotherUser))
+        userPriceRepository.save(UserPrice(UserPriceKey(someUser,someItem), Price(1,1,1)))
+        userPriceRepository.save(UserPrice(UserPriceKey(someUser,anotherItem), Price(1,1,1)))
+        userPriceRepository.save(UserPrice(UserPriceKey(anotherUser,anotherItem), Price(1,1,1)))
+        val expectedPrice = userPriceRepository.save(UserPrice(UserPriceKey(anotherUser,anotherItem), Price(1,1,1)))
 
         val result = itemPriceService.userPrices(listOf(someItem,anotherItem),anotherUser.id!!,currentUserArcheageServer)
 
