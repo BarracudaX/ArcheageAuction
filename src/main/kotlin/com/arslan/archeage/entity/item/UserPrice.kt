@@ -15,9 +15,6 @@ class UserPrice(
     @ManyToOne(optional = false)
     var purchasableItem: PurchasableItem,
 
-    @ManyToOne(optional = false)
-    var archeageServer: ArcheageServer,
-
     var price: Price,
 
     @ManyToOne

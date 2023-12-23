@@ -3,10 +3,8 @@ package com.arslan.archeage.controllers
 import com.arslan.archeage.ArcheageContextHolderEmptyException
 import com.arslan.archeage.UserPrices
 import com.arslan.archeage.entity.ArcheageServer
-import com.arslan.archeage.service.ArcheageServerContextHolder
 import com.arslan.archeage.service.ItemPriceService
 import com.arslan.archeage.service.ItemService
-import com.arslan.archeage.service.PackService
 import com.arslan.archeage.toDTO
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -26,7 +24,7 @@ class UserPriceController(private val itemPriceService: ItemPriceService,private
 
         val userID = SecurityContextHolder.getContext().authentication.name.toLong()
 
-        val items = itemService.purchasableCraftingMaterials(pageable,archeageServer)
+        val items = itemService.purchasableItems(pageable,archeageServer)
         val prices = itemPriceService.userPrices(items.content,userID,archeageServer).mapValues { (_,value) -> value.price }
         val itemsDTO = PageImpl(items.content.map { it.toDTO(prices[it.id!!]) },pageable,items.totalElements)
 

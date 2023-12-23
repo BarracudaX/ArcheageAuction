@@ -107,30 +107,36 @@ class PackServiceITest(
         ))
         materials.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_1","MATERIAL_1",archeageServer)).apply {
             val price = userPriceRepository.save(
-                UserPrice(this,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user)
+                UserPrice(this,
+                    Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user)
             )
             materialPrices[id!!] = price
         })
         materials.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_2","MATERIAL_2",archeageServer)).apply {
-            val price = userPriceRepository.save(UserPrice(this,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user))
+            val price = userPriceRepository.save(UserPrice(this,
+                Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user))
             materialPrices[id!!] = price
         })
         materials.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_3","MATERIAL_3",archeageServer)).apply {
-            val price = userPriceRepository.save(UserPrice(this,archeageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user))
+            val price = userPriceRepository.save(UserPrice(this,
+                Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user))
             materialPrices[id!!] = price
         })
         materialsOfAnotherArcheageServer.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_1","MATERIAL_1",anotherArcheageServer)).apply {
             val price = userPriceRepository.save(
-                UserPrice(this,anotherArcheageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user)
+                UserPrice(this,
+                    Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user)
             )
             materialPrices[id!!] = price
         })
         materialsOfAnotherArcheageServer.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_2","MATERIAL_2",anotherArcheageServer)).apply {
-            val price = userPriceRepository.save(UserPrice(this,anotherArcheageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user))
+            val price = userPriceRepository.save(UserPrice(this,
+                Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user))
             materialPrices[id!!] = price
         })
         materialsOfAnotherArcheageServer.add(purchasableItemRepository.save(PurchasableItem("MATERIAL_3","MATERIAL_3",anotherArcheageServer)).apply {
-            val price = userPriceRepository.save(UserPrice(this,anotherArcheageServer,Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user))
+            val price = userPriceRepository.save(UserPrice(this,
+                Price(Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE),Random.nextInt(0,Int.MAX_VALUE)),user))
             materialPrices[id!!] = price
         })
     }

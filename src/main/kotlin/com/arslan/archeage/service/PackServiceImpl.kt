@@ -3,6 +3,7 @@ package com.arslan.archeage.service
 import com.arslan.archeage.*
 import com.arslan.archeage.entity.*
 import com.arslan.archeage.entity.item.Item
+import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.repository.PackRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -35,10 +36,10 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
         val materials = packs.flatMap { pack -> pack.materials().map(CraftingMaterial::item) }
         val prices = if(userID == null){
             itemPriceService
-                .latestPrices(materials,archeageServer)
+                .latestPrices(materials.filterIsInstance<PurchasableItem>(),archeageServer)
                 .associateBy { itemPrice -> itemPrice.purchasableItem.id!! }
         }else{
-            itemPriceService.userPrices(materials,userID,archeageServer)
+            itemPriceService.userPrices(materials.filterIsInstance<PurchasableItem>(),userID,archeageServer)
         }
 
         return PageImpl(packs.toDTO(prices).sortedByDescending(PackDTO::profit),packsIDs.pageable,packsIDs.totalElements)

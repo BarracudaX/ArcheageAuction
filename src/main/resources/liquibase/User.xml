@@ -61,5 +61,17 @@
     <changeSet id="9" author="barracuda">
         <addUniqueConstraint tableName="users" columnNames="email" />
     </changeSet>
+
+    <changeSet id="10" author="barracuda">
+        <update tableName="users_seq">
+            <column name="next_val">1</column>
+        </update>
+    </changeSet>
+
+    <changeSet id="11" author="barracuda" context="dev">
+        <update tableName="users_seq">
+            <column name="next_val">2</column>
+        </update>
+    </changeSet>
     
 </databaseChangeLog>

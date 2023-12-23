@@ -9,7 +9,5 @@ import org.springframework.data.jpa.repository.Query
 
 interface ItemRepository : JpaRepository<Item,Long>{
 
-    @Query("SELECT i FROM Item i WHERE type(i) = PurchasableItem AND i.archeageServer = :archeageServer")
-    fun findPurchasableItems(pageable: Pageable,archeageServer: ArcheageServer) : Page<Item>
 
 }
