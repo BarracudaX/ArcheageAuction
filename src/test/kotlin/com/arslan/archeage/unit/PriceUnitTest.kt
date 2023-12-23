@@ -17,6 +17,14 @@ class PriceUnitTest {
     }
 
     @Test
+    fun `should add two prices and return new price that is sum of the two (2)`() {
+        val priceOne = Price(-20,-80,-90)
+        val priceTwo = Price(10,90,80)
+
+        priceOne + priceTwo shouldBe Price(-9,-90,-10)
+    }
+
+    @Test
     fun `should multiply the price with specified value and return new price`() {
         val price = Price(8,68,58)
         val multiplier = 3
