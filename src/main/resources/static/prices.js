@@ -78,9 +78,25 @@ function handleData(data){
 }
 
 function savePrice(source){
-    const gold = document.getElementById(`${source.id}_gold`).value
-    const silver = document.getElementById(`${source.id}_silver`).value
-    const copper = document.getElementById(`${source.id}_copper`).value
+    let gold = document.getElementById(`${source.id}_gold`).value
+    let silver = document.getElementById(`${source.id}_silver`).value
+    let copper = document.getElementById(`${source.id}_copper`).value
+
+    if(gold === ""){
+        gold = 0
+        document.getElementById(`${source.id}_gold`).value=0
+    }
+
+    if(silver === ""){
+        silver = 0
+        document.getElementById(`${source.id}_silver`).value=0
+    }
+
+    if(copper === ""){
+        copper = 0
+        document.getElementById(`${source.id}_copper`).value=0
+    }
+
     const itemID = source.id.substring(source.id.indexOf("_")+1)
     const csrfToken = document.querySelector("meta[name='_csrf']").content
     const csrfHeaderName = document.querySelector("meta[name='_csrf_header']").content

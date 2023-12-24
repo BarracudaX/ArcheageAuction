@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    
+    <changeSet id="1" author="barracuda">
+        <createTable tableName="pack_profits">
+            <column name="pack_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_pack_profits_packs" references="packs(id)" />
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="fk_pack_profits_users" references="users(id)" />
+            </column>
+            <column name="gold_net_profit" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="silver_net_profit" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="copper_net_profit" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="timestamp" type="datetime(6)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    
+</databaseChangeLog>

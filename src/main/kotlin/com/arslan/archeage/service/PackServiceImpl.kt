@@ -14,22 +14,22 @@ import org.springframework.stereotype.Service
 class PackServiceImpl(private val packRepository: PackRepository,private val itemPriceService: ItemPriceService) : PackService {
 
     override fun packs(continent: Continent,archeageServer: ArcheageServer,pageable: Pageable): Page<PackDTO> {
-        return convertPacksToDTOs(packRepository.allPacksIDs(pageable,archeageServer, continent),archeageServer)
+        return convertPacksToDTOs(packRepository.allPacksIDs(pageable,archeageServer, continent,SecurityContextHolder.getContext().authentication.name.toLongOrNull()))
     }
 
     override fun packs(destinationLocationID: Long, continent: Continent, departureLocationID: Long, archeageServer: ArcheageServer, pageable: Pageable): Page<PackDTO> {
-        return convertPacksToDTOs(packRepository.packsIDS(pageable,archeageServer, continent,departureLocationID,destinationLocationID),archeageServer)
+        return convertPacksToDTOs(packRepository.packsIDS(pageable,archeageServer, continent,departureLocationID,destinationLocationID,SecurityContextHolder.getContext().authentication.name.toLongOrNull()))
     }
 
     override fun packsCreatedAt(continent: Continent, departureLocationID: Long, archeageServer: ArcheageServer,pageable: Pageable): Page<PackDTO> {
-        return convertPacksToDTOs(packRepository.packsAtIDs(pageable,archeageServer,continent,departureLocationID),archeageServer)
+        return convertPacksToDTOs(packRepository.packsAtIDs(pageable,archeageServer,continent,departureLocationID,SecurityContextHolder.getContext().authentication.name.toLongOrNull()))
     }
 
     override fun packsSoldAt(continent: Continent, destinationLocationID: Long, archeageServer: ArcheageServer,pageable: Pageable): Page<PackDTO> {
-        return convertPacksToDTOs(packRepository.packsToIDs(pageable,archeageServer,continent,destinationLocationID),archeageServer)
+        return convertPacksToDTOs(packRepository.packsToIDs(pageable,archeageServer,continent,destinationLocationID,SecurityContextHolder.getContext().authentication.name.toLongOrNull()))
     }
 
-    private fun convertPacksToDTOs(packsIDs: Page<Long>,archeageServer: ArcheageServer) : Page<PackDTO> {
+    private fun convertPacksToDTOs(packsIDs: Page<Long>) : Page<PackDTO> {
         val packs = packRepository.packs(packsIDs.content)
         val userID = SecurityContextHolder.getContext()?.authentication?.name?.toLongOrNull()
         val materials = packs.flatMap { pack -> pack.materials().map(CraftingMaterial::item) }

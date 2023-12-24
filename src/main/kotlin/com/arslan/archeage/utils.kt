@@ -18,8 +18,7 @@ fun Pack.toDTO(prices: Map<Long, UserPrice>) : PackDTO {
     return PackDTO(name,creationLocation.name,price.sellLocation.name,price.price,producedQuantity,materials().map { it.toDTO(prices) } ,id!!,cost,profit)
 }
 
-fun List<Pack>.toDTO(prices: Map<Long, UserPrice>): List<PackDTO> {
-    return map { pack -> pack.toDTO(prices) }
-}
+fun List<Pack>.toDTO(prices: Map<Long, UserPrice>): List<PackDTO> = map { pack -> pack.toDTO(prices) }
+
 
 fun List<PackDTO>.materialsWithPrice(): List<CraftingMaterialDTO> = flatMap { pack -> pack.materials }.filter { material -> material.itemDTO.price != null }
