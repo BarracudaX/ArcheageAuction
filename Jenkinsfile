@@ -1,14 +1,18 @@
 pipeline {
     agent { docker { image 'gradle:jdk17' } }
     stages {
-        stage('build') {
+        stage('build'){
+            sh './gradlew build'
+        }
+        stage('test') {
             steps {
-                sh 'gradle check'
+                sh './gradlew check'
             }
         }
     }
     post{
         always{
+            archiveArtifacts 'build/libs/**/*.jar'
             junit 'build/test-results/**/*.xml'
         }
     }
