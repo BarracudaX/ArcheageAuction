@@ -16,7 +16,10 @@ import com.arslan.archeage.event.ItemPriceChangeEvent
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.maps.shouldHaveKey
@@ -27,6 +30,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.test.context.event.ApplicationEvents
 import org.springframework.test.context.event.RecordApplicationEvents
 
@@ -178,4 +184,46 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
         }
     }
 
+    @Test
+    fun `should return empty page when requesting user prices of non existing user`() {
+        val idOfNonExistingUser = 100231051L
+        userRepository.existsById(idOfNonExistingUser).shouldBeFalse()
+
+        itemPriceService.userPrices(idOfNonExistingUser, Pageable.unpaged()).isEmpty.shouldBeTrue()
+    }
+
+    @Test
+    fun `should return empty page when requesting user prices of user that have not provided any prices`() {
+        itemPriceService.userPrices(someUser.id!!, Pageable.unpaged()).isEmpty.shouldBeTrue()
+    }
+
+    @Test
+    fun `should return user prices`() {
+        val expectedPrices = listOf(
+            userPriceRepository.save(UserPrice(UserPriceKey(someUser,someItem),Price(20,30,40))),
+            userPriceRepository.save(UserPrice(UserPriceKey(someUser,anotherItem),Price(10,10,20)))
+        )
+
+        assertSoftly(itemPriceService.userPrices(someUser.id!!, Pageable.unpaged())) {
+            hasNext() shouldBe false
+            hasPrevious() shouldBe false
+            totalPages shouldBe 1
+            totalElements shouldBe 2
+            content shouldContainExactlyInAnyOrder expectedPrices
+        }
+    }
+
+    @Test
+    fun `should return user prices(2)`() {
+        val expectedPrices = listOf(
+            userPriceRepository.save(UserPrice(UserPriceKey(someUser,someItem),Price(20,30,40))),
+            userPriceRepository.save(UserPrice(UserPriceKey(someUser,anotherItem),Price(10,10,20)))
+        )
+
+        assertSoftly(itemPriceService.userPrices(someUser.id!!, PageRequest.of(0,1, Sort.by("id.purchasableItem.id")))){
+            hasNext().shouldBeTrue()
+            hasPrevious().shouldBeFalse()
+            content.shouldContainExactly(expectedPrices[0])
+        }
+    }
 }
