@@ -4,7 +4,6 @@ import com.arslan.archeage.entity.item.Item
 import com.arslan.archeage.entity.item.PurchasableItem
 import jakarta.persistence.EntityManagerFactory
 import org.hibernate.Session
-import org.hibernate.search.mapper.orm.Search
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration
 import org.springframework.boot.runApplication

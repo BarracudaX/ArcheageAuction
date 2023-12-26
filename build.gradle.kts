@@ -29,12 +29,13 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation("org.hibernate.search:hibernate-search-mapper-orm:7.0.0.Final")
+//    implementation("org.hibernate.search:hibernate-search-mapper-orm:7.0.0.Final")
     //spring
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa"){
-        exclude(group = "org.hibernate", module = "hibernate-core")
-    }
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+//    {
+//        exclude(group = "org.hibernate", module = "hibernate-core")
+//    }
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -52,7 +53,7 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.9")
     implementation("ch.qos.logback:logback-classic:1.4.11")
     implementation("org.liquibase:liquibase-core:4.24.0")
-    implementation("org.hibernate.search:hibernate-search-backend-elasticsearch:7.0.0.Final")
+//    implementation("org.hibernate.search:hibernate-search-backend-elasticsearch:7.0.0.Final")
 
 
     //test
@@ -76,6 +77,9 @@ tasks.withType<KotlinCompile> {
 
 tasks.test {
     useJUnitPlatform()
+    reports{
+        junitXml.required.set(true)
+    }
 }
 
 //kotlin {
