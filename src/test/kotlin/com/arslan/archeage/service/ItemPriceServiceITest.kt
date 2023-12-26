@@ -26,7 +26,6 @@ import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.event.EventListener
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.test.context.event.ApplicationEvents
 import org.springframework.test.context.event.RecordApplicationEvents
@@ -74,7 +73,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
         userPriceRepository.save(UserPrice(UserPriceKey(someUser,someItem), Price(1,1,1)))
         userPriceRepository.save(UserPrice(UserPriceKey(someUser,anotherItem), Price(1,1,1)))
 
-        itemPriceService.userPrices(listOf(someItem,anotherItem),anotherUser.id!!).shouldBeEmpty()
+        itemPriceService.userItemPrices(listOf(someItem,anotherItem),anotherUser.id!!).shouldBeEmpty()
     }
 
     @Test
@@ -84,7 +83,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
         userPriceRepository.save(UserPrice(UserPriceKey(anotherUser,anotherItem), Price(1,1,1)))
         val expectedPrice = userPriceRepository.save(UserPrice(UserPriceKey(anotherUser,anotherItem), Price(2,2,2)))
 
-        val result = itemPriceService.userPrices(listOf(someItem,anotherItem),anotherUser.id!!)
+        val result = itemPriceService.userItemPrices(listOf(someItem,anotherItem),anotherUser.id!!)
 
         result.shouldHaveSize(1)
         result.shouldHaveKey(anotherItem.id!!)
@@ -97,7 +96,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
         val idOfNonExistingUser = 12093L
         userRepository.existsById(idOfNonExistingUser).shouldBeFalse()
 
-        itemPriceService.userPrices(listOf(someItem),idOfNonExistingUser).shouldBeEmpty()
+        itemPriceService.userItemPrices(listOf(someItem),idOfNonExistingUser).shouldBeEmpty()
     }
 
     @Test
@@ -128,11 +127,11 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
 
     @Test
     fun `should save user price and fire ItemPriceChangeEvent`() {
-        itemPriceService.userPrices(listOf(someItem),someUser.id!!).shouldBeEmpty()
+        itemPriceService.userItemPrices(listOf(someItem),someUser.id!!).shouldBeEmpty()
 
         itemPriceService.saveUserPrice(UserPriceDTO(someUser.id!!,someItem.id!!,Price(15,20,20)))
 
-        val result = itemPriceService.userPrices(listOf(someItem),someUser.id!!)
+        val result = itemPriceService.userItemPrices(listOf(someItem),someUser.id!!)
 
         assertSoftly(events.stream().toList().filterIsInstance<ItemPriceChangeEvent>()) {
             shouldHaveSize(1)
@@ -153,11 +152,11 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
     @Test
     fun `should update user price and fire ItemPriceChangeEvent`() {
         itemPriceService.saveUserPrice(UserPriceDTO(someUser.id!!,someItem.id!!,Price(20,20,20)))
-        val firstTimestamp = itemPriceService.userPrices(listOf(someItem),someUser.id!!)[someItem.id!!]!!.timestamp
+        val firstTimestamp = itemPriceService.userItemPrices(listOf(someItem),someUser.id!!)[someItem.id!!]!!.timestamp
 
         itemPriceService.saveUserPrice(UserPriceDTO(someUser.id!!,someItem.id!!,Price(25,30,20)))
 
-        val result = itemPriceService.userPrices(listOf(someItem),someUser.id!!)
+        val result = itemPriceService.userItemPrices(listOf(someItem),someUser.id!!)
 
         assertSoftly(events.stream().toList().filterIsInstance<ItemPriceChangeEvent>()) {
             shouldHaveSize(2)

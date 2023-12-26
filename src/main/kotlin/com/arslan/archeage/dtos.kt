@@ -48,7 +48,7 @@ class ItemDTO(val name: String,val id: Long,val price:Price? = null){
 }
 
 @Serializable
-data class UserPrices(val items: Page<ItemDTO>,val hasNext: Boolean,val hasPrevious: Boolean)
+data class UserPrices(val items: List<ItemDTO>,val hasNext: Boolean,val hasPrevious: Boolean)
 
 @Serializable
 data class Packs(val packs: List<PackDTO>,val hasNext: Boolean,val hasPrevious: Boolean)

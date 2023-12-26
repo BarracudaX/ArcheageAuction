@@ -11,6 +11,8 @@ import com.arslan.archeage.repository.UserPriceRepository
 import com.arslan.archeage.repository.UserRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.optionals.getOrNull
@@ -25,7 +27,7 @@ class ItemPriceServiceImpl(
 ) : ItemPriceService {
 
     override fun prices(items: List<PurchasableItem>): List<UserPrice> = userPriceRepository.latestPrices(items)
-    override fun userPrices(items: List<PurchasableItem>, userID: Long): Map<Long, UserPrice> = userPriceRepository.userPrices(items,userID).associateBy { it.id.purchasableItem.id!! }
+    override fun userItemPrices(items: List<PurchasableItem>, userID: Long): Map<Long, UserPrice> = userPriceRepository.userItemPrices(items,userID).associateBy { it.id.purchasableItem.id!! }
     override fun saveUserPrice(userPriceDTO: UserPriceDTO) {
         val user = userRepository.findById(userPriceDTO.userID!!).orElseThrow { EmptyResultDataAccessException(1) }
         val item = purchasableItemRepository.findById(userPriceDTO.itemID).orElseThrow { EmptyResultDataAccessException(1) }
@@ -38,5 +40,7 @@ class ItemPriceServiceImpl(
 
         applicationEventPublisher.publishEvent(ItemPriceChangeEvent(this,item,user,diff))
     }
+
+    override fun userPrices(userID: Long, pageable: Pageable): Page<UserPrice> = userPriceRepository.findById_User_Id(userID,pageable)
 
 }

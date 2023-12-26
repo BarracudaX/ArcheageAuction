@@ -39,7 +39,7 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
                 .prices(materials.filterIsInstance<PurchasableItem>())
                 .associateBy { itemPrice -> itemPrice.id.purchasableItem.id!! }
         }else{
-            itemPriceService.userPrices(materials.filterIsInstance<PurchasableItem>(),userID)
+            itemPriceService.userItemPrices(materials.filterIsInstance<PurchasableItem>(),userID)
         }
 
         return PageImpl(packs.toDTO(prices),packsIDs.pageable,packsIDs.totalElements)

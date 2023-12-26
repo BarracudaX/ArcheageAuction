@@ -28,7 +28,7 @@ class PackProfitServiceImpl(private val packRepository: PackRepository,private v
             }
         val requireNewProfit = packs.filter { !changedPacks.contains(it.id!!) }
 
-        val prices = itemPriceService.userPrices(requireNewProfit.flatMap { pack -> pack.materials().map(CraftingMaterial::item).filterIsInstance<PurchasableItem>() },event.user.id!!)
+        val prices = itemPriceService.userItemPrices(requireNewProfit.flatMap { pack -> pack.materials().map(CraftingMaterial::item).filterIsInstance<PurchasableItem>() },event.user.id!!)
 
         requireNewProfit.forEach { pack ->
             val profit = pack.profit(prices.mapValues { it.value.price })

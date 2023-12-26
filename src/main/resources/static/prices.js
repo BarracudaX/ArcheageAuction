@@ -36,7 +36,7 @@ function handleData(data){
         clearChildrenUntil(container,paginationButtons)
     }
     let fragment = document.createDocumentFragment()
-    let items = data.items.content
+    let items = data.items
     let prices = data.prices
     let pricesDiv = document.createElement("div")
     pricesDiv.id = "prices"
