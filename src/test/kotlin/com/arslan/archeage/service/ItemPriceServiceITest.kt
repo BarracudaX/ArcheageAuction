@@ -12,6 +12,7 @@ import com.arslan.archeage.entity.item.UserPrice
 import com.arslan.archeage.entity.item.UserPriceKey
 import com.arslan.archeage.entity.pack.Pack
 import com.arslan.archeage.entity.pack.PackPrice
+import com.arslan.archeage.event.ItemPriceChangeEvent
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.booleans.shouldBeFalse
@@ -24,8 +25,13 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.event.EventListener
 import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.test.context.event.ApplicationEvents
+import org.springframework.test.context.event.RecordApplicationEvents
 
+@RecordApplicationEvents
 class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : AbstractITest() {
 
     private lateinit var someItem: PurchasableItem
@@ -33,6 +39,9 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
     private lateinit var currentUserArcheageServer: ArcheageServer
     private lateinit var someUser: User
     private lateinit var anotherUser: User
+
+    @Autowired
+    private lateinit var events: ApplicationEvents
 
     @BeforeEach
     fun setUp() {
@@ -118,33 +127,56 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
     }
 
     @Test
-    fun `should save user price`() {
+    fun `should save user price and fire ItemPriceChangeEvent`() {
         itemPriceService.userPrices(listOf(someItem),someUser.id!!).shouldBeEmpty()
 
-        itemPriceService.saveUserPrice(UserPriceDTO(someUser.id!!,someItem.id!!,Price(20,20,20)))
+        itemPriceService.saveUserPrice(UserPriceDTO(someUser.id!!,someItem.id!!,Price(15,20,20)))
 
         val result = itemPriceService.userPrices(listOf(someItem),someUser.id!!)
 
+        assertSoftly(events.stream().toList().filterIsInstance<ItemPriceChangeEvent>()) {
+            shouldHaveSize(1)
+            assertSoftly(get(0)) {
+                item shouldBe someItem
+                user shouldBe someUser
+                priceChange shouldBe Price(15,20,20)
+            }
+        }
         result.shouldHaveSize(1)
         assertSoftly(result[someItem.id]!!) {
-            price shouldBe Price(20,20,20)
+            price shouldBe Price(15,20,20)
             id.user shouldBe someUser
             id.purchasableItem shouldBe someItem
         }
     }
 
     @Test
-    fun `should update user price`() {
+    fun `should update user price and fire ItemPriceChangeEvent`() {
         itemPriceService.saveUserPrice(UserPriceDTO(someUser.id!!,someItem.id!!,Price(20,20,20)))
         val firstTimestamp = itemPriceService.userPrices(listOf(someItem),someUser.id!!)[someItem.id!!]!!.timestamp
 
         itemPriceService.saveUserPrice(UserPriceDTO(someUser.id!!,someItem.id!!,Price(25,30,20)))
+
         val result = itemPriceService.userPrices(listOf(someItem),someUser.id!!)
 
+        assertSoftly(events.stream().toList().filterIsInstance<ItemPriceChangeEvent>()) {
+            shouldHaveSize(2)
+            assertSoftly(get(0)) {
+                item shouldBe someItem
+                user shouldBe someUser
+                priceChange shouldBe Price(20,20,20)
+            }
+            assertSoftly(get(1)) {
+                item shouldBe someItem
+                user shouldBe someUser
+                priceChange shouldBe  Price(25,30,20) - Price(20,20,20)
+            }
+        }
         result.shouldHaveSize(1)
         assertSoftly(result[someItem.id]!!) {
             price shouldBe Price(25,30,20)
             timestamp shouldNotBe firstTimestamp
         }
     }
+
 }

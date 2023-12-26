@@ -140,4 +140,5 @@ class PriceUnitTest {
     fun `should not throw IAE when price is zero`() {
         shouldNotThrow<IllegalArgumentException> { Price(0,0,0) }
     }
+
 }

@@ -2,7 +2,9 @@ package com.arslan.archeage.entity.pack
 
 import com.arslan.archeage.entity.CraftingMaterial
 import com.arslan.archeage.entity.Location
+import com.arslan.archeage.entity.Price
 import com.arslan.archeage.entity.item.Item
+import com.arslan.archeage.entity.item.PurchasableItem
 import jakarta.persistence.*
 
 @Entity
@@ -32,4 +34,13 @@ class Pack(
         materials.add(material)
     }
 
+    fun profit(prices: Map<Long,Price>) : Price{
+
+        val cost = materials
+            .filter { it.item is PurchasableItem }
+            .map { material -> prices[material.item.id]!! * material.quantity }
+            .fold(Price(0,0,0)){ price,next -> price + next }
+
+        return price.price - cost
+    }
 }

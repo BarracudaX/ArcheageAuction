@@ -3,6 +3,7 @@ package com.arslan.archeage.repository
 import com.arslan.archeage.Continent
 import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.Location
+import com.arslan.archeage.entity.User
 import com.arslan.archeage.entity.item.Item
 import com.arslan.archeage.entity.pack.Pack
 import org.springframework.data.domain.Page
@@ -15,27 +16,9 @@ interface PackRepository : JpaRepository<Pack,Long>{
     fun packs(ids: Collection<Long>) : List<Pack>
 
     @Query("""
-        SELECT p.id FROM Pack p WHERE p.creationLocation.archeageServer = :server AND p.creationLocation.continent = :continent AND :destinationLocation = p.price.sellLocation.id AND p.creationLocation.id = :departureLocation
-        AND NOT EXISTS ( SELECT 1 FROM Pack p2 JOIN p2.materials m WHERE p2.id = p.id AND type(m.item) = PurchasableItem AND NOT EXISTS (SELECT 1 FROM UserPrice up WHERE up.id.purchasableItem.id = m.item.id AND (:userID IS NULL OR up.id.user.id = :userID) ) )
+        SELECT p1 FROM Pack p1 JOIN FETCH p1.materials m1 JOIN FETCH m1.item WHERE :item IN (SELECT m2.item FROM Pack p2 JOIN p2.materials m2 WHERE p2.id = p1.id)
+        AND NOT EXISTS ( SELECT 1 FROM Pack p3 JOIN p3.materials m3 WHERE p3.id = p1.id AND type(m3.item) = PurchasableItem AND NOT EXISTS (SELECT 1 FROM UserPrice up WHERE up.id.purchasableItem.id = m3.item.id AND up.id.user = :user) )
     """)
-    fun packsIDS(pageable: Pageable,server: ArcheageServer,continent: Continent,departureLocation: Long,destinationLocation: Long,userID: Long?) : Page<Long>
-
-    @Query("""
-        SELECT p.id FROM Pack p WHERE p.creationLocation.archeageServer = :server AND p.creationLocation.continent = :continent AND :destinationLocation = p.price.sellLocation.id
-        AND NOT EXISTS ( SELECT 1 FROM Pack p2 JOIN p2.materials m WHERE p2.id = p.id AND type(m.item) = PurchasableItem AND NOT EXISTS (SELECT 1 FROM UserPrice up WHERE up.id.purchasableItem.id = m.item.id AND (:userID IS NULL OR up.id.user.id = :userID) ) )
-    """)
-    fun packsToIDs(pageable: Pageable,server: ArcheageServer,continent: Continent,destinationLocation: Long,userID: Long?) : Page<Long>
-
-    @Query("""
-        SELECT p.id FROM Pack p WHERE p.creationLocation.archeageServer = :server AND p.creationLocation.continent = :continent AND p.creationLocation.id = :departureLocation
-        AND NOT EXISTS ( SELECT 1 FROM Pack p2 JOIN p2.materials m WHERE p2.id = p.id AND type(m.item) = PurchasableItem AND NOT EXISTS (SELECT 1 FROM UserPrice up WHERE up.id.purchasableItem.id = m.item.id AND (:userID IS NULL OR up.id.user.id = :userID) ) )
-    """)
-    fun packsAtIDs(pageable: Pageable,server: ArcheageServer,continent: Continent,departureLocation: Long,userID: Long?) : Page<Long>
-
-    @Query("""
-        SELECT p.id FROM Pack p WHERE  p.creationLocation.archeageServer = :server AND p.creationLocation.continent = :continent
-        AND NOT EXISTS ( SELECT 1 FROM Pack p2 JOIN p2.materials m WHERE p2.id = p.id AND type(m.item) = PurchasableItem AND NOT EXISTS (SELECT 1 FROM UserPrice up WHERE up.id.purchasableItem.id = m.item.id AND (:userID IS NULL OR up.id.user.id = :userID) ) )
-    """)
-    fun allPacksIDs(pageable: Pageable,server: ArcheageServer, continent: Continent,userID: Long?) : Page<Long>
+    fun selectPacksWithCraftingMaterial(item: Item,user: User) : List<Pack>
 
 }
