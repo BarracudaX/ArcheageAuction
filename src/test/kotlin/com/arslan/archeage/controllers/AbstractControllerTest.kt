@@ -9,7 +9,9 @@ import com.arslan.archeage.service.*
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.junit.jupiter.api.BeforeEach
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.MessageSource
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Import
 import org.springframework.security.authentication.AuthenticationProvider
@@ -46,6 +48,9 @@ abstract class AbstractControllerTest : AbstractTest() {
 
     @MockkBean
     protected lateinit var userServiceMock: UserService
+
+    @Autowired
+    protected lateinit var messageSource: MessageSource
 
     protected val availableServers = listOf(
         ArcheageServer("ANY_EU_SERVER_1", 1),ArcheageServer("ANY_EU_SERVER_2", 2),
