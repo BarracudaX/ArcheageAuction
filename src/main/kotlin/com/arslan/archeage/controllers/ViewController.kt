@@ -32,9 +32,6 @@ class ViewController {
     }
 
     @GetMapping("/packs_view")
-    fun allPacksView(model: Model,continent: Optional<Continent>) : String{
-        model.addAttribute(continent.getOrElse { Continent.values()[0] })
-        return "packs"
-    }
+    fun allPacksView() : String = "packs"
 
 }

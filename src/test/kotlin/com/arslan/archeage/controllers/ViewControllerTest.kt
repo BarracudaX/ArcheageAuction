@@ -2,27 +2,21 @@ package com.arslan.archeage.controllers
 
 import com.arslan.archeage.*
 import com.arslan.archeage.entity.ArcheageServer
-import com.arslan.archeage.entity.Location
-import com.arslan.archeage.entity.Price
 import com.arslan.archeage.service.ArcheageServerContextHolder
-import io.mockk.every
-import io.mockk.verifyAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithAnonymousUser
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.springframework.test.web.servlet.get
-import java.util.Optional
-import kotlin.jvm.optionals.getOrElse
 
 class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest() {
 
-    private val viewEndpoints = arrayOf("/login","/register","/packs_view")
+    private val publicViewPoints = arrayOf("/login","/register","/packs_view","/")
 
     private lateinit var usersArcheageServer: ArcheageServer
 
@@ -54,7 +48,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
     @MethodSource("contentTypesOtherThanHTML")
     @ParameterizedTest
     fun `should return 406 not acceptable when trying to get any view with accept type other than html`(invalidMediaType: MediaType) {
-        for(viewEndpoint in viewEndpoints){
+        for(viewEndpoint in publicViewPoints){
             mockMvc
                 .get(viewEndpoint){ accept = invalidMediaType }
                 .andExpect { status { isNotAcceptable() } }
@@ -81,4 +75,55 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             .andExpect { status { isForbidden() } }
     }
 
+    @Test
+    fun `should return home page`() {
+        mockMvc
+            .get("/")
+            .andExpect {
+                status { isOk() }
+                content { view { name("index") } }
+            }
+    }
+
+    @Test
+    fun `should return packs view`() {
+        mockMvc
+            .get("/packs_view")
+            .andExpect {
+                status { isOk() }
+                content { view { name("packs") } }
+            }
+    }
+
+    @Test
+    fun `should redirect to login page when requesting profile page without being authenticated`() {
+        mockMvc
+            .get("/profile")
+            .andExpect {
+                status { is3xxRedirection() }
+            }
+    }
+
+    @WithMockUser
+    @Test
+    fun `should return profile page if user is authenticated`() {
+        mockMvc
+            .get("/profile")
+            .andExpect {
+                status { isOk() }
+                view { name("profile") }
+            }
+    }
+
+    @WithMockUser
+    @MethodSource("contentTypesOtherThanHTML")
+    @ParameterizedTest
+    fun `should return 406 not acceptable when trying to get profile view with accept type other than html`(invalidMediaType: MediaType) {
+        mockMvc
+            .get("/profile"){
+                accept = invalidMediaType
+            }.andExpect {
+                status { isNotAcceptable() }
+            }
+    }
 }
