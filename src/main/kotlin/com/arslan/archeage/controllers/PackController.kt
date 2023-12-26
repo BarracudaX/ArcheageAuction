@@ -8,6 +8,7 @@ import com.arslan.archeage.service.PackService
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.data.domain.Pageable
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,7 +21,7 @@ import kotlin.jvm.optionals.getOrDefault
 @RestController
 class PackController(private val packService: PackService) {
 
-    @GetMapping
+    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     fun packs(@RequestParam continent: Optional<Continent>, @RequestParam(required = false) departureLocation: Long?, @RequestParam(required = false) destinationLocation: Long?, archeageServer: ArcheageServer?,pageable: Pageable) : ResponseEntity<Packs>{
         if(archeageServer == null){
             throw ArcheageContextHolderEmptyException()

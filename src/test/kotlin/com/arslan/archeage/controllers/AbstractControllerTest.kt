@@ -8,6 +8,7 @@ import com.arslan.archeage.repository.ArcheageServerRepository
 import com.arslan.archeage.service.*
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -51,6 +52,8 @@ abstract class AbstractControllerTest : AbstractTest() {
 
     @Autowired
     protected lateinit var messageSource: MessageSource
+
+    protected val json = Json
 
     protected val availableServers = listOf(
         ArcheageServer("ANY_EU_SERVER_1", 1),ArcheageServer("ANY_EU_SERVER_2", 2),
