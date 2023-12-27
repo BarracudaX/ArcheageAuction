@@ -21,12 +21,15 @@ services:
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
-#  jenkins:
-#    image: jenkins/jenkins:lts-jdk17
-#    environment:
-#      - JENKINS_OPTS=--httpPort=8085
-#    ports:
-#      - "8085:8085"
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    environment:
+      - JENKINS_OPTS=--httpPort=8085
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - jenkins_data:/var/jenkins_home
+    ports:
+      - "8085:8085"
 #  prometheus:
 #    image: bitnami/prometheus:latest
 #    ports:
@@ -34,7 +37,10 @@ services:
 #    volumes:
 #      - prometheus_data:/opt/bitnami/prometheus/data
 #      - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+networks:
+  jenkins:
 volumes:
   mysql_data:
   prometheus_data:
   elasticsearch_data:
+  jenkins_data:
