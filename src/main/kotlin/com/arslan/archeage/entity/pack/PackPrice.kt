@@ -15,7 +15,7 @@ class PackPrice(
     var sellLocation: Location
 ){
     init {
-        if(!sellLocation.hasFactory) throw IllegalArgumentException("Sell location $sellLocation does not have a factory.")
+        require(sellLocation.hasFactory){"Sell location $sellLocation does not have a factory."}
     }
 
     override fun equals(other: Any?): Boolean {

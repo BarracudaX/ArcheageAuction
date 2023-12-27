@@ -34,7 +34,7 @@ class Pack(
     fun materials() : Set<CraftingMaterial> = materials
 
     fun addMaterial(material: CraftingMaterial){
-        if(material.item.archeageServer != archeageServer) throw IllegalArgumentException("")
+        require(material.item.archeageServer == archeageServer){ "" }
         materials.add(material)
     }
 

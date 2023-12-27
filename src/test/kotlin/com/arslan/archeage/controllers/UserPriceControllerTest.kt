@@ -39,7 +39,8 @@ class UserPriceControllerTest(private val mockMvc: MockMvc) : AbstractController
         ),
         pageable, 100
     )
-    private val expectedJson = json.encodeToString(UserPrices(userPrices.content.map { ItemDTO(it.id.purchasableItem.name,it.id.purchasableItem.id!!,it.price) },userPrices.hasNext(),userPrices.hasPrevious()))
+    private val itemDTOs = userPrices.content.map { ItemDTO(it.id.purchasableItem.name,it.id.purchasableItem.id!!,it.price) }
+    private val expectedJson = json.encodeToString(UserPrices(itemDTOs,userPrices.hasNext(),userPrices.hasPrevious()))
 
     @BeforeEach
     fun setUpTestContext(){

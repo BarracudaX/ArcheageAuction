@@ -79,8 +79,10 @@ class SecurityConfiguration {
     @Order(3)
     @Bean
     fun httpSecurityConfigurerDenyAll() : HttpSecurityConfigurer = object : HttpSecurityConfigurer {
-        override fun configure(httpSecurity: HttpSecurity): HttpSecurity = httpSecurity.authorizeHttpRequests { authorize -> authorize.anyRequest().denyAll() }
-
+        override fun configure(httpSecurity: HttpSecurity): HttpSecurity = httpSecurity
+            .authorizeHttpRequests { authorize ->
+                authorize.anyRequest().denyAll()
+            }
     }
 
     @Bean
