@@ -21,13 +21,31 @@ services:
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
+  docker:
+    image: docker:24.0.7-dind-alpine3.19
+    privileged: true
+    environment:
+      - DOCKER_TLS_CERTDIR=/certs
+    networks:
+      jenkins_net:
+    volumes:
+      - jenkins_data:/var/jenkins_home
+      - jenkins_docker_certs:/certs/client
+    ports:
+      - "2376:2376"
   jenkins:
-    image: jenkins/jenkins:lts-jdk17
+    build:
+      dockerfile: JenkinsDockerfile
     environment:
       - JENKINS_OPTS=--httpPort=8085
+      - DOCKER_HOST=tcp://docker:2376
+      - DOCKER_CERT_PATH=/certs/client
+      - DOCKER_TLS_VERIFY=1
+    networks:
+      jenkins_net:
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
       - jenkins_data:/var/jenkins_home
+      - jenkins_docker_certs:/certs/client:ro
     ports:
       - "8085:8085"
 #  prometheus:
@@ -38,9 +56,10 @@ services:
 #      - prometheus_data:/opt/bitnami/prometheus/data
 #      - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
 networks:
-  jenkins:
+  jenkins_net:
 volumes:
   mysql_data:
   prometheus_data:
   elasticsearch_data:
   jenkins_data:
+  jenkins_docker_certs:
