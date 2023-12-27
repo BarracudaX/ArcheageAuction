@@ -6,7 +6,6 @@ import org.springframework.http.MediaType
 
 abstract class AbstractTest {
 
-
     companion object{
 
         @JvmStatic

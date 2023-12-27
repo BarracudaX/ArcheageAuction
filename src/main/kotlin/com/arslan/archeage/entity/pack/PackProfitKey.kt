@@ -14,6 +14,6 @@ class PackProfitKey(
     var user: User
 ) : Serializable{
 
-    companion object{ const val serialVersionUID=1L }
+    companion object{ private const val serialVersionUID: Long = 1L }
 
 }

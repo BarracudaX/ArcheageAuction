@@ -17,5 +17,5 @@ class UserPriceKey(
     @ManyToOne(optional = false)
     var purchasableItem: PurchasableItem
 ) : Serializable{
-    companion object{ const val serialVersionUID=1L }
+    companion object{ private const val serialVersionUID: Long = 1L }
 }

@@ -16,8 +16,8 @@ const val COPPER_COINS_PER_GOLD_COIN = 10000
 data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Price>{
 
     init {
-        if(silver < MIN_COIN_VALUE || silver > MAX_COIN_VALUE) throw IllegalArgumentException("Silver property should be between [$MIN_COIN_VALUE,$MAX_COIN_VALUE]. Provided value $silver.")
-        if(copper < MIN_COIN_VALUE || copper > MAX_COIN_VALUE) throw IllegalArgumentException("Copper property should be between [$MIN_COIN_VALUE,$MAX_COIN_VALUE]. Provided value $copper.")
+        require(silver in MIN_COIN_VALUE..MAX_COIN_VALUE){ "Silver property should be between [$MIN_COIN_VALUE,$MAX_COIN_VALUE]. Provided value $silver." }
+        require(copper in MIN_COIN_VALUE..MAX_COIN_VALUE){ "Copper property should be between [$MIN_COIN_VALUE,$MAX_COIN_VALUE]. Provided value $copper." }
 
         val priceValue = if(gold != 0){
             if(gold > 0){

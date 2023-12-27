@@ -257,7 +257,7 @@ exceptions:
     ignoreLabeled: false
   SwallowedException:
     active: true
-    excludes: ['**/RegisterController.kt/**']
+    excludes: ['**/RegisterController.kt']
     ignoredExceptionTypes:
       - 'InterruptedException'
       - 'MalformedURLException'
@@ -632,7 +632,7 @@ style:
     maxChainedCalls: 5
   MaxLineLength:
     active: true
-    maxLineLength: 150
+    maxLineLength: 170
     excludePackageStatements: true
     excludeImportStatements: true
     excludeCommentStatements: false
@@ -776,6 +776,7 @@ style:
     active: true
   UtilityClassWithPublicConstructor:
     active: true
+    excludes: ['/**/AbstractTest.kt','/**/ArcheageServerContextHolder.kt']
   VarCouldBeVal:
     active: true
     ignoreLateinitVar: false
