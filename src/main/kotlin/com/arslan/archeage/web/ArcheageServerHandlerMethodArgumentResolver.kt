@@ -12,6 +12,8 @@ import org.springframework.web.method.support.ModelAndViewContainer
 @Component
 class ArcheageServerHandlerMethodArgumentResolver : HandlerMethodArgumentResolver{
     override fun supportsParameter(parameter: MethodParameter): Boolean = ArcheageServer::class.java.isAssignableFrom(parameter.parameterType)
-    override fun resolveArgument(parameter: MethodParameter, mavContainer: ModelAndViewContainer?, webRequest: NativeWebRequest, binderFactory: WebDataBinderFactory?): Any? = ArcheageServerContextHolder.getServerContext()
+    override fun resolveArgument(parameter: MethodParameter, mavContainer: ModelAndViewContainer?, webRequest: NativeWebRequest, binderFactory: WebDataBinderFactory?): Any? {
+        return ArcheageServerContextHolder.getServerContext()
+    }
 
 }
