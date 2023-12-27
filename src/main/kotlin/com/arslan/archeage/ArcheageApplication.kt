@@ -17,5 +17,5 @@ import java.io.InputStreamReader
 class ArcheageApplication
 
 fun main(args: Array<String>) {
-	val context = runApplication<ArcheageApplication>(*args)
+	runApplication<ArcheageApplication>(*args)
 }

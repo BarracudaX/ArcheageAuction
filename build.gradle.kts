@@ -30,6 +30,10 @@ dependencyManagement {
     }
 }
 
+detekt{
+    this.config.setFrom("detekt.yml")
+}
+
 dependencies {
     implementation("org.hibernate.search:hibernate-search-mapper-orm:7.0.0.Final")
     //spring

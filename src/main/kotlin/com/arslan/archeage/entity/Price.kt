@@ -5,13 +5,19 @@ import kotlinx.serialization.Serializable
 
 private enum class PriceValue{ POSITIVE,NEGATIVE,ZERO}
 
+const val MAX_COIN_VALUE = 99
+const val MIN_COIN_VALUE = -99
+const val COPPER_COINS_PER_SILVER_COIN = 100
+const val SILVER_COINS_PER_GOLD_COIN = 100
+const val COPPER_COINS_PER_GOLD_COIN = 10000
+
 @Serializable
 @Embeddable
 data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Price>{
 
     init {
-        if(silver < -99 || silver > 99) throw IllegalArgumentException("Silver property should be between [-99,99]. Provided value $silver.")
-        if(copper < -99 || copper > 99) throw IllegalArgumentException("Copper property should be between [-99,99]. Provided value $copper.")
+        if(silver < MIN_COIN_VALUE || silver > MAX_COIN_VALUE) throw IllegalArgumentException("Silver property should be between [$MIN_COIN_VALUE,$MAX_COIN_VALUE]. Provided value $silver.")
+        if(copper < MIN_COIN_VALUE || copper > MAX_COIN_VALUE) throw IllegalArgumentException("Copper property should be between [$MIN_COIN_VALUE,$MAX_COIN_VALUE]. Provided value $copper.")
 
         val priceValue = if(gold != 0){
             if(gold > 0){
@@ -46,15 +52,15 @@ data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Pr
     companion object{
 
         fun fromCopper(amount: Int) : Price {
-            val gold = amount / 10000
-            val silver = (amount-gold*10000)/100
-            val copper = (amount-gold*10000-silver*100)
+            val gold = amount / COPPER_COINS_PER_GOLD_COIN
+            val silver = (amount-gold*COPPER_COINS_PER_GOLD_COIN)/ SILVER_COINS_PER_GOLD_COIN
+            val copper = (amount-gold* COPPER_COINS_PER_GOLD_COIN-silver* COPPER_COINS_PER_SILVER_COIN)
 
             return Price(gold,silver,copper)
         }
     }
 
-    private fun totalCopper() : Int = copper + silver*100 + gold*100*100
+    private fun totalCopper() : Int = copper + silver* COPPER_COINS_PER_SILVER_COIN + gold*SILVER_COINS_PER_GOLD_COIN*COPPER_COINS_PER_SILVER_COIN
 
     operator fun plus(price: Price) : Price = fromCopper(totalCopper() + price.totalCopper())
 
@@ -67,14 +73,16 @@ data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Pr
     }
 
     override fun compareTo(other: Price): Int {
-        val totalCopperCost = copper + silver * 100 + gold * 100 * 100
-        val otherTotalCopperCost = other.copper + other.silver * 100 + other.gold * 100 * 100
+        val totalCopperCost = copper + silver * COPPER_COINS_PER_SILVER_COIN + gold * SILVER_COINS_PER_GOLD_COIN * COPPER_COINS_PER_SILVER_COIN
+        val otherTotalCopperCost = other.copper + other.silver * COPPER_COINS_PER_SILVER_COIN + other.gold * SILVER_COINS_PER_GOLD_COIN * COPPER_COINS_PER_SILVER_COIN
 
-        if(totalCopperCost == otherTotalCopperCost) return 0
-
-        if(totalCopperCost > otherTotalCopperCost) return 1
-
-        return -1
+        return if(totalCopperCost == otherTotalCopperCost){
+            0
+        }else if(totalCopperCost > otherTotalCopperCost) {
+            1
+        }else{
+            -1
+        }
     }
 
 

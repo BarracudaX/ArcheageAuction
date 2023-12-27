@@ -12,7 +12,7 @@ import com.arslan.archeage.entity.pack.PackPrice
 import org.junit.jupiter.api.BeforeEach
 import kotlin.random.Random
 
-class PackProfitServiceITest(private val packProfitService: PackProfitService) : AbstractITest() {
+class PackProfitServiceITest : AbstractITest() {
 
     private val allMaterials = mutableListOf<Item>()
     private val purchasableMaterials = mutableListOf<PurchasableItem>()

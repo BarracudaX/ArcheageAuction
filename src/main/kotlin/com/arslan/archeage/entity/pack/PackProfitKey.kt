@@ -12,4 +12,8 @@ class PackProfitKey(
 
     @ManyToOne
     var user: User
-) : Serializable
+) : Serializable{
+
+    companion object{ const val serialVersionUID=1L }
+
+}

@@ -16,4 +16,6 @@ class UserPriceKey(
     @JoinColumn(name = "item_id")
     @ManyToOne(optional = false)
     var purchasableItem: PurchasableItem
-) : Serializable
+) : Serializable{
+    companion object{ const val serialVersionUID=1L }
+}

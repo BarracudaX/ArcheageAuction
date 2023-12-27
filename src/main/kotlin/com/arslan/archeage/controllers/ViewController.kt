@@ -28,7 +28,7 @@ class ViewController {
 
 
     @GetMapping("/profile")
-    fun profile(pageable: Pageable, model: Model) : String = PROFILE_PAGE_VIEW
+    fun profile() : String = PROFILE_PAGE_VIEW
 
     @GetMapping
     fun homePage(): String = INDEX_PAGE_VIEW
