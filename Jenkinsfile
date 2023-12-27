@@ -23,7 +23,7 @@ pipeline {
             junit 'build/test-results/**/*.xml'
             recordIssues(
                 enabledForFailure: true, aggregatingResults:true,
-                tools: [detekt(pattern : 'build/reports/detekt.xml',reportEncoding: 'UTF-8')]
+                tools: [detekt(pattern : 'build/reports/**/detekt.xml',reportEncoding: 'UTF-8')]
             )
         }
     }
