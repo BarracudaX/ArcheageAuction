@@ -21,6 +21,10 @@ pipeline {
         always{
             archiveArtifacts 'build/libs/**/*.jar'
             junit 'build/test-results/**/*.xml'
+            recordIssues(
+                enableForFailure: true, aggregatingResults:true,
+                tools: [detekt(pattern : 'build/reports/detekt.xml',reportEncoding: 'UTF-8')]
+            )
         }
     }
 }
