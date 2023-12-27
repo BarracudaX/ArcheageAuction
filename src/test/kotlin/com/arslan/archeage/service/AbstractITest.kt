@@ -12,6 +12,7 @@ import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.context.TestConstructor
 import org.springframework.transaction.annotation.Transactional
 import org.testcontainers.containers.MySQLContainer
+import org.testcontainers.elasticsearch.ElasticsearchContainer
 
 @Transactional
 @ActiveProfiles("test")
@@ -53,10 +54,17 @@ abstract class AbstractITest : AbstractTest(){
         @JvmStatic
         val mysql = MySQLContainer("mysql:latest").withReuse(true)
 
+        @JvmStatic
+        val elasticSearch = ElasticsearchContainer("elasticsearch:8.11.1")
+            .withEnv("xpack.security.enabled","false")
+            .withEnv("discovery.type","single-node")
+            .withReuse(true)
+
         @DynamicPropertySource
         @JvmStatic
         fun dynamicProperties(registry: DynamicPropertyRegistry){
             mysql.start()
+            elasticSearch.start()
             registry.add("spring.datasource.url"){ mysql.jdbcUrl }
             registry.add("spring.datasource.username"){ mysql.username }
             registry.add("spring.datasource.password"){ mysql.password }
@@ -64,6 +72,7 @@ abstract class AbstractITest : AbstractTest(){
             registry.add("spring.liquibase.user"){ mysql.username }
             registry.add("spring.liquibase.password"){ mysql.password }
             registry.add("spring.liquibase.url"){ mysql.jdbcUrl }
+            registry.add("spring.jpa.properties.hibernate.search.backend.hosts"){ elasticSearch.httpHostAddress }
         }
     }
 
