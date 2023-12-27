@@ -2,6 +2,7 @@ package com.arslan.archeage.controllers
 
 import com.arslan.archeage.Continent
 import com.arslan.archeage.PackDTO
+import com.arslan.archeage.PackRequest
 import com.arslan.archeage.Packs
 import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.Price
@@ -25,16 +26,17 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.request
+import kotlin.math.exp
 
 class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(){
 
-    private lateinit var archeageServer: ArcheageServer
+    private val archeageServer = availableServers[0]
     private val pageable = PageRequest.of(2,3)
+    private val packRequest = PackRequest(Continent.WEST,null,null,null)
     private lateinit var packsPage: Page<PackDTO>
 
     @BeforeEach
     fun setUpTestContext(){
-        archeageServer = availableServers[0]
         ArcheageServerContextHolder.setServerContext(archeageServer)
         packsPage = PageImpl(
             listOf(
@@ -51,7 +53,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         ArcheageServerContextHolder.clear()
 
         mockMvc
-            .get("/packs")
+            .get("/packs?continent=${Continent.WEST}")
             .andExpect {
                 status { isBadRequest() }
                 content { string(messageSource.getMessage("archeage.server.not.chosen.error.message", emptyArray(),LocaleContextHolder.getLocale())) }
@@ -60,27 +62,11 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         verifyAll { packServiceMock wasNot called }
     }
 
-
-    @Test
-    fun `should return packs of default continent`() {
-        every { packServiceMock.packs(Continent.values()[0],archeageServer,pageable) } returns packsPage
-
-        mockMvc
-            .get("/packs?size=${pageable.pageSize}&page=${pageable.pageNumber}")
-            .andExpect {
-                status { isOk() }
-                content {
-                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious())))
-                }
-            }
-
-        verifyAll { packServiceMock.packs(Continent.values()[0],archeageServer,pageable) }
-    }
-
     @MethodSource("continents")
     @ParameterizedTest
     fun `should return packs of requested continent`(continent: Continent) {
-        every { packServiceMock.packs(continent,archeageServer,pageable) } returns packsPage
+        val expectedRequest = packRequest.copy(continent = continent)
+        every { packServiceMock.packs(expectedRequest,pageable,archeageServer) } returns packsPage
 
         mockMvc
             .get("/packs?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}")
@@ -91,13 +77,14 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
                 }
             }
 
-        verifyAll { packServiceMock.packs(continent,archeageServer,pageable) }
+        verifyAll { packServiceMock.packs(expectedRequest,pageable,archeageServer) }
     }
 
     @MethodSource("continents")
     @ParameterizedTest
     fun `should return packs of requested destination and continent`(continent: Continent) {
-        every { packServiceMock.packsSoldAt(continent,1,archeageServer,pageable) } returns packsPage
+        val expectedPackRequest = packRequest.copy(continent = continent, destinationLocation = 1)
+        every { packServiceMock.packs(expectedPackRequest,pageable,archeageServer) } returns packsPage
 
         mockMvc
             .get("/packs?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}&destinationLocation=1")
@@ -108,29 +95,14 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
                 }
             }
 
-        verifyAll { packServiceMock.packsSoldAt(continent,1,archeageServer,pageable) }
-    }
-
-    @Test
-    fun `should return packs of requested destination of default continent`() {
-        every { packServiceMock.packsSoldAt(Continent.values()[0],1,archeageServer,pageable) } returns packsPage
-
-        mockMvc
-            .get("/packs?size=${pageable.pageSize}&page=${pageable.pageNumber}&destinationLocation=1")
-            .andExpect {
-                status { isOk() }
-                content {
-                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious())))
-                }
-            }
-
-        verifyAll { packServiceMock.packsSoldAt(Continent.values()[0],1,archeageServer,pageable) }
+        verifyAll { packServiceMock.packs(expectedPackRequest,pageable,archeageServer) }
     }
 
     @MethodSource("continents")
     @ParameterizedTest
     fun `should return packs of requested departure and continent`(continent: Continent) {
-        every { packServiceMock.packsCreatedAt(continent,5,archeageServer,pageable) } returns packsPage
+        val expectedPackRequest = packRequest.copy(continent = continent, departureLocation = 5)
+        every { packServiceMock.packs(expectedPackRequest,pageable,archeageServer) } returns packsPage
 
         mockMvc
             .get("/packs?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}&departureLocation=5")
@@ -141,29 +113,14 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
                 }
             }
 
-        verifyAll { packServiceMock.packsCreatedAt(continent,5,archeageServer,pageable)  }
-    }
-
-    @Test
-    fun `should return packs of requested departure of default continent`() {
-        every { packServiceMock.packsCreatedAt(Continent.values()[0],5,archeageServer,pageable) } returns packsPage
-
-        mockMvc
-            .get("/packs?size=${pageable.pageSize}&page=${pageable.pageNumber}&departureLocation=5")
-            .andExpect {
-                status { isOk() }
-                content {
-                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious())))
-                }
-            }
-
-        verifyAll { packServiceMock.packsCreatedAt(Continent.values()[0],5,archeageServer,pageable)  }
+        verifyAll { packServiceMock.packs(expectedPackRequest,pageable,archeageServer)  }
     }
 
     @MethodSource("continents")
     @ParameterizedTest
     fun `should return packs of requested departure and destination location and continent`(continent: Continent) {
-        every { packServiceMock.packs(1,continent,3,archeageServer,pageable) } returns packsPage
+        val expectedPackRequest = packRequest.copy(continent = continent, destinationLocation = 1, departureLocation = 3)
+        every { packServiceMock.packs(expectedPackRequest,pageable,archeageServer) } returns packsPage
 
         mockMvc
             .get("/packs?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}&departureLocation=3&destinationLocation=1")
@@ -174,23 +131,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
                 }
             }
 
-        verifyAll { packServiceMock.packs(1,continent,3,archeageServer,pageable)  }
-    }
-
-    @Test
-    fun `should return packs of requested departure and destination location of default continent`() {
-        every { packServiceMock.packs(1,Continent.values()[0],3,archeageServer,pageable) } returns packsPage
-
-        mockMvc
-            .get("/packs?size=${pageable.pageSize}&page=${pageable.pageNumber}&departureLocation=3&destinationLocation=1")
-            .andExpect {
-                status { isOk() }
-                content {
-                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious())))
-                }
-            }
-
-        verifyAll { packServiceMock.packs(1,Continent.values()[0],3,archeageServer,pageable)  }
+        verifyAll { packServiceMock.packs(expectedPackRequest,pageable,archeageServer)  }
     }
 
     @MethodSource("contentTypesOtherThanJson")

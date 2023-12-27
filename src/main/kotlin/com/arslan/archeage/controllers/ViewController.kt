@@ -15,23 +15,31 @@ import kotlin.jvm.optionals.getOrElse
 @Controller
 class ViewController {
 
+    companion object{
+        const val LOGIN_PAGE_VIEW = "login"
+        const val PROFILE_PAGE_VIEW = "profile"
+        const val INDEX_PAGE_VIEW = "index"
+        const val REGISTER_PAGE_VIEW = "register"
+        const val PACKS_PAGE_VIEW = "packs"
+    }
+
     @GetMapping("/login")
-    fun loginPage() : String = "login"
+    fun loginPage() : String = LOGIN_PAGE_VIEW
 
 
     @GetMapping("/profile")
-    fun profile(pageable: Pageable, model: Model) : String = "profile"
+    fun profile(pageable: Pageable, model: Model) : String = PROFILE_PAGE_VIEW
 
     @GetMapping
-    fun homePage(): String = "index"
+    fun homePage(): String = INDEX_PAGE_VIEW
 
     @GetMapping("/register")
     fun registerPage(model: Model) : String {
         model.addAttribute("registrationForm",RegistrationForm())
-        return "register"
+        return REGISTER_PAGE_VIEW
     }
 
     @GetMapping("/packs_view")
-    fun allPacksView() : String = "packs"
+    fun allPacksView() : String = PACKS_PAGE_VIEW
 
 }

@@ -41,6 +41,6 @@ class ItemPriceServiceImpl(
         applicationEventPublisher.publishEvent(ItemPriceChangeEvent(this,item,user,diff))
     }
 
-    override fun userPrices(userID: Long, pageable: Pageable): Page<UserPrice> = userPriceRepository.findById_User_Id(userID,pageable)
+    override fun userPrices(userID: Long, pageable: Pageable): Page<UserPrice> = userPriceRepository.findByUserID(userID,pageable)
 
 }

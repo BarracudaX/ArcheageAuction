@@ -1,9 +1,11 @@
 package com.arslan.archeage
 
+import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.Location
 import com.arslan.archeage.entity.Price
 import kotlinx.serialization.Serializable
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 enum class Continent{ EAST,WEST,NORTH }
 @Serializable
@@ -61,3 +63,5 @@ data class Locations(val continentLocations: List<LocationDTO>,val continentFact
 
 @Serializable
 data class UserPriceDTO(val userID: Long? = null,val itemID: Long,val price: Price)
+
+data class PackRequest(val continent: Continent,val departureLocation: Long?  = null,val destinationLocation: Long?  = null,val userID: Long? = null)

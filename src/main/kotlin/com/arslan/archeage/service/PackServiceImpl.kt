@@ -14,20 +14,18 @@ import org.springframework.stereotype.Service
 @Service
 class PackServiceImpl(private val packRepository: PackRepository,private val itemPriceService: ItemPriceService,private val packProfitRepository: PackProfitRepository) : PackService {
 
-    override fun packs(continent: Continent,archeageServer: ArcheageServer,pageable: Pageable): Page<PackDTO> {
-        return convertPacksToDTOs(packProfitRepository.allPackIDs(pageable,archeageServer, continent,SecurityContextHolder.getContext().authentication?.name?.toLongOrNull()))
-    }
-
-    override fun packs(destinationLocationID: Long, continent: Continent, departureLocationID: Long, archeageServer: ArcheageServer, pageable: Pageable): Page<PackDTO> {
-        return convertPacksToDTOs(packProfitRepository.packIDs(pageable,archeageServer, continent,departureLocationID,destinationLocationID,SecurityContextHolder.getContext().authentication?.name?.toLongOrNull()))
-    }
-
-    override fun packsCreatedAt(continent: Continent, departureLocationID: Long, archeageServer: ArcheageServer,pageable: Pageable): Page<PackDTO> {
-        return convertPacksToDTOs(packProfitRepository.packsAtIDs(pageable,archeageServer,continent,departureLocationID,SecurityContextHolder.getContext().authentication?.name?.toLongOrNull()))
-    }
-
-    override fun packsSoldAt(continent: Continent, destinationLocationID: Long, archeageServer: ArcheageServer,pageable: Pageable): Page<PackDTO> {
-        return convertPacksToDTOs(packProfitRepository.packsToIDs(pageable,archeageServer,continent,destinationLocationID,SecurityContextHolder.getContext().authentication?.name?.toLongOrNull()))
+    override fun packs(packRequest: PackRequest,pageable: Pageable,archeageServer: ArcheageServer) :  Page<PackDTO> {
+        return with(packRequest){
+            if(departureLocation != null && destinationLocation != null){
+                convertPacksToDTOs(packProfitRepository.packIDs(pageable,packRequest,archeageServer))
+            }else if(departureLocation != null){
+                convertPacksToDTOs(packProfitRepository.packsAtIDs(pageable,packRequest,archeageServer))
+            }else if(destinationLocation != null){
+                convertPacksToDTOs(packProfitRepository.packsToIDs(pageable,packRequest,archeageServer))
+            }else{
+                convertPacksToDTOs(packProfitRepository.allPackIDs(pageable,packRequest,archeageServer))
+            }
+        }
     }
 
     private fun convertPacksToDTOs(packsIDs: Page<Long>) : Page<PackDTO> {

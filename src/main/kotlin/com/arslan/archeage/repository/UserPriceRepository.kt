@@ -18,5 +18,6 @@ interface UserPriceRepository : JpaRepository<UserPrice,UserPriceKey> {
     @Query("SELECT distinct p FROM UserPrice p WHERE p.id.purchasableItem in :items AND p.timestamp = (SELECT max(p2.timestamp) FROM UserPrice p2 WHERE p2.id.purchasableItem = p.id.purchasableItem and p.id.user.id = :userID)")
     fun userItemPrices(items: Collection<PurchasableItem>, userID: Long) : List<UserPrice>
 
-    fun findById_User_Id(userID: Long,pageable: Pageable) : Page<UserPrice>
+    @Query("SELECT u FROM UserPrice u WHERE u.id.user.id = :userID")
+    fun findByUserID(userID: Long, pageable: Pageable) : Page<UserPrice>
 }

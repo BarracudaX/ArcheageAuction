@@ -1,6 +1,7 @@
 package com.arslan.archeage.service
 
 import com.arslan.archeage.Continent
+import com.arslan.archeage.PackRequest
 import com.arslan.archeage.entity.*
 import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.entity.item.UserPrice
@@ -98,10 +99,10 @@ class   PackServiceITest(
 
         val pack = packRepository.save(Pack(westLocation, PackPrice(Price(1,1,1),secondWestLocation),1,"ANY_NAME","ANY_DESC"))
 
-        packService.packs(continent,archeageServer,pageable).shouldBeEmpty()
-        packService.packs(pack.price.sellLocation.id!!,continent,pack.creationLocation.id!!,archeageServer,pageable).shouldBeEmpty()
-        packService.packsCreatedAt(continent,pack.creationLocation.id!!,archeageServer,pageable).shouldBeEmpty()
-        packService.packsSoldAt(continent,pack.price.sellLocation.id!!,archeageServer,pageable).shouldBeEmpty()
+        packService.packs(PackRequest(continent,null,null,null),pageable,archeageServer).shouldBeEmpty()
+        packService.packs(PackRequest(continent,pack.price.sellLocation.id,pack.creationLocation.id,null),pageable,archeageServer).shouldBeEmpty()
+        packService.packs(PackRequest(continent,null,pack.creationLocation.id,null),pageable,archeageServer).shouldBeEmpty()
+        packService.packs(PackRequest(continent,pack.price.sellLocation.id,null,null),pageable,archeageServer).shouldBeEmpty()
     }
 
 
@@ -123,9 +124,9 @@ class   PackServiceITest(
         ))
         createUserPrice(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
 
-        packService.packs(Continent.WEST,archeageServer,pageable).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices))
-        packService.packs(Continent.EAST,archeageServer,pageable).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices))
-        packService.packs(Continent.NORTH,archeageServer,pageable).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices))
+        packService.packs(PackRequest(Continent.WEST,null,null,null),pageable,archeageServer).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices))
+        packService.packs(PackRequest(Continent.EAST,null,null,null),pageable,archeageServer).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices))
+        packService.packs(PackRequest(Continent.NORTH,null,null,null),pageable,archeageServer).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices))
     }
 
     @Test
@@ -147,9 +148,9 @@ class   PackServiceITest(
         ))
         createUserPrice(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
 
-        packService.packsCreatedAt(Continent.WEST,westLocation.id!!,archeageServer,pageable).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices))
-        packService.packsCreatedAt(Continent.EAST,eastLocation.id!!,archeageServer,pageable).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices))
-        packService.packsCreatedAt(Continent.NORTH,northLocation.id!!,archeageServer,pageable).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices))
+        packService.packs(PackRequest(Continent.WEST,westLocation.id,null,null),pageable,archeageServer).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices))
+        packService.packs(PackRequest(Continent.EAST,eastLocation.id,null,null),pageable,archeageServer).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices))
+        packService.packs(PackRequest(Continent.NORTH,northLocation.id,null,null),pageable,archeageServer).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices))
     }
 
     /**
@@ -174,9 +175,9 @@ class   PackServiceITest(
         ))
         createUserPrice(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
 
-        packService.packsSoldAt(Continent.WEST,secondWestLocation.id!!,archeageServer,pageable).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices))
-        packService.packsSoldAt(Continent.EAST,secondEastLocation.id!!,archeageServer,pageable).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices))
-        packService.packsSoldAt(Continent.NORTH,secondNorthLocation.id!!,archeageServer,pageable).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices))
+        packService.packs(PackRequest(Continent.WEST,null,secondWestLocation.id,null),pageable,archeageServer).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices))
+        packService.packs(PackRequest(Continent.EAST,null,secondEastLocation.id,null),pageable,archeageServer).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices))
+        packService.packs(PackRequest(Continent.NORTH,null,secondNorthLocation.id,null),pageable,archeageServer).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices))
     }
 
     @Test
@@ -199,9 +200,9 @@ class   PackServiceITest(
         ))
         createUserPrice(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
 
-        packService.packs(secondWestLocation.id!!,Continent.WEST,westLocation.id!!,archeageServer,pageable).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices))
-        packService.packs(secondEastLocation.id!!,Continent.EAST,eastLocation.id!!,archeageServer,pageable).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices))
-        packService.packs(secondNorthLocation.id!!,Continent.NORTH,northLocation.id!!,archeageServer,pageable).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices))
+        packService.packs(PackRequest(Continent.WEST,westLocation.id,secondWestLocation.id,null),pageable,archeageServer).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices))
+        packService.packs(PackRequest(Continent.EAST,eastLocation.id,secondEastLocation.id,null),pageable,archeageServer).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices))
+        packService.packs(PackRequest(Continent.NORTH,northLocation.id,secondNorthLocation.id,null),pageable,archeageServer).content.shouldNotBeEmpty().shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices))
     }
 
     private fun preparePacksWithRandomDestinationLocation(){
