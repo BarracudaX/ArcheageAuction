@@ -1,15 +1,10 @@
 package com.arslan.archeage.controllers
 
-import com.arslan.archeage.Continent
-import com.arslan.archeage.entity.*
-import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
-import java.util.Optional
-import kotlin.jvm.optionals.getOrElse
 
 @RequestMapping("/",produces = [MediaType.TEXT_HTML_VALUE])
 @Controller

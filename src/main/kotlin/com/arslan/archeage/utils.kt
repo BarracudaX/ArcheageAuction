@@ -1,6 +1,7 @@
 package com.arslan.archeage
 
-import com.arslan.archeage.entity.*
+import com.arslan.archeage.entity.CraftingMaterial
+import com.arslan.archeage.entity.Price
 import com.arslan.archeage.entity.item.Item
 import com.arslan.archeage.entity.item.UserPrice
 import com.arslan.archeage.entity.pack.Pack

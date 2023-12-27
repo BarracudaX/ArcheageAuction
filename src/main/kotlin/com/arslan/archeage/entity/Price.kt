@@ -42,8 +42,8 @@ data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Pr
         }
 
         when(priceValue){
-            PriceValue.POSITIVE -> if(gold < 0 || silver < 0 || copper < 0) throw IllegalArgumentException("Partially positive price not allowed: $gold gold, $silver silver, $copper copper.")
-            PriceValue.NEGATIVE -> if(gold > 0 || silver > 0 || copper > 0) throw IllegalArgumentException("Partially negative price not allowed: $gold gold, $silver silver, $copper copper.")
+            PriceValue.POSITIVE -> require(gold >=0 && silver >= 0 && copper >= 0){"Partially positive price not allowed: $gold gold, $silver silver, $copper copper."}
+            PriceValue.NEGATIVE -> require(gold <= 0 && silver <= 0 && copper <= 0){ "Partially negative price not allowed: $gold gold, $silver silver, $copper copper." }
             PriceValue.ZERO -> {}
         }
 

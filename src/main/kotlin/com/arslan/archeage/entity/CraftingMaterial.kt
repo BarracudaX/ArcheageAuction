@@ -1,7 +1,8 @@
 package com.arslan.archeage.entity
 
 import com.arslan.archeage.entity.item.Item
-import jakarta.persistence.*
+import jakarta.persistence.Embeddable
+import jakarta.persistence.ManyToOne
 
 @Embeddable
 class CraftingMaterial(

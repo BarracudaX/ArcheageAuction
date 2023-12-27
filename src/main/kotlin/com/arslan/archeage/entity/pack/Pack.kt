@@ -5,7 +5,11 @@ import com.arslan.archeage.entity.Location
 import com.arslan.archeage.entity.Price
 import com.arslan.archeage.entity.item.Item
 import com.arslan.archeage.entity.item.PurchasableItem
-import jakarta.persistence.*
+import jakarta.persistence.CollectionTable
+import jakarta.persistence.ElementCollection
+import jakarta.persistence.Entity
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
 
 @Entity
 @Table(name = "packs")

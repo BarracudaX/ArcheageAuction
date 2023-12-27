@@ -1,6 +1,6 @@
 package com.arslan.archeage.config
 
-import jakarta.servlet.*
+import jakarta.servlet.DispatcherType
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

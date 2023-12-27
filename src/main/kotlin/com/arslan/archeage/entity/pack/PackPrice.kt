@@ -3,7 +3,8 @@ package com.arslan.archeage.entity.pack
 import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.Location
 import com.arslan.archeage.entity.Price
-import jakarta.persistence.*
+import jakarta.persistence.Embeddable
+import jakarta.persistence.ManyToOne
 import org.hibernate.annotations.Parent
 
 @Embeddable
