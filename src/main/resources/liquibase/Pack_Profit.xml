@@ -25,5 +25,13 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="2" author="barracuda">
+        <addColumn tableName="pack_profits">
+            <column name="percentage" type="DOUBLE(2,1)" defaultValue="1.0">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
     
 </databaseChangeLog>
