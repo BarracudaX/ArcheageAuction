@@ -19,7 +19,8 @@ class PackProfitServiceImpl(private val packRepository: PackRepository,private v
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     override fun onItemPriceChange(event: ItemPriceChangeEvent) {
-        val packs = packRepository.selectPacksWithCraftingMaterial(event.item, event.user)
+        val packIDs = packRepository.selectPackIDsWithCraftingMaterial(event.item, event.user)
+        val packs = packRepository.findByIdIn(packIDs)
         val changedPacks = packProfitRepository
             .findAllById(packs.map { PackProfitKey(it,event.user) })
             .map { profit ->
@@ -27,6 +28,8 @@ class PackProfitServiceImpl(private val packRepository: PackRepository,private v
                 profit.id.pack.id!!
             }
         val requireNewProfit = packs.filter { !changedPacks.contains(it.id!!) }
+
+        if(requireNewProfit.isEmpty()) return
 
         val prices = itemPriceService.userItemPrices(requireNewProfit.flatMap { pack -> pack.materials().map(CraftingMaterial::item).filterIsInstance<PurchasableItem>() },event.user.id!!)
 

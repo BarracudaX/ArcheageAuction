@@ -10,6 +10,7 @@ import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import org.hibernate.annotations.BatchSize
 
 @Entity
 @Table(name = "packs")
@@ -27,6 +28,7 @@ class Pack(
 ) : Item(name,description,creationLocation.archeageServer){
 
 
+    @BatchSize(size = 20)
     @CollectionTable(name = "pack_materials")
     @ElementCollection
     private val materials: MutableSet<CraftingMaterial> = mutableSetOf()

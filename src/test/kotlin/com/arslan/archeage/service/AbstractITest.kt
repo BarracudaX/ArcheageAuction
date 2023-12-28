@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.context.TestConstructor
+import org.springframework.test.jdbc.JdbcTestUtils
 import org.springframework.transaction.annotation.Transactional
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.elasticsearch.ElasticsearchContainer
@@ -48,6 +50,12 @@ abstract class AbstractITest : AbstractTest(){
     @Autowired
     protected lateinit var userRepository: UserRepository
 
+    @Autowired
+    protected lateinit var jdbcTemplate: JdbcTemplate
+
+    protected fun clearDB(){
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"pack_profits","user_prices","pack_materials","packs","purchasable_items","items","locations","archeage_servers","users")
+    }
 
     companion object{
 
