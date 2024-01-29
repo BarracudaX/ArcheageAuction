@@ -62,6 +62,8 @@ class   PackServiceITest(
 
     private val pageable = Pageable.unpaged()
 
+    private val percentages = mutableMapOf<Long,Double>()
+
 
     @BeforeEach
     fun prepareTestContext(){
@@ -113,26 +115,26 @@ class   PackServiceITest(
         val expectedWestPacks = packRepository.saveAll(listOf(
             Pack(westLocation, PackPrice(Price(1,1,1),secondWestLocation),1, "ANY_NAME_1","ANY_DESC_1").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(westLocation, PackPrice(Price(1,1,1),secondWestLocation),1,"ANY_NAME_2","ANY_DESC_2").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
-        ))
+        )).onEach { pack -> percentages[pack.id!!]=1.0 }
         val expectedEastPacks = packRepository.saveAll(listOf(
             Pack(eastLocation, PackPrice(Price(1,1,1),secondEastLocation),1,"ANY_NAME_3","ANY_DESC_3").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(eastLocation, PackPrice(Price(1,1,1),secondEastLocation),1,"ANY_NAME_4","ANY_DESC_4").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
-        ))
+        )).onEach { pack -> percentages[pack.id!!]=1.0 }
         val expectedNorthPacks = packRepository.saveAll(listOf(
             Pack(northLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_NAME_5","ANY_DESC_5").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(northLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_NAME_6","ANY_DESC_6").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
-        ))
+        )).onEach { pack -> percentages[pack.id!!]=1.0 }
         createUserPrice(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
 
         packService.packs(PackRequest(Continent.WEST,null,null,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
-            .shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices))
+            .shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices,percentages))
         packService.packs(PackRequest(Continent.EAST,null,null,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
-            .shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices))
+            .shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices,percentages))
         packService.packs(PackRequest(Continent.NORTH,null,null,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
-            .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices))
+            .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices,percentages))
     }
 
     @Test
@@ -143,26 +145,26 @@ class   PackServiceITest(
         val expectedWestPacks = packRepository.saveAll(listOf(
             Pack(westLocation, PackPrice(Price(1,1,1),secondWestLocation),1,"ANY_PACK_NAME_2312","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(westLocation, PackPrice(Price(1,1,1),secondWestLocation),1,"ANY_PACK_NAME_1231232","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
-        ))
+        )).onEach { pack -> percentages[pack.id!!]=1.0 }
         val expectedEastPacks = packRepository.saveAll(listOf(
             Pack(eastLocation, PackPrice(Price(1,1,1),secondEastLocation),1,"ANY_PACK_NAME_4324","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(eastLocation, PackPrice(Price(1,1,1),secondEastLocation),1,"ANY_PACK_NAME_215123","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
-        ))
+        )).onEach { pack -> percentages[pack.id!!]=1.0 }
         val expectedNorthPacks = packRepository.saveAll(listOf(
             Pack(northLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_PACK_NAME_34093","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(northLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_PACK_NAME_09433","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
-        ))
+        )).onEach { pack -> percentages[pack.id!!]=1.0 }
         createUserPrice(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
 
         packService.packs(PackRequest(Continent.WEST,westLocation.id,null,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
-            .shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices))
+            .shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices,percentages))
         packService.packs(PackRequest(Continent.EAST,eastLocation.id,null,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
-            .shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices))
+            .shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices,percentages))
         packService.packs(PackRequest(Continent.NORTH,northLocation.id,null,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
-            .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices))
+            .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices,percentages))
     }
 
     /**
@@ -176,26 +178,26 @@ class   PackServiceITest(
         val expectedWestPacks = packRepository.saveAll(listOf(
             Pack(westLocation, PackPrice(Price(1,1,1),secondWestLocation),1,"ANY_PACK_NAME_290923","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(thirdWestLocation,PackPrice(Price(1,1,1),secondWestLocation),1, "ANY_PACK_NAME_12311","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
-        ))
+        )).onEach { pack -> percentages[pack.id!!]=1.0 }
         val expectedEastPacks = packRepository.saveAll(listOf(
             Pack(eastLocation, PackPrice(Price(1,1,1),secondEastLocation),1,"ANY_PACK_NAME_34893","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(thirdEastLocation, PackPrice(Price(1,1,1),secondEastLocation),1,"ANY_PACK_NAME_231123","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
-        ))
+        )).onEach { pack -> percentages[pack.id!!]=1.0 }
         val expectedNorthPacks = packRepository.saveAll(listOf(
             Pack(northLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_PACK_NAME_090123","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(thirdNorthLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_PACK_NAME_909213","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
-        ))
+        )).onEach { pack -> percentages[pack.id!!]=1.0 }
         createUserPrice(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
 
         packService.packs(PackRequest(Continent.WEST,null,secondWestLocation.id,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
-            .shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices))
+            .shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices,percentages))
         packService.packs(PackRequest(Continent.EAST,null,secondEastLocation.id,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
-            .shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices))
+            .shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices,percentages))
         packService.packs(PackRequest(Continent.NORTH,null,secondNorthLocation.id,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
-            .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices))
+            .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices,percentages))
     }
 
     @Test
@@ -207,26 +209,26 @@ class   PackServiceITest(
         val expectedWestPacks = packRepository.saveAll(listOf(
             Pack(westLocation, PackPrice(Price(1,1,1),secondWestLocation),1,"ANY_PACK_NAME_87244","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(westLocation,PackPrice(Price(1,1,1),secondWestLocation),1, "ANY_PACK_NAME_123781","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
-        ))
+        )).onEach { pack -> percentages[pack.id!!]=1.0 }
         val expectedEastPacks = packRepository.saveAll(listOf(
             Pack(eastLocation, PackPrice(Price(1,1,1),secondEastLocation),1,"ANY_PACK_NAME_39489143","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(eastLocation, PackPrice(Price(1,1,1),secondEastLocation),1,"ANY_PACK_NAME_13874873","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
-        ))
+        )).onEach { pack -> percentages[pack.id!!]=1.0 }
         val expectedNorthPacks = packRepository.saveAll(listOf(
             Pack(northLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_PACK_NAME_49812315","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(northLocation,PackPrice(Price(1,1,1),secondNorthLocation),1, "ANY_PACK_NAME_437887823","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
-        ))
+        )).onEach { pack -> percentages[pack.id!!]=1.0 }
         createUserPrice(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
 
         packService.packs(PackRequest(Continent.WEST,westLocation.id,secondWestLocation.id,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
-            .shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices))
+            .shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices,percentages))
         packService.packs(PackRequest(Continent.EAST,eastLocation.id,secondEastLocation.id,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
-            .shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices))
+            .shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices,percentages))
         packService.packs(PackRequest(Continent.NORTH,northLocation.id,secondNorthLocation.id,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
-            .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices))
+            .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices,percentages))
     }
 
     private fun preparePacksWithRandomDestinationLocation(){

@@ -2,6 +2,7 @@ package com.arslan.archeage.entity
 
 import jakarta.persistence.Embeddable
 import kotlinx.serialization.Serializable
+import kotlin.math.roundToInt
 
 private enum class PriceValue{ POSITIVE,NEGATIVE,ZERO}
 
@@ -51,6 +52,9 @@ data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Pr
 
     companion object{
 
+        @JvmStatic
+        val ZERO = Price(0,0,0)
+
         fun fromCopper(amount: Int) : Price {
             val gold = amount / COPPER_COINS_PER_GOLD_COIN
             val silver = (amount-gold*COPPER_COINS_PER_GOLD_COIN)/ SILVER_COINS_PER_GOLD_COIN
@@ -70,6 +74,10 @@ data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Pr
 
     operator fun times(i: Int) : Price {
         return fromCopper(totalCopper()*i)
+    }
+
+    operator fun times(d: Double) : Price{
+        return fromCopper((totalCopper()*d).toInt())
     }
 
     override fun compareTo(other: Price): Int {

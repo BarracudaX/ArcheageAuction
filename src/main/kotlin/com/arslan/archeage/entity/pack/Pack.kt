@@ -40,13 +40,13 @@ class Pack(
         materials.add(material)
     }
 
-    fun profit(prices: Map<Long,Price>) : Price{
+    fun profit(prices: Map<Long,Price>,sellPercentage: Double) : Price{
 
         val cost = materials
             .filter { it.item is PurchasableItem }
             .map { material -> prices[material.item.id]!! * material.quantity }
             .fold(Price(0,0,0)){ price,next -> price + next }
 
-        return price.price - cost
+        return price.price*sellPercentage - cost
     }
 }

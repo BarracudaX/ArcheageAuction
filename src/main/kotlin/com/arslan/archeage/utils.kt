@@ -11,12 +11,12 @@ fun CraftingMaterial.toDTO(prices: Map<Long, UserPrice>): CraftingMaterialDTO =
 
 fun Item.toDTO(price: Price?): ItemDTO = ItemDTO(name, id!!,price)
 
-fun Pack.toDTO(prices: Map<Long, UserPrice>) : PackDTO {
+fun Pack.toDTO(prices: Map<Long, UserPrice>,percentage: Double) : PackDTO {
     val cost = materials().fold(Price(0,0,0)){ cost,material -> cost + (prices[material.item.id!!]?.price ?: Price(0,0,0))*material.quantity }
 
-    val profit = price.price - cost
+    val profit = price.price*percentage - cost
 
     return PackDTO(name,creationLocation.name,price.sellLocation.name,price.price,producedQuantity,materials().map { it.toDTO(prices) } ,id!!,cost,profit)
 }
 
-fun List<Pack>.toDTO(prices: Map<Long, UserPrice>): List<PackDTO> = map { pack -> pack.toDTO(prices) }
+fun List<Pack>.toDTO(prices: Map<Long, UserPrice>,percentages: Map<Long,Double>): List<PackDTO> = map { pack -> pack.toDTO(prices,percentages[pack.id!!]!!) }

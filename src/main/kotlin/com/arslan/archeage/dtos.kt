@@ -65,3 +65,5 @@ data class Locations(val continentLocations: List<LocationDTO>,val continentFact
 data class UserPriceDTO(val userID: Long? = null,val itemID: Long,val price: Price)
 
 data class PackRequest(val continent: Continent,val departureLocation: Long?  = null,val destinationLocation: Long?  = null,val userID: Long? = null)
+
+data class PackPercentageUpdate(val packID: Long,val percentage: Double,val userID: Long?)

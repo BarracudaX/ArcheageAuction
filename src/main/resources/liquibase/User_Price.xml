@@ -5,14 +5,8 @@
 
     <changeSet id="1" author="barracuda">
         <createTable tableName="user_prices">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" />
-            </column>
             <column name="item_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_item_prices_items" references="items(id)"/>
-            </column>
-            <column name="archeage_server_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_item_prices_archeage_servers" references="archeage_servers(id)" />
+                <constraints nullable="false" primaryKey="true" foreignKeyName="fk_item_prices_items" references="items(id)"/>
             </column>
             <column name="gold" type="integer">
                 <constraints nullable="false" />
@@ -27,7 +21,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="user_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_user_prices_users" references="users(id)" />
+                <constraints nullable="false" primaryKey="true" foreignKeyName="fk_user_prices_users" references="users(id)" />
             </column>
         </createTable>
     </changeSet>
@@ -43,39 +37,21 @@
         </insert>
     </changeSet>
 
-    <changeSet id="3" author="barracuda" context="dev" runOnChange="true" failOnError="false">
+    <changeSet id="3" author="barracuda" context="dev">
         <loadData tableName="user_prices" file="csv/user_prices.csv">
             <column name="copper" header="copper" type="NUMERIC" />
             <column name="silver" header="silver" type="NUMERIC" />
             <column name="gold" header="gold" type="NUMERIC" />
             <column name="item_id" header="item_id" type="NUMERIC" />
             <column name="timestamp" header="timestamp" type="DATE" />
-            <column name="id" header="id" type="NUMERIC" />
             <column name="user_id" header="user_id" type="NUMERIC" />
         </loadData>
-        <insert tableName="user_prices_seq">
-            <column name="next_val">52</column>
-        </insert>
     </changeSet>
 
     <changeSet id="7" author="barracuda">
         <addForeignKeyConstraint baseTableName="user_prices" baseColumnNames="item_id" constraintName="fk_item_prices_purchasable_items"
                                  referencedTableName="purchasable_items"
                                  referencedColumnNames="id" />
-    </changeSet>
-
-    <changeSet id="8" author="barracuda">
-        <dropForeignKeyConstraint baseTableName="user_prices" constraintName="fk_item_prices_archeage_servers" />
-        <dropColumn tableName="user_prices" columnName="archeage_server_id" />
-    </changeSet>
-
-    <changeSet id="9" author="barracuda">
-        <dropPrimaryKey tableName="user_prices"/>
-        <dropColumn tableName="user_prices" columnName="id" />
-    </changeSet>
-
-    <changeSet id="10" author="barracuda">
-        <addPrimaryKey tableName="user_prices" columnNames="user_id,item_id" />
     </changeSet>
 
 </databaseChangeLog>

@@ -7,6 +7,7 @@ import com.arslan.archeage.entity.CraftingMaterial
 import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.repository.PackProfitRepository
 import com.arslan.archeage.repository.PackRepository
+import com.arslan.archeage.repository.PackResult
 import com.arslan.archeage.toDTO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -31,8 +32,9 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
         }
     }
 
-    private fun convertPacksToDTOs(packsIDs: Page<Long>) : Page<PackDTO> {
-        val packs = packRepository.packs(packsIDs.content)
+    private fun convertPacksToDTOs(result: Page<PackResult>) : Page<PackDTO> {
+        val percentages = result.content.associate { it.id to it.percentage }
+        val packs = packRepository.packs(result.content.map(PackResult::id))
         val userID = SecurityContextHolder.getContext()?.authentication?.name?.toLongOrNull()
         val materials = packs.flatMap { pack -> pack.materials().map(CraftingMaterial::item) }
         val prices = if(userID == null){
@@ -43,7 +45,7 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
             itemPriceService.userItemPrices(materials.filterIsInstance<PurchasableItem>(),userID)
         }
 
-        return PageImpl(packs.toDTO(prices),packsIDs.pageable,packsIDs.totalElements)
+        return PageImpl(packs.toDTO(prices,percentages),result.pageable,result.totalElements)
     }
 
 

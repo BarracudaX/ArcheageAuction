@@ -1,5 +1,6 @@
 package com.arslan.archeage.service
 
+import com.arslan.archeage.PackPercentageUpdate
 import com.arslan.archeage.entity.CraftingMaterial
 import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.entity.pack.PackProfit
@@ -33,9 +34,13 @@ class PackProfitServiceImpl(private val packRepository: PackRepository,private v
         val prices = itemPriceService.userItemPrices(requireNewProfit.flatMap { pack -> pack.materials().map(CraftingMaterial::item).filterIsInstance<PurchasableItem>() },event.user.id!!)
 
         requireNewProfit.forEach { pack ->
-            val profit = pack.profit(prices.mapValues { it.value.price })
+            val profit = pack.profit(prices.mapValues { it.value.price },1.0)
             packProfitRepository.save(PackProfit(PackProfitKey(pack,event.user),profit))
         }
+    }
+
+    override fun updatePercentage(update: PackPercentageUpdate) {
+
     }
 
 }
