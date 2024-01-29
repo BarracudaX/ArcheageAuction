@@ -9,7 +9,6 @@ plugins {
     kotlin("plugin.spring") version "1.9.10"
     kotlin("plugin.jpa") version "1.9.10"
     kotlin("plugin.serialization") version "1.9.0"
-
 }
 
 group = "com.arslan"
