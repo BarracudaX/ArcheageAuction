@@ -32,7 +32,7 @@ services:
       - jenkins_data:/var/jenkins_home
       - jenkins_docker_certs:/certs/client
     ports:
-      - "1-65535:1-65535"
+      - "2376:2376"
   jenkins:
     build:
       dockerfile: JenkinsDockerfile
