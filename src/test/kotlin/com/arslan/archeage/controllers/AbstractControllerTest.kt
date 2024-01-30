@@ -39,6 +39,9 @@ abstract class AbstractControllerTest : AbstractTest() {
     protected lateinit var packServiceMock: PackService
 
     @MockkBean
+    protected lateinit var packProfitServiceMock: PackProfitService
+
+    @MockkBean
     protected lateinit var archeageServerRepositoryMock: ArcheageServerRepository
 
     @MockkBean

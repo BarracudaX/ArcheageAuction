@@ -69,6 +69,7 @@ data class UserPriceDTO(val userID: Long? = null,val itemID: Long,val price: Pri
 
 data class PackRequest(val continent: Continent,val departureLocation: Long?  = null,val destinationLocation: Long?  = null,val userID: Long? = null)
 
+@Serializable
 data class PackPercentageUpdate(
     val packID: Long,
 

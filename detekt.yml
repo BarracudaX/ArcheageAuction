@@ -257,7 +257,7 @@ exceptions:
     ignoreLabeled: false
   SwallowedException:
     active: true
-    excludes: ['**/RegisterController.kt']
+    excludes: ['**/UserController.kt']
     ignoredExceptionTypes:
       - 'InterruptedException'
       - 'MalformedURLException'
@@ -781,7 +781,7 @@ style:
     active: true
     ignoreLateinitVar: false
   WildcardImport:
-    active: true
+    active: false
     excludes: ['/**/test/**']
     excludeImports:
       - 'java.util.*'

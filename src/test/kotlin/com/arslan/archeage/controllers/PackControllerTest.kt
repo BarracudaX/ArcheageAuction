@@ -1,17 +1,10 @@
 package com.arslan.archeage.controllers
 
-import com.arslan.archeage.Continent
-import com.arslan.archeage.PackDTO
-import com.arslan.archeage.PackRequest
-import com.arslan.archeage.Packs
-import com.arslan.archeage.entity.ArcheageServer
+import com.arslan.archeage.*
 import com.arslan.archeage.entity.Price
 import com.arslan.archeage.service.ArcheageServerContextHolder
-import io.mockk.called
-import io.mockk.every
-import io.mockk.verifyAll
+import io.mockk.*
 import kotlinx.serialization.encodeToString
-import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -20,19 +13,21 @@ import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.put
 import org.springframework.test.web.servlet.request
-import kotlin.math.exp
 
 class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(){
 
     private val archeageServer = availableServers[0]
     private val pageable = PageRequest.of(2,3)
     private val packRequest = PackRequest(Continent.WEST,null,null,null)
+    private val packPercentageUpdate = PackPercentageUpdate(1,120)
     private lateinit var packsPage: Page<PackDTO>
 
     @BeforeEach
@@ -156,4 +151,75 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
 
         verifyAll { packServiceMock wasNot called }
     }
+
+    @Test
+    fun `should return 302 redirect response to login when trying to update pack percentage without being authenticated`() {
+        mockMvc
+            .put("/pack/profit"){
+                with(csrf())
+                content = json.encodeToString(packPercentageUpdate)
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { is3xxRedirection() }
+            }
+
+        verifyAll {
+            packProfitServiceMock wasNot called
+        }
+    }
+
+    @WithMockUser("1")
+    @MethodSource("contentTypesOtherThanJson")
+    @ParameterizedTest
+    fun `should return 415(Unsupported Media Type) when trying to update pack percentage with invalid content type`(invalidContentType: MediaType) {
+        mockMvc
+            .put("/pack/profit"){
+                with(csrf())
+                content = json.encodeToString(packPercentageUpdate)
+                contentType = invalidContentType
+            }.andExpect {
+                status { isUnsupportedMediaType() }
+            }
+
+        verifyAll {
+            packProfitServiceMock wasNot called
+        }
+    }
+
+    @WithMockUser("1")
+    @Test
+    fun `should return 403(Forbidden) when trying to update pack percentage without csrf`() {
+        mockMvc
+            .put("/pack/profit"){
+                content = json.encodeToString(packPercentageUpdate)
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isForbidden() }
+            }
+
+        verifyAll {
+            packProfitServiceMock wasNot called
+        }
+    }
+
+    @WithMockUser("1")
+    @Test
+    fun `should return 200(OK) and update pack percentage`() {
+        every { packProfitServiceMock.updatePercentage(packPercentageUpdate.copy(userID = 1)) } just runs
+
+        mockMvc
+            .put("/pack/profit"){
+                with(csrf())
+                content = json.encodeToString(packPercentageUpdate)
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isOk() }
+            }
+
+        verifyAll {
+            packProfitServiceMock.updatePercentage(packPercentageUpdate.copy(userID = 1))
+        }
+    }
+
+
 }

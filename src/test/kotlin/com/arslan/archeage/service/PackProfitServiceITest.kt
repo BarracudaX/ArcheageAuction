@@ -9,15 +9,19 @@ import com.arslan.archeage.entity.item.UserPrice
 import com.arslan.archeage.entity.item.UserPriceKey
 import com.arslan.archeage.entity.pack.Pack
 import com.arslan.archeage.entity.pack.PackPrice
+import com.arslan.archeage.entity.pack.PackProfitKey
 import com.arslan.archeage.event.ItemPriceChangeEvent
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import kotlin.random.Random
@@ -33,6 +37,7 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
     private lateinit var archeageServer: ArcheageServer
     private val prices = mutableMapOf<Long,Price>()
     private lateinit var materialsSumPrice: Price
+    private lateinit var packPercentageUpdate: PackPercentageUpdate
 
     @BeforeEach
     fun setUp(){
@@ -58,6 +63,8 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
         pack = packRepository.save(pack)
 
         materialsSumPrice = pack.materials().filter{ it.item is PurchasableItem }.map { prices[it.item.id!!]!!*it.quantity }.fold(Price(0,0,0)){ price, next -> price+next}
+
+        packPercentageUpdate = PackPercentageUpdate(pack.id!!,110,user.id!!)
     }
 
     @Test
@@ -82,7 +89,7 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
     }
 
     /**
-     * This test cases covers a case where pack has,for example,2 purchasable materials and for each material separate user have specified price,
+     * This test cases covers a case where pack has,for example,2 purchasable materials and for each material separate users have specified price,
      * but none of the users have specified prices for all purchasable materials.
      */
     @Test
@@ -130,14 +137,47 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
         }
     }
 
-    @Disabled("TODO")
     @Test
-    fun `should do nothing when trying to update pack percentage of not existing pack`() {
-        val idOfNotExistingPack = 120310L
+    fun `should throw EmptyResultDataAccessException when trying to update pack percentage of not existing pack`() {
+        val idOfNotExistingPack = 1203910L
         packRepository.existsById(idOfNotExistingPack).shouldBeFalse()
 
-        packProfitService.updatePercentage(PackPercentageUpdate(idOfNotExistingPack,2.0,user.id!!))
+        shouldThrow<EmptyResultDataAccessException> { packProfitService.updatePercentage(packPercentageUpdate.copy(packID = idOfNotExistingPack)) }
+    }
 
-        packProfitRepository.findAll().shouldBeEmpty()
+    @Test
+    fun `should throw EmptyResultDataAccessException when trying to update pack percentage for not existing user`() {
+        val idOfNotExistingUser = 12039102L
+        userRepository.existsById(idOfNotExistingUser).shouldBeFalse()
+
+        shouldThrow<EmptyResultDataAccessException> { packProfitService.updatePercentage(packPercentageUpdate.copy(userID = idOfNotExistingUser)) }
+    }
+
+    @Test
+    fun `should throw EmptyResultDataAccessException when trying to update pack percentage for pack for which user has not specified prices for all materials`() {
+        //user specifies price for one item and the second item's price is not set
+        val purchasablePrice = userPriceRepository.saveAndFlush(UserPrice(UserPriceKey(user,purchasableMaterials[0]),prices[purchasableMaterials[0].id!!]!!))
+        packProfitService.onItemPriceChange(ItemPriceChangeEvent(this,purchasablePrice.id.purchasableItem,purchasablePrice.id.user,purchasablePrice.price))
+
+        shouldThrow<EmptyResultDataAccessException> { packProfitService.updatePercentage(PackPercentageUpdate(pack.id!!,120,user.id!!)) }
+    }
+
+    @Test
+    fun `should update pack profit percentage`() {
+        setUserPricesForTestPack()
+        packProfitRepository.findById(PackProfitKey(pack,user)).get().percentage shouldBe 100 //default value
+
+        packProfitService.updatePercentage(packPercentageUpdate.copy(percentage = 120))
+
+        packProfitRepository.findById(PackProfitKey(pack,user)).get().percentage shouldBe 120 //default value
+    }
+
+    private fun setUserPricesForTestPack(){
+        val purchasablePrice = userPriceRepository.saveAndFlush(UserPrice(UserPriceKey(user,purchasableMaterials[0]),prices[purchasableMaterials[0].id!!]!!))
+        packProfitService.onItemPriceChange(ItemPriceChangeEvent(this,purchasablePrice.id.purchasableItem,purchasablePrice.id.user,purchasablePrice.price))
+        val purchasablePrice2 = userPriceRepository.saveAndFlush(UserPrice(UserPriceKey(user,purchasableMaterials[1]),prices[purchasableMaterials[1].id!!]!!))
+        packProfitService.onItemPriceChange(ItemPriceChangeEvent(this,purchasablePrice2.id.purchasableItem,purchasablePrice2.id.user,purchasablePrice2.price))
+
+        packProfitRepository.existsById(PackProfitKey(pack,user)).shouldBeTrue()
     }
 }

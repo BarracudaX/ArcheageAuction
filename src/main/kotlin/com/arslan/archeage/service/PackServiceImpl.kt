@@ -48,5 +48,4 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
         return PageImpl(packs.toDTO(prices,percentages),result.pageable,result.totalElements)
     }
 
-
 }

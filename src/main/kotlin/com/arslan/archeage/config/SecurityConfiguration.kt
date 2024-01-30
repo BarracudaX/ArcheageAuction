@@ -50,6 +50,7 @@ class SecurityConfiguration {
                     .requestMatchers(HttpMethod.GET,"/user","/login").anonymous()
                     .requestMatchers(HttpMethod.POST,"/user").anonymous()
                     .requestMatchers(HttpMethod.GET,"/profile","/user/price").fullyAuthenticated()
+                    .requestMatchers(HttpMethod.PUT,"/pack/profit").fullyAuthenticated()
                     .requestMatchers(HttpMethod.POST,"/user/price").fullyAuthenticated()
             }
             .anonymous {  }

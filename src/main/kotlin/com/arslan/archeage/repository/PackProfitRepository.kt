@@ -42,6 +42,9 @@ interface PackProfitRepository : JpaRepository<PackProfit,PackProfitKey>{
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     fun findAllByIdIn(id: Collection<PackProfitKey>) : List<PackProfit>
 
+    @Query("SELECT p FROM PackProfit p WHERE p.id.pack.id = :packID AND p.id.user.id = :userID")
+    fun findPackProfit(packID: Long,userID: Long) : PackProfit
+
 }
 
-data class PackResult(val id: Long,val percentage: Double)
+data class PackResult(val id: Long,val percentage: Int)
