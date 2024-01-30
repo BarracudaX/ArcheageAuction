@@ -3,6 +3,9 @@ package com.arslan.archeage
 import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.Location
 import com.arslan.archeage.entity.Price
+import jakarta.validation.constraints.DecimalMax
+import jakarta.validation.constraints.DecimalMin
+import jakarta.validation.constraints.NotNull
 import kotlinx.serialization.Serializable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -66,4 +69,13 @@ data class UserPriceDTO(val userID: Long? = null,val itemID: Long,val price: Pri
 
 data class PackRequest(val continent: Continent,val departureLocation: Long?  = null,val destinationLocation: Long?  = null,val userID: Long? = null)
 
-data class PackPercentageUpdate(val packID: Long,val percentage: Double,val userID: Long?)
+data class PackPercentageUpdate(
+    val packID: Long,
+
+    @field:DecimalMax("130")
+    @field:DecimalMin("80")
+    val percentage: Int,
+
+    @field:NotNull(message = "{PackPercentageUpdate.userID.NotNull.message}")
+    val userID: Long? = null
+)

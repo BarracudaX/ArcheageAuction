@@ -22,7 +22,7 @@ class PackProfit(
     )
     var netProfit: Price,
 
-    var percentage: Double = 1.0,
+    var percentage: Int = 100,
 
     var timestamp: Instant = Instant.now()
 )

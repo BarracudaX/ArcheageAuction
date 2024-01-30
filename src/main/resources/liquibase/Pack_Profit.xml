@@ -34,4 +34,14 @@
         </addColumn>
     </changeSet>
     
+    <changeSet id="3" author="barracuda">
+        <modifyDataType tableName="pack_profits" columnName="percentage" newDataType="INTEGER" />
+    </changeSet>
+
+    <changeSet id="4" author="barracuda" context="dev">
+        <update tableName="pack_profits">
+            <column name="percentage">100</column>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>
