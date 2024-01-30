@@ -11,14 +11,14 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
 
-class RegisterControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest() {
+class UserControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest() {
 
     private val validRegistrationForm = RegistrationForm("valid@email.com","ValidPass1","ValidPass1")
 
     @WithAnonymousUser
     @Test
     fun `should return register view if registration form contains not equal passwords without performing registration`() {
-        mockMvc.post("/register"){
+        mockMvc.post("/user"){
                 contentType = MediaType.APPLICATION_FORM_URLENCODED
                 param("email","test@email.com")
                 param("password","ValidPass123")
@@ -40,7 +40,7 @@ class RegisterControllerTest(private val mockMvc: MockMvc) : AbstractControllerT
     @MethodSource("invalidPasswords")
     @ParameterizedTest
     fun `should return register view if registration form contains invalid password  without performing registration`(invalidPassword: String) {
-        mockMvc.post("/register"){
+        mockMvc.post("/user"){
             contentType = MediaType.APPLICATION_FORM_URLENCODED
             param("email","test@email.com")
             param("password",invalidPassword)
@@ -62,7 +62,7 @@ class RegisterControllerTest(private val mockMvc: MockMvc) : AbstractControllerT
     @MethodSource("invalidEmails")
     @ParameterizedTest
     fun `should return register view if registration form contains invalid email without performing registration`(invalidEmail: String) {
-        mockMvc.post("/register"){
+        mockMvc.post("/user"){
             contentType = MediaType.APPLICATION_FORM_URLENCODED
             param("email",invalidEmail)
             param("password","ValidPass1")
@@ -85,7 +85,7 @@ class RegisterControllerTest(private val mockMvc: MockMvc) : AbstractControllerT
     fun `should return register view with an error if registration throws DataIntegrityViolationException`() {
         every { userServiceMock.register(validRegistrationForm) } throws DataIntegrityViolationException("duplicate email")
 
-        mockMvc.post("/register"){
+        mockMvc.post("/user"){
             contentType = MediaType.APPLICATION_FORM_URLENCODED
             param("email",validRegistrationForm.email)
             param("password",validRegistrationForm.password)
@@ -108,7 +108,7 @@ class RegisterControllerTest(private val mockMvc: MockMvc) : AbstractControllerT
     fun `should return register view with success message on successful registration`() {
         every { userServiceMock.register(validRegistrationForm) } just runs
 
-        mockMvc.post("/register"){
+        mockMvc.post("/user"){
             contentType = MediaType.APPLICATION_FORM_URLENCODED
             param("email",validRegistrationForm.email)
             param("password",validRegistrationForm.password)

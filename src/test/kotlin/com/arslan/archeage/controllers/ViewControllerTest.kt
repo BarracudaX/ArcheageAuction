@@ -4,6 +4,7 @@ import com.arslan.archeage.*
 import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.service.ArcheageServerContextHolder
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
@@ -71,7 +72,7 @@ class ViewControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
     @Test
     fun `should return 403(Forbidden) when user requests registration page while being authenticated`() {
         mockMvc
-            .get("/register")
+            .get("/user")
             .andExpect { status { isForbidden() } }
     }
 

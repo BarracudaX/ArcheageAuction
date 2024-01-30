@@ -10,13 +10,8 @@ import org.springframework.http.HttpMethod
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
 import org.springframework.security.authentication.AuthenticationProvider
-import org.springframework.security.authentication.TestingAuthenticationToken
-import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.access.intercept.AuthorizationFilter
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository
 
 @Configuration
 class SecurityConfiguration {
@@ -51,9 +46,9 @@ class SecurityConfiguration {
             .authorizeHttpRequests { authorize ->
                 authorize
                     .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                    .requestMatchers(HttpMethod.GET,"/locations","/","/packs","/favicon.ico","/logout","/error","/resource/**","/packs_view").permitAll()
-                    .requestMatchers(HttpMethod.GET,"/register","/login").anonymous()
-                    .requestMatchers(HttpMethod.POST,"/register").anonymous()
+                    .requestMatchers(HttpMethod.GET,"/location","/","/pack","/favicon.ico","/logout","/error","/resource/**","/packs_view","/register").permitAll()
+                    .requestMatchers(HttpMethod.GET,"/user","/login").anonymous()
+                    .requestMatchers(HttpMethod.POST,"/user").anonymous()
                     .requestMatchers(HttpMethod.GET,"/profile","/user/price").fullyAuthenticated()
                     .requestMatchers(HttpMethod.POST,"/user/price").fullyAuthenticated()
             }

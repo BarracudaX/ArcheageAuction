@@ -53,7 +53,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         ArcheageServerContextHolder.clear()
 
         mockMvc
-            .get("/packs?continent=${Continent.WEST}")
+            .get("/pack?continent=${Continent.WEST}")
             .andExpect {
                 status { isBadRequest() }
                 content { string(messageSource.getMessage("archeage.server.not.chosen.error.message", emptyArray(),LocaleContextHolder.getLocale())) }
@@ -69,7 +69,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         every { packServiceMock.packs(expectedRequest,pageable,archeageServer) } returns packsPage
 
         mockMvc
-            .get("/packs?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}")
+            .get("/pack?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}")
             .andExpect {
                 status { isOk() }
                 content {
@@ -87,7 +87,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         every { packServiceMock.packs(expectedPackRequest,pageable,archeageServer) } returns packsPage
 
         mockMvc
-            .get("/packs?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}&destinationLocation=1")
+            .get("/pack?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}&destinationLocation=1")
             .andExpect {
                 status { isOk() }
                 content {
@@ -105,7 +105,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         every { packServiceMock.packs(expectedPackRequest,pageable,archeageServer) } returns packsPage
 
         mockMvc
-            .get("/packs?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}&departureLocation=5")
+            .get("/pack?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}&departureLocation=5")
             .andExpect {
                 status { isOk() }
                 content {
@@ -123,7 +123,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         every { packServiceMock.packs(expectedPackRequest,pageable,archeageServer) } returns packsPage
 
         mockMvc
-            .get("/packs?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}&departureLocation=3&destinationLocation=1")
+            .get("/pack?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}&departureLocation=3&destinationLocation=1")
             .andExpect {
                 status { isOk() }
                 content {
@@ -138,7 +138,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
     @ParameterizedTest
     fun `should return 406(Not Acceptable) when request accept content type is invalid`(invalidContentType: MediaType) {
         mockMvc
-            .get("/packs"){
+            .get("/pack"){
                 accept = invalidContentType
             }.andExpect {
                 status { isNotAcceptable() }
@@ -151,7 +151,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
     @ParameterizedTest
     fun `should return 403(Forbidden) when requesting packs with http method other than GET`(invalidHttpMethod: HttpMethod) {
         mockMvc
-            .request(invalidHttpMethod,"/packs")
+            .request(invalidHttpMethod,"/pack")
             .andExpect { status { isForbidden() } }
 
         verifyAll { packServiceMock wasNot called }

@@ -63,7 +63,7 @@
     <div class="alert alert-success mt-2" th:if="${success != null}" th:text="${success}">
     </div>
     <div class="d-flex justify-content-center">
-        <form class="mt-4 w-50 p-2" th:action="@{/register}" method="post" th:object="${registrationForm}">
+        <form class="mt-4 w-50 p-2" th:action="@{/user}" method="post" th:object="${registrationForm}">
             <div class="alert alert-danger mt-2 alert-dismissible fade show" th:each="error : ${#fields.errors('*')}">
                 <span th:text="${error}">Test</span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

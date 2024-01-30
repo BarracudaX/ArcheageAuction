@@ -11,22 +11,22 @@ document.addEventListener("DOMContentLoaded", function () {
 function refreshLocations(){
     let continent = document.getElementById("continent").value
     if(selectedDepartureLocation !== undefined && selectedDestinationLocation !== undefined){
-        fetch(`/locations?continent=${continent}&destinationLocation=${selectedDestinationLocation}&departureLocation=${selectedDepartureLocation}`)
+        fetch(`/location?continent=${continent}&destinationLocation=${selectedDestinationLocation}&departureLocation=${selectedDepartureLocation}`)
             .then(response => handleResponse(response))
             .then(locations => handleLocations(locations))
             .catch(reason => addError(reason.message))
     }else if(selectedDestinationLocation !== undefined){
-        fetch(`/locations?continent=${continent}&destinationLocation=${selectedDestinationLocation}`)
+        fetch(`/location?continent=${continent}&destinationLocation=${selectedDestinationLocation}`)
             .then(response => handleResponse(response))
             .then(locations => handleLocations(locations))
             .catch(reason => addError(reason.message))
     }else if(selectedDepartureLocation !== undefined){
-        fetch(`/locations?continent=${continent}&departureLocation=${selectedDepartureLocation}`)
+        fetch(`/location?continent=${continent}&departureLocation=${selectedDepartureLocation}`)
             .then(response => handleResponse(response))
             .then(locations => handleLocations(locations))
             .catch(reason => addError(reason.message))
     }else{
-        fetch(`/locations?continent=${continent}`)
+        fetch(`/location?continent=${continent}`)
             .then(response => handleResponse(response))
             .then(locations => handleLocations(locations))
             .catch(reason => addError(reason.message))
@@ -55,25 +55,25 @@ function fetchPage(page){
     let continent = document.getElementById("continent").value
 
     if(departureLocation === "all" && destinationLocation === "all"){
-        return fetch(`/packs?page=${page}&size=${pageSize}&continent=${continent}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc`)
+        return fetch(`/pack?page=${page}&size=${pageSize}&continent=${continent}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc`)
             .then(response => handleResponse(response))
             .then(data => {
                 handlePacks(data)
             }).catch(reason => addError(reason.message))
     }else if(departureLocation === "all"){
-        return fetch(`/packs?page=${page}&size=${pageSize}&continent=${continent}&destinationLocation=${destinationLocation}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc`)
+        return fetch(`/pack?page=${page}&size=${pageSize}&continent=${continent}&destinationLocation=${destinationLocation}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc`)
             .then(response => handleResponse(response))
             .then(data => {
                 handlePacks(data)
             }).catch(reason => addError(reason.message))
     }else if(destinationLocation === "all"){
-        return fetch(`/packs?page=${page}&size=${pageSize}&continent=${continent}&departureLocation=${departureLocation}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc`)
+        return fetch(`/pack?page=${page}&size=${pageSize}&continent=${continent}&departureLocation=${departureLocation}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc`)
             .then(response => handleResponse(response))
             .then(data => {
                 handlePacks(data)
             }).catch(reason => addError(reason.message))
     }else{
-        return fetch(`/packs?page=${page}&size=${pageSize}&continent=${continent}&departureLocation=${departureLocation}&destinationLocation=${destinationLocation}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc`)
+        return fetch(`/pack?page=${page}&size=${pageSize}&continent=${continent}&departureLocation=${departureLocation}&destinationLocation=${destinationLocation}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc`)
             .then(response => handleResponse(response))
             .then(data => {
                 handlePacks(data)

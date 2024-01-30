@@ -1,6 +1,7 @@
 package com.arslan.archeage.service
 
 import com.arslan.archeage.Continent
+import com.arslan.archeage.PackPercentageUpdate
 import com.arslan.archeage.entity.*
 import com.arslan.archeage.entity.item.Item
 import com.arslan.archeage.entity.item.PurchasableItem
@@ -15,6 +16,7 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -126,5 +128,16 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
             id.pack.id shouldBe pack.id
             id.user.id shouldBe user.id
         }
+    }
+
+    @Disabled("TODO")
+    @Test
+    fun `should do nothing when trying to update pack percentage of not existing pack`() {
+        val idOfNotExistingPack = 120310L
+        packRepository.existsById(idOfNotExistingPack).shouldBeFalse()
+
+        packProfitService.updatePercentage(PackPercentageUpdate(idOfNotExistingPack,2.0,user.id!!))
+
+        packProfitRepository.findAll().shouldBeEmpty()
     }
 }

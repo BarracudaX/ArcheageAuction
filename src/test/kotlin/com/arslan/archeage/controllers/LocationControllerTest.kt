@@ -49,7 +49,7 @@ class LocationControllerTest(private val mockMvc: MockMvc) : AbstractControllerT
         ArcheageServerContextHolder.clear()
 
         mockMvc
-            .get("/locations?continent=${Continent.WEST}")
+            .get("/location?continent=${Continent.WEST}")
             .andExpect {
                 status { isBadRequest() }
                 content { string(messageSource.getMessage("archeage.server.not.chosen.error.message", emptyArray(),LocaleContextHolder.getLocale())) }
@@ -62,7 +62,7 @@ class LocationControllerTest(private val mockMvc: MockMvc) : AbstractControllerT
     @ParameterizedTest
     fun `should return 400 bad request if continent value is invalid`(invalidContinentValue: String) {
         mockMvc
-            .get("/locations?continent=$invalidContinentValue")
+            .get("/location?continent=$invalidContinentValue")
             .andExpect { status { isBadRequest() } }
 
         verifyAll { locationServiceMock wasNot called }
@@ -71,7 +71,7 @@ class LocationControllerTest(private val mockMvc: MockMvc) : AbstractControllerT
     @Test
     fun `should return 400 bad request if continent query parameter is not present`() {
         mockMvc
-            .get("/locations")
+            .get("/location")
             .andExpect { status { isBadRequest() } }
 
         verifyAll { locationServiceMock wasNot called }
@@ -80,7 +80,7 @@ class LocationControllerTest(private val mockMvc: MockMvc) : AbstractControllerT
     @Test
     fun `should not return continent locations`() {
         mockMvc
-            .get("/locations?continent=${Continent.WEST}")
+            .get("/location?continent=${Continent.WEST}")
             .andExpect {
                 status { isOk() }
                 content {
@@ -107,7 +107,7 @@ class LocationControllerTest(private val mockMvc: MockMvc) : AbstractControllerT
     fun `should filter out departure location if destination location is provided`() {
         val expectedLocations = locations.filter { it.id != factories[2].id }
         mockMvc
-            .get("/locations?continent=${Continent.WEST}&destinationLocation=${factories[2].id}")
+            .get("/location?continent=${Continent.WEST}&destinationLocation=${factories[2].id}")
             .andExpect {
                 status { isOk() }
                 content {
@@ -134,7 +134,7 @@ class LocationControllerTest(private val mockMvc: MockMvc) : AbstractControllerT
     fun `should filter out destination location if departure location is provided`() {
         val expectedFactories = factories.filter { it.id !=  locations[2].id }
         mockMvc
-            .get("/locations?continent=${Continent.WEST}&departureLocation=${locations[2].id}")
+            .get("/location?continent=${Continent.WEST}&departureLocation=${locations[2].id}")
             .andExpect {
                 status { isOk() }
                 content {
@@ -161,7 +161,7 @@ class LocationControllerTest(private val mockMvc: MockMvc) : AbstractControllerT
         val expectedFactories = factories.filter { it.id !=  locations[1].id }
         val expectedLocations = locations.filter { it.id != factories[2].id }
         mockMvc
-            .get("/locations?continent=${Continent.WEST}&destinationLocation=${factories[2].id}&departureLocation=${locations[1].id}")
+            .get("/location?continent=${Continent.WEST}&destinationLocation=${factories[2].id}&departureLocation=${locations[1].id}")
             .andExpect {
                 status { isOk() }
                 content {
@@ -184,7 +184,7 @@ class LocationControllerTest(private val mockMvc: MockMvc) : AbstractControllerT
     @ParameterizedTest
     fun `should return 406 response status when request has non-acceptable accept header`(nonAcceptableContentType: MediaType) {
         mockMvc
-            .get("/locations?continent=${Continent.WEST}"){
+            .get("/location?continent=${Continent.WEST}"){
                 accept = nonAcceptableContentType
             }.andExpect {
                 status { isNotAcceptable() }
@@ -197,7 +197,7 @@ class LocationControllerTest(private val mockMvc: MockMvc) : AbstractControllerT
     @ParameterizedTest
     fun `should return 403(forbidden) when trying any method other than GET`(invalidHttpMethod: HttpMethod) {
         mockMvc
-            .request(invalidHttpMethod,"/locations?continent=${Continent.WEST}")
+            .request(invalidHttpMethod,"/location?continent=${Continent.WEST}")
             .andExpect { status { isForbidden() } }
 
         verifyAll { locationServiceMock wasNot called }
