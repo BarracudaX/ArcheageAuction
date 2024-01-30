@@ -65,7 +65,7 @@ abstract class AbstractITest : AbstractTest(){
         private val containerLoggerConsumer = Slf4jLogConsumer(LoggerFactory.getLogger("Integration Test Containers"))
 
         @JvmStatic
-        val mysql = MySQLContainer("mysql:latest")
+        val mysql = MySQLContainer("mysql:8.1.0")
             .withReuse(true)
 
         @JvmStatic
