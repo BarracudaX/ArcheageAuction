@@ -47,6 +47,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     //kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
