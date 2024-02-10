@@ -5,6 +5,7 @@ import com.arslan.archeage.PackRequest
 import com.arslan.archeage.entity.*
 import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.entity.item.UserPrice
+import com.arslan.archeage.entity.item.UserPriceKey
 import com.arslan.archeage.entity.pack.Pack
 import com.arslan.archeage.entity.pack.PackPrice
 import com.arslan.archeage.entity.pack.PackProfit
@@ -12,13 +13,16 @@ import com.arslan.archeage.entity.pack.PackProfitKey
 import com.arslan.archeage.toDTO
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 
 class   PackServiceITest(
     private val packService: PackService
@@ -124,7 +128,7 @@ class   PackServiceITest(
             Pack(northLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_NAME_5","ANY_DESC_5").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(northLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_NAME_6","ANY_DESC_6").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
         )).onEach { pack -> percentages[pack.id!!]=100 }
-        createUserPrice(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
+        createPackProfitsAndMaterialPrices(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
 
         packService.packs(PackRequest(Continent.WEST,null,null,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
@@ -154,7 +158,7 @@ class   PackServiceITest(
             Pack(northLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_PACK_NAME_34093","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(northLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_PACK_NAME_09433","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
         )).onEach { pack -> percentages[pack.id!!]=100 }
-        createUserPrice(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
+        createPackProfitsAndMaterialPrices(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
 
         packService.packs(PackRequest(Continent.WEST,westLocation.id,null,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
@@ -187,7 +191,7 @@ class   PackServiceITest(
             Pack(northLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_PACK_NAME_090123","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(thirdNorthLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_PACK_NAME_909213","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
         )).onEach { pack -> percentages[pack.id!!]=100 }
-        createUserPrice(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
+        createPackProfitsAndMaterialPrices(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
 
         packService.packs(PackRequest(Continent.WEST,null,secondWestLocation.id,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
@@ -218,7 +222,7 @@ class   PackServiceITest(
             Pack(northLocation, PackPrice(Price(1,1,1),secondNorthLocation),1,"ANY_PACK_NAME_49812315","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
             Pack(northLocation,PackPrice(Price(1,1,1),secondNorthLocation),1, "ANY_PACK_NAME_437887823","ANY_DESC").apply { addMaterial(CraftingMaterial(1,purchasableItem)) }
         )).onEach { pack -> percentages[pack.id!!]=100 }
-        createUserPrice(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
+        createPackProfitsAndMaterialPrices(expectedWestPacks.plus(expectedEastPacks).plus(expectedNorthPacks))
 
         packService.packs(PackRequest(Continent.WEST,westLocation.id,secondWestLocation.id,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
@@ -229,6 +233,20 @@ class   PackServiceITest(
         packService.packs(PackRequest(Continent.NORTH,northLocation.id,secondNorthLocation.id,null),pageable,archeageServer).content
             .shouldNotBeEmpty()
             .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices,percentages))
+    }
+
+    @Test
+    fun `should only return packs of requested continent sorted`() {
+        val packs = packRepository.saveAll(listOf(
+            Pack(westLocation, PackPrice(Price(1,1,1),secondWestLocation),1,"ANY_NAME_1","ANY_DESC_2").apply { addMaterial(CraftingMaterial(1,purchasableItem)) },
+            Pack(westLocation, PackPrice(Price(1,1,1),secondWestLocation),1, "ANY_NAME_2","ANY_DESC_1").apply { addMaterial(CraftingMaterial(5,purchasableItem)) }
+        )).onEach { pack -> percentages[pack.id!!]=100 }
+        createPackProfitsAndMaterialPrices(packs)
+        val expectedPacksOrdered = packs.toDTO(materialPrices,percentages).sortedByDescending { it.name }
+
+        packService
+            .packs(PackRequest(Continent.WEST), PageRequest.of(0,10,Sort.by(Sort.Order(Sort.Direction.DESC,"id.pack.name"))),archeageServer)
+            .shouldContainInOrder(expectedPacksOrdered)
     }
 
     private fun preparePacksWithRandomDestinationLocation(){
@@ -264,12 +282,13 @@ class   PackServiceITest(
         packRepository.save(Pack(northLocationOfDifferentServer, PackPrice(Price(1,1,1),northLocationOfDifferentServer),1,"ANY_NAME_9","ANY_DESC_9"))
             .apply { addMaterial(CraftingMaterial(1,purchasableOfAnotherServer)) }.also { packs.add(it) }
 
-        createUserPrice(packs)
+        createPackProfitsAndMaterialPrices(packs)
 
         testEntityManager.flush()
     }
 
-    private fun createUserPrice(packs: List<Pack>){
+    private fun createPackProfitsAndMaterialPrices(packs: List<Pack>){
+        materialPrices[purchasableItem.id!!] = userPriceRepository.save(UserPrice(UserPriceKey(user,purchasableItem),Price(1,1,1)))
         packs.forEach { pack ->
             packProfitRepository.save(PackProfit(PackProfitKey(pack,user), Price(1,1,1)))
         }

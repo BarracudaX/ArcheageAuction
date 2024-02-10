@@ -41,7 +41,6 @@ class Pack(
     }
 
     fun profit(prices: Map<Long,Price>,sellPercentage: Double) : Price{
-
         val cost = materials
             .filter { it.item is PurchasableItem }
             .map { material -> prices[material.item.id]!! * material.quantity }
