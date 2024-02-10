@@ -98,10 +98,7 @@ function savePrice(source){
     }
 
     const itemID = source.id.substring(source.id.indexOf("_")+1)
-    const csrfToken = document.querySelector("meta[name='_csrf']").content
-    const csrfHeaderName = document.querySelector("meta[name='_csrf_header']").content
-    const headers = new Headers()
-    headers.append(csrfHeaderName,csrfToken)
+    const headers = createCsrfHeaders()
     headers.append("Content-Type","application/json")
     const request = {
         itemID: itemID,

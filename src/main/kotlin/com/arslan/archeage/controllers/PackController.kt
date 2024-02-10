@@ -23,13 +23,13 @@ class PackController(private val packService: PackService,private val packProfit
         if(archeageServer == null){
             throw ArcheageContextHolderEmptyException()
         }
+        val userID = SecurityContextHolder.getContext().authentication?.name?.toLongOrNull()
+        val packs = packService.packs(packRequest.copy(userID = userID),pageable,archeageServer)
 
-        val packs = packService.packs(packRequest.copy(userID = SecurityContextHolder.getContext().authentication?.name?.toLongOrNull()),pageable,archeageServer)
-
-        return ResponseEntity.ok(Packs(packs.content,packs.hasNext(),packs.hasPrevious()))
+        return ResponseEntity.ok(Packs(packs.content,packs.hasNext(),packs.hasPrevious(),userID != null))
     }
 
-    @PutMapping("/profit", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PutMapping("/percentage", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun updateProfit(@RequestBody percentageUpdate: PackPercentageUpdate) : ResponseEntity<Unit>{
         val userID = SecurityContextHolder.getContext().authentication?.name?.toLong()!!
 

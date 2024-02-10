@@ -1,14 +1,10 @@
 package com.arslan.archeage
 
-import com.arslan.archeage.entity.ArcheageServer
-import com.arslan.archeage.entity.Location
 import com.arslan.archeage.entity.Price
 import jakarta.validation.constraints.DecimalMax
 import jakarta.validation.constraints.DecimalMin
 import jakarta.validation.constraints.NotNull
 import kotlinx.serialization.Serializable
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 
 enum class Continent{ EAST,WEST,NORTH }
 @Serializable
@@ -28,6 +24,8 @@ data class PackDTO(
     val id : Long,
 
     val cost: Price,
+
+    val percentage: Int,
 
     val profit: Price
 )
@@ -56,7 +54,7 @@ class ItemDTO(val name: String,val id: Long,val price:Price? = null){
 data class UserPrices(val items: List<ItemDTO>,val hasNext: Boolean,val hasPrevious: Boolean)
 
 @Serializable
-data class Packs(val packs: List<PackDTO>,val hasNext: Boolean,val hasPrevious: Boolean)
+data class Packs(val packs: List<PackDTO>,val hasNext: Boolean,val hasPrevious: Boolean,val isUserData: Boolean)
 
 @Serializable
 data class LocationDTO(val name: String,val id: Long)

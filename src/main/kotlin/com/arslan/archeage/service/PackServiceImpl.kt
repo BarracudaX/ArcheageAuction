@@ -34,7 +34,12 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
 
     private fun convertPacksToDTOs(result: Page<PackResult>) : Page<PackDTO> {
         val percentages = result.content.associate { it.id to it.percentage }
-        val packs = packRepository.packs(result.content.map(PackResult::id))
+        val packIDs = result.content.map(PackResult::id)
+        val packs = packRepository.packs(packIDs)
+            .map { it to packIDs.indexOf(it.id!!) }
+            .sortedBy { (_,position) -> position }
+            .map { (pack,_) -> pack }
+
         val userID = SecurityContextHolder.getContext()?.authentication?.name?.toLongOrNull()
         val materials = packs.flatMap { pack -> pack.materials().map(CraftingMaterial::item) }
         val prices = if(userID == null){

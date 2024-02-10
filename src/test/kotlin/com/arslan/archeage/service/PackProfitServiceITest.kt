@@ -165,11 +165,16 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
     @Test
     fun `should update pack profit percentage`() {
         setUserPricesForTestPack()
+        val initialNetProfit = packProfitRepository.findById(PackProfitKey(pack,user)).get().netProfit
         packProfitRepository.findById(PackProfitKey(pack,user)).get().percentage shouldBe 100 //default value
 
         packProfitService.updatePercentage(packPercentageUpdate.copy(percentage = 120))
 
-        packProfitRepository.findById(PackProfitKey(pack,user)).get().percentage shouldBe 120 //default value
+        assertSoftly(packProfitRepository.findById(PackProfitKey(pack,user)).get()) {
+            percentage shouldBe 120
+            netProfit shouldBe initialNetProfit*1.2
+        }
+
     }
 
     private fun setUserPricesForTestPack(){

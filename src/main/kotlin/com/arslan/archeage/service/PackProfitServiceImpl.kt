@@ -6,6 +6,7 @@ import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.entity.pack.PackProfit
 import com.arslan.archeage.entity.pack.PackProfitKey
 import com.arslan.archeage.event.ItemPriceChangeEvent
+import com.arslan.archeage.initialValue
 import com.arslan.archeage.repository.PackProfitRepository
 import com.arslan.archeage.repository.PackRepository
 import org.springframework.stereotype.Service
@@ -42,7 +43,10 @@ class PackProfitServiceImpl(private val packRepository: PackRepository,private v
     override fun updatePercentage(update: PackPercentageUpdate) {
         packProfitRepository
             .findPackProfit(update.packID,update.userID!!)
-            .apply { percentage = update.percentage }
+            .apply {
+                netProfit = netProfit.initialValue(percentage/100.0)*(update.percentage/100.0)
+                percentage = update.percentage
+            }
     }
 
 }

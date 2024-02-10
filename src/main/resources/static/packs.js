@@ -2,6 +2,7 @@ let currentPage = 0
 let pageSize = 10
 let selectedDepartureLocation
 let selectedDestinationLocation
+const percentageSelectIDPrefix = "percentage_select_"
 
 document.addEventListener("DOMContentLoaded", function () {
     refreshLocations()
@@ -164,6 +165,7 @@ function handlePacks(data) {
                     <div class="text-center col">${pack.destinationLocation}</div>
                     <div class="text-center col">${pack.sellPrice.gold+' '+goldLabel+' '+pack.sellPrice.silver+' '+silverLabel+' '+pack.sellPrice.copper+' '+copperLabel}</div>
                     <div class="text-center col">${pack.profit.gold+' '+goldLabel+' '+pack.profit.silver+' '+silverLabel+' '+pack.profit.copper+' '+copperLabel}</div>
+                    <select class="form-select col" id="${percentageSelectIDPrefix}${pack.id}" ${data.isUserData ? '' : 'disabled'} onchange="updatePackPercentage(${pack.id})"></select>
                 </div>
         `
         const insertBeforeThis = document.createElement("div")
@@ -192,7 +194,7 @@ function handlePacks(data) {
             const material = pack.materials[j]
             const materialRow = document.createElement("div")
             materialRow.className = "row"
-            if ('price' in material.itemDTO) {
+            if (material.itemDTO.price != null) {
                 materialRow.innerHTML = `
                  <div class="text-center col">${material.itemDTO.name}</div>
                  <div class="text-center col">${material.quantity}</div>
@@ -215,6 +217,20 @@ function handlePacks(data) {
     }
     fragment.appendChild(packsDiv)
     container.insertBefore(fragment, container.firstChild)
+
+    for (let i = 0; i < packs.length; i++) {
+        const pack = packs[i]
+        const select = document.getElementById(`${percentageSelectIDPrefix}${pack.id}`)
+        for(let i = 80; i <= 130; i+= 10){
+            const option = document.createElement("option")
+            option.value = `${i}`
+            option.text = `${i}%`
+            if(pack.percentage === i ){
+                option.selected = true
+            }
+            select.appendChild(option)
+        }
+    }
 }
 
 
@@ -246,4 +262,22 @@ function changeDestinationLocation() {
     currentPage = 0
     refreshLocations()
     refreshPacks()
+}
+
+async function updatePackPercentage(packID) {
+    const select = document.getElementById(`${percentageSelectIDPrefix}${packID}`)
+    const data = {
+        packID: packID,
+        percentage: select.value
+    }
+    const headers = createCsrfHeaders()
+    headers.append("Content-Type","application/json")
+    await fetch("/pack/percentage", {method: "PUT", body: JSON.stringify(data), headers : headers,credentials : "same-origin"})
+        .then(async response => {
+            if (response.status !== 200) {
+                addError(await response.text())
+            } else {
+                refreshPacks()
+            }
+        })
 }

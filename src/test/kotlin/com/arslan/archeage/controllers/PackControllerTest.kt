@@ -35,9 +35,9 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         ArcheageServerContextHolder.setServerContext(archeageServer)
         packsPage = PageImpl(
             listOf(
-                PackDTO("PACK_1","ANY_LOC","ANY_DEST", Price(3,24,25),6, emptyList(),1,Price(52,23,11),Price(10,1,5)),
-                PackDTO("PACK_2","ANY_LOC","ANY_DEST", Price(200,1,4),9, emptyList(),2,Price(44,55,0),Price(12,13,20)),
-                PackDTO("PACK_3","ANY_LOC","ANY_DEST", Price(0,20,30),10, emptyList(),3,Price(1,12,15),Price(11,2,4))
+                PackDTO("PACK_1","ANY_LOC","ANY_DEST", Price(3,24,25),6, emptyList(),1,Price(52,23,11),100,Price(10,1,5)),
+                PackDTO("PACK_2","ANY_LOC","ANY_DEST", Price(200,1,4),9, emptyList(),2,Price(44,55,0),100,Price(12,13,20)),
+                PackDTO("PACK_3","ANY_LOC","ANY_DEST", Price(0,20,30),10, emptyList(),3,Price(1,12,15),100,Price(11,2,4))
             ),
             pageable,100
         )
@@ -68,7 +68,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             .andExpect {
                 status { isOk() }
                 content {
-                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious())))
+                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious(),false)))
                 }
             }
 
@@ -86,7 +86,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             .andExpect {
                 status { isOk() }
                 content {
-                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious())))
+                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious(),false)))
                 }
             }
 
@@ -104,7 +104,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             .andExpect {
                 status { isOk() }
                 content {
-                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious())))
+                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious(),false)))
                 }
             }
 
@@ -122,7 +122,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             .andExpect {
                 status { isOk() }
                 content {
-                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious())))
+                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious(),false)))
                 }
             }
 
@@ -155,7 +155,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
     @Test
     fun `should return 302 redirect response to login when trying to update pack percentage without being authenticated`() {
         mockMvc
-            .put("/pack/profit"){
+            .put("/pack/percentage"){
                 with(csrf())
                 content = json.encodeToString(packPercentageUpdate)
                 contentType = MediaType.APPLICATION_JSON
@@ -173,7 +173,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
     @ParameterizedTest
     fun `should return 415(Unsupported Media Type) when trying to update pack percentage with invalid content type`(invalidContentType: MediaType) {
         mockMvc
-            .put("/pack/profit"){
+            .put("/pack/percentage"){
                 with(csrf())
                 content = json.encodeToString(packPercentageUpdate)
                 contentType = invalidContentType
@@ -190,7 +190,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
     @Test
     fun `should return 403(Forbidden) when trying to update pack percentage without csrf`() {
         mockMvc
-            .put("/pack/profit"){
+            .put("/pack/percentage"){
                 content = json.encodeToString(packPercentageUpdate)
                 contentType = MediaType.APPLICATION_JSON
             }.andExpect {
@@ -208,7 +208,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         every { packProfitServiceMock.updatePercentage(packPercentageUpdate.copy(userID = 1)) } just runs
 
         mockMvc
-            .put("/pack/profit"){
+            .put("/pack/percentage"){
                 with(csrf())
                 content = json.encodeToString(packPercentageUpdate)
                 contentType = MediaType.APPLICATION_JSON

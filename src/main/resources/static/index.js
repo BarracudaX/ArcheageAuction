@@ -48,3 +48,12 @@ async function handleResponse(response) {
         throw Error(await response.text())
     }
 }
+
+function createCsrfHeaders() {
+    const csrfToken = document.querySelector("meta[name='_csrf']").content
+    const csrfHeaderName = document.querySelector("meta[name='_csrf_header']").content
+    const headers = new Headers()
+    headers.append(csrfHeaderName,csrfToken)
+
+    return headers
+}
