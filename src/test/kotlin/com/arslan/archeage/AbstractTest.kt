@@ -1,7 +1,9 @@
 package com.arslan.archeage
 
+import com.arslan.archeage.entity.Price
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
+import kotlin.random.Random
 
 
 abstract class AbstractTest {
@@ -33,4 +35,6 @@ abstract class AbstractTest {
         fun invalidContinentValues() : Array<String> = arrayOf("wst","est","NR","WE","EST","","   ")
     }
 
+
+    protected fun randomPrice() : Price = Price(Random.nextInt(0,100), Random.nextInt(0,99), Random.nextInt(0,99))
 }
