@@ -1,5 +1,6 @@
 package com.arslan.archeage.web
 
+import com.arslan.archeage.ArcheageContextHolderEmptyException
 import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.service.ArcheageServerContextHolder
 import org.springframework.core.MethodParameter
@@ -14,8 +15,8 @@ class ArcheageServerHandlerMethodArgumentResolver : HandlerMethodArgumentResolve
 
     override fun supportsParameter(parameter: MethodParameter): Boolean = ArcheageServer::class.java.isAssignableFrom(parameter.parameterType)
 
-    override fun resolveArgument(parameter: MethodParameter, mavContainer: ModelAndViewContainer?, webRequest: NativeWebRequest, binderFactory: WebDataBinderFactory?): Any? {
-        return  ArcheageServerContextHolder.getServerContext()
+    override fun resolveArgument(parameter: MethodParameter, mavContainer: ModelAndViewContainer?, webRequest: NativeWebRequest, binderFactory: WebDataBinderFactory?): Any {
+        return  ArcheageServerContextHolder.getServerContext() ?: throw ArcheageContextHolderEmptyException()
     }
 
 }

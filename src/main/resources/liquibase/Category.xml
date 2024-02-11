@@ -16,7 +16,7 @@
                 <constraints nullable="false" foreignKeyName="fk_categories_archeage_servers" references="archeage_servers(id)" />
             </column>
             <column name="parent_category" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_categories_categories" references="categories(id)" />
+                <constraints foreignKeyName="fk_categories_categories" references="categories(id)" />
             </column>
         </createTable>
     </changeSet>
@@ -27,6 +27,18 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="barracuda" context="dev">
+        <loadData tableName="categories" file="csv/categories.csv">
+            <column name="id" type="NUMERIC" header="id" />
+            <column name="name" type="STRING" header="name" />
+            <column name="archeage_server_id" type="NUMERIC" header="archeage_server_id" />
+            <column name="parent_category" type="NUMERIC" header="parent_category" />
+        </loadData>
+        <update tableName="categories_seq">
+            <column name="next_val">11</column>
+        </update>
     </changeSet>
 
 </databaseChangeLog>

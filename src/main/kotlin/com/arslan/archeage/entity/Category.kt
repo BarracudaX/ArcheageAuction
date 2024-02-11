@@ -1,6 +1,5 @@
-package com.arslan.archeage.entity.pack
+package com.arslan.archeage.entity
 
-import com.arslan.archeage.entity.ArcheageServer
 import jakarta.persistence.*
 
 @Entity

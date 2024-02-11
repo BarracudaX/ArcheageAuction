@@ -19,8 +19,7 @@ import java.util.Optional
 class LocationController(private val locationService: LocationService) {
 
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun locations(@ModelAttribute request: LocationRequest, archeageServer: ArcheageServer?) : ResponseEntity<Locations>{
-        if(archeageServer == null) throw ArcheageContextHolderEmptyException()
+    fun locations(@ModelAttribute request: LocationRequest, archeageServer: ArcheageServer) : ResponseEntity<Locations>{
         val continentLocations = locationService.continentLocations(request.continent,archeageServer)
             .filter { request.destinationLocation.isEmpty || request.destinationLocation.get() != it.id }
             .map { LocationDTO(it.name,it.id!!) }

@@ -38,9 +38,7 @@ class UserController(private val userService: UserService,private val itemPriceS
 
     @ResponseBody
     @GetMapping("/price")
-    fun userPrices(pageable: Pageable, archeageServer: ArcheageServer?) : ResponseEntity<UserPrices>{
-        if(archeageServer == null) throw ArcheageContextHolderEmptyException()
-
+    fun userPrices(pageable: Pageable, archeageServer: ArcheageServer) : ResponseEntity<UserPrices>{
         val userID = SecurityContextHolder.getContext().authentication.name.toLong()
 
         val prices = itemPriceService.userPrices(userID,pageable)

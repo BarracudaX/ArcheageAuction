@@ -19,10 +19,7 @@ import java.util.*
 class PackController(private val packService: PackService,private val packProfitService: PackProfitService) {
 
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun packs(@ModelAttribute packRequest: PackRequest, archeageServer: ArcheageServer?,pageable: Pageable) : ResponseEntity<Packs>{
-        if(archeageServer == null){
-            throw ArcheageContextHolderEmptyException()
-        }
+    fun packs(@ModelAttribute packRequest: PackRequest, archeageServer: ArcheageServer,pageable: Pageable) : ResponseEntity<Packs>{
         val userID = SecurityContextHolder.getContext().authentication?.name?.toLongOrNull()
         val packs = packService.packs(packRequest.copy(userID = userID),pageable,archeageServer)
 
