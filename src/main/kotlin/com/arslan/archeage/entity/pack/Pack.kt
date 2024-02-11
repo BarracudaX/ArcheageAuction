@@ -1,5 +1,6 @@
 package com.arslan.archeage.entity.pack
 
+import com.arslan.archeage.entity.Category
 import com.arslan.archeage.entity.CraftingMaterial
 import com.arslan.archeage.entity.Location
 import com.arslan.archeage.entity.Price
@@ -8,6 +9,7 @@ import com.arslan.archeage.entity.item.PurchasableItem
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
+import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.BatchSize
@@ -21,6 +23,10 @@ class Pack(
     var price: PackPrice,
 
     var producedQuantity: Int,
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    var category: Category,
 
     name: String,
 

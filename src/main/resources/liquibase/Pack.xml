@@ -26,6 +26,9 @@
             <column name="creation_location_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_packs_creation_location_locations" references="locations(id)" />
             </column>
+            <column name="category_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_packs_categories" references="categories(id)" />
+            </column>
         </createTable>
     </changeSet>
 
@@ -38,6 +41,7 @@
             <column name="silver" header="silver" type="NUMERIC" />
             <column name="copper" header="copper" type="NUMERIC" />
             <column name="produced_quantity" header="produced_quantity" type="NUMERIC" />
+            <column name="category_id" header="category_id" type="NUMERIC" />
         </loadData>
     </changeSet>
 
@@ -62,4 +66,5 @@
             <column name="pack_id" header="pack_id" type="NUMERIC"/>
         </loadData>
     </changeSet>
+
 </databaseChangeLog>
