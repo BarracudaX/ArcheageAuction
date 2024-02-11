@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+
+    <changeSet id="1" author="barracuda">
+        <createTable tableName="categories">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="archeage_server_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_categories_archeage_servers" references="archeage_servers(id)" />
+            </column>
+            <column name="parent_category" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_categories_categories" references="categories(id)" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="barracuda">
+        <createTable tableName="categories_seq">
+            <column name="next_val" type="bigint" defaultValue="1">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
