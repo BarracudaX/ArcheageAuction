@@ -2,10 +2,7 @@ package com.arslan.archeage.service
 
 import com.arslan.archeage.Continent
 import com.arslan.archeage.UserPriceDTO
-import com.arslan.archeage.entity.ArcheageServer
-import com.arslan.archeage.entity.Location
-import com.arslan.archeage.entity.Price
-import com.arslan.archeage.entity.User
+import com.arslan.archeage.entity.*
 import com.arslan.archeage.entity.item.Item
 import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.entity.item.UserPrice
@@ -44,6 +41,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
     private lateinit var currentUserArcheageServer: ArcheageServer
     private lateinit var someUser: User
     private lateinit var anotherUser: User
+    private lateinit var category: Category
 
     @Autowired
     private lateinit var events: ApplicationEvents
@@ -55,6 +53,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
         anotherItem = itemRepository.save(PurchasableItem("ANY_ITEM_NAME_2","ANY_ITEM_DESCRIPTION_2",currentUserArcheageServer))
         someUser = userRepository.save(User("ANY_EMAIL","ANY_PASSWORD"))
         anotherUser = userRepository.save(User("ANOTHER_EMAIL","ANY_PASSWORD"))
+        category = categoryRepository.save(Category("ANY_CATEGORY",null,currentUserArcheageServer))
         ArcheageServerContextHolder.setServerContext(currentUserArcheageServer)
     }
 
@@ -125,7 +124,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
     fun `should throw EmptyResultDataAccessException when trying to save user price for non-purchasable item`() {
         val nonPurchasableItem = itemRepository.save(Item("NON_PURCHASABLE_ITEM","ANY",currentUserArcheageServer))
         val location = locationRepository.save(Location("ANY_NAME",Continent.EAST,currentUserArcheageServer,true))
-        val packItem = packRepository.save(Pack(location, PackPrice(Price(20,30,20),location),10,"PACK","ANY"))
+        val packItem = packRepository.save(Pack(location, PackPrice(Price(20,30,20),location),10,category,"PACK","ANY"))
 
         shouldThrow<EmptyResultDataAccessException> { itemPriceService.saveUserPrice(UserPriceDTO(someUser.id!!,nonPurchasableItem.id!!,Price(20,23,4))) }
         shouldThrow<EmptyResultDataAccessException> { itemPriceService.saveUserPrice(UserPriceDTO(someUser.id!!,packItem.id!!,Price(20,23,4))) }

@@ -70,6 +70,10 @@ class   PackServiceITest(
 
     private val percentages = mutableMapOf<Long,Int>()
 
+    private lateinit var category: Category
+
+    private lateinit var anotherServerCategory: Category
+
 
     @BeforeEach
     fun prepareTestContext(){
@@ -96,6 +100,9 @@ class   PackServiceITest(
 
         materialPrices[purchasableItem.id!!] = userPriceRepository.save(UserPrice(UserPriceKey(user,purchasableItem),randomPrice()))
         materialPrices[purchasableOfAnotherServer.id!!] = userPriceRepository.save(UserPrice(UserPriceKey(user,purchasableOfAnotherServer),randomPrice()))
+
+        category = categoryRepository.save(Category("ANY_CATEGORY",null,archeageServer))
+        anotherServerCategory = categoryRepository.save(Category("ANY_CATEGORY",null,anotherArcheageServer))
     }
 
     @AfterEach
@@ -108,7 +115,7 @@ class   PackServiceITest(
     fun `should return empty list when trying to retrieve packs of continent which does not have any packs`(continent: Continent) {
         if(continent == westLocation.continent) return
 
-        val pack = packRepository.save(Pack(westLocation, PackPrice(randomPrice(),secondWestLocation),1,"ANY_NAME","ANY_DESC"))
+        val pack = packRepository.save(Pack(westLocation, PackPrice(randomPrice(),secondWestLocation),1,category,"ANY_NAME","ANY_DESC"))
 
         packService.packs(PackRequest(continent,null,null,null),pageable,archeageServer).shouldBeEmpty()
         packService.packs(PackRequest(continent,pack.price.sellLocation.id,pack.creationLocation.id,null),pageable,archeageServer).shouldBeEmpty()
@@ -220,9 +227,9 @@ class   PackServiceITest(
         createPack(eastLocation,"RANDOM_DESTINATION_LOCATION_2",randomEastLocation)
         createPack(northLocation,"RANDOM_DESTINATION_LOCATION_3",randomNorthLocation)
 
-        packRepository.save(Pack(westLocation, PackPrice(Price(1,1,1),randomWestLocation),1,"ANY_NAME_232","ANY_DESC"))
-        packRepository.save(Pack(eastLocation,PackPrice(Price(1,1,1),randomEastLocation),1, "ANY_NAME_5234","ANY_DESC"))
-        packRepository.save(Pack(northLocation, PackPrice(Price(1,1,1),randomNorthLocation),1,"ANY_NAME_123512","ANY_DESC"))
+        packRepository.save(Pack(westLocation, PackPrice(Price(1,1,1),randomWestLocation),1,category,"ANY_NAME_232","ANY_DESC"))
+        packRepository.save(Pack(eastLocation,PackPrice(Price(1,1,1),randomEastLocation),1, category,"ANY_NAME_5234","ANY_DESC"))
+        packRepository.save(Pack(northLocation, PackPrice(Price(1,1,1),randomNorthLocation),1,category,"ANY_NAME_123512","ANY_DESC"))
     }
 
     private fun preparePacksWithRandomDepartureLocation(){
@@ -240,15 +247,15 @@ class   PackServiceITest(
      * These packs are excluded by default because they belong to different server.
      */
     private fun preparePacksThatShouldNotBeIncludedInTheResult(){
-        createPack(westLocationOfDifferentServer,"NOT_INCLUDED_1",westLocationOfDifferentServer,purchasableOfAnotherServer)
-        createPack(westLocationOfDifferentServer,"NOT_INCLUDED_2",eastLocationOfDifferentServer,purchasableOfAnotherServer)
-        createPack(westLocationOfDifferentServer,"NOT_INCLUDED_3",northLocationOfDifferentServer,purchasableOfAnotherServer)
+        createPack(westLocationOfDifferentServer,"NOT_INCLUDED_1",westLocationOfDifferentServer,purchasableOfAnotherServer,anotherServerCategory)
+        createPack(westLocationOfDifferentServer,"NOT_INCLUDED_2",eastLocationOfDifferentServer,purchasableOfAnotherServer,anotherServerCategory)
+        createPack(westLocationOfDifferentServer,"NOT_INCLUDED_3",northLocationOfDifferentServer,purchasableOfAnotherServer,anotherServerCategory)
 
         testEntityManager.flush()
     }
 
-    private fun createPack(creationLocation: Location,name: String,sellLocation: Location,material: PurchasableItem = purchasableItem) : Pack{
-        var pack = Pack(creationLocation,PackPrice(randomPrice(),sellLocation),nextInt(1,10),name,"ANY_DESC").apply {
+    private fun createPack(creationLocation: Location,name: String,sellLocation: Location,material: PurchasableItem = purchasableItem,packCategory: Category = category) : Pack{
+        var pack = Pack(creationLocation,PackPrice(randomPrice(),sellLocation),nextInt(1,10),packCategory,name,"ANY_DESC").apply {
             addMaterial(CraftingMaterial(nextInt(1),material))
         }
         pack = packRepository.save(pack)

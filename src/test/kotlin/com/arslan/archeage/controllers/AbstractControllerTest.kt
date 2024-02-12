@@ -27,6 +27,9 @@ import org.springframework.test.web.servlet.result.ModelResultMatchersDsl
 abstract class AbstractControllerTest : AbstractTest() {
 
     @MockkBean
+    protected lateinit var categoryService: CategoryService
+
+    @MockkBean
     protected lateinit var authenticationProviderMock: AuthenticationProvider
 
     @MockkBean

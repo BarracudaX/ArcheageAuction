@@ -2,6 +2,7 @@ package com.arslan.archeage.service
 
 import com.arslan.archeage.Continent
 import com.arslan.archeage.entity.ArcheageServer
+import com.arslan.archeage.entity.Category
 import com.arslan.archeage.entity.Location
 import com.arslan.archeage.entity.Price
 import com.arslan.archeage.entity.item.Item
@@ -23,10 +24,12 @@ import org.springframework.data.domain.Sort
 class ItemServiceITest(private val itemService: ItemService) : AbstractITest() {
 
     private lateinit var archeageServer: ArcheageServer
+    private lateinit var category: Category
 
     @BeforeEach
     fun setUp(){
         archeageServer = archeageServerRepository.save(ArcheageServer("ANY"))
+        category = categoryRepository.save(Category("ANY_CATEGORY",null,archeageServer))
     }
 
     @Test
@@ -38,7 +41,7 @@ class ItemServiceITest(private val itemService: ItemService) : AbstractITest() {
     fun `should return empty page if there are not purchasable items`() {
         itemRepository.save(Item("NOT_PURCHASABLE_ITEM","ANY",archeageServer))
         val packLocation = locationRepository.save(Location("ANY",Continent.WEST,archeageServer,true))
-        packRepository.save(Pack(packLocation, PackPrice(Price(1,2,3),packLocation),10,"PACK","ANY"))
+        packRepository.save(Pack(packLocation, PackPrice(Price(1,2,3),packLocation),10,category,"PACK","ANY"))
 
         itemService.purchasableItems(Pageable.unpaged(),archeageServer).isEmpty.shouldBeTrue()
     }

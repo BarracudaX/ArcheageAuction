@@ -25,6 +25,8 @@ import org.testcontainers.elasticsearch.ElasticsearchContainer
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 abstract class AbstractITest : AbstractTest(){
 
+    @Autowired
+    protected lateinit var categoryRepository: CategoryRepository
 
     @Autowired
     protected lateinit var packRepository: PackRepository
@@ -57,7 +59,7 @@ abstract class AbstractITest : AbstractTest(){
     protected lateinit var jdbcTemplate: JdbcTemplate
 
     protected fun clearDB(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"pack_profits","user_prices","pack_materials","packs","purchasable_items","items","locations","archeage_servers","users")
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"pack_profits","user_prices","pack_materials","packs","purchasable_items","items","locations","categories","archeage_servers","users")
     }
 
     companion object{

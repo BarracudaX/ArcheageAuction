@@ -1,5 +1,6 @@
 package com.arslan.archeage
 
+import com.arslan.archeage.entity.Category
 import com.arslan.archeage.entity.Price
 import jakarta.validation.constraints.DecimalMax
 import jakarta.validation.constraints.DecimalMin
@@ -78,3 +79,18 @@ data class PackPercentageUpdate(
     @field:NotNull(message = "{PackPercentageUpdate.userID.NotNull.message}")
     val userID: Long? = null
 )
+
+@Serializable
+data class CategoryDTO(val id: Long,val name: String,val subcategories: MutableList<CategoryDTO> = mutableListOf()){
+
+    fun addSubcategory(category: Category){
+        if(category.parent == null) throw IllegalArgumentException("Cannot add top category as a subcategory.")
+
+        if(id == category.parent!!.id!!){
+            with(category){ subcategories.add(CategoryDTO(id!!,name)) }
+        }else{
+            subcategories.forEach { subCategory -> subCategory.addSubcategory(category) }
+        }
+    }
+
+}
