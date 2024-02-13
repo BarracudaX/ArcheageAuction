@@ -15,7 +15,10 @@ const val SERVER_COOKIE_NAME = "ARCHEAGE_SERVER"
 @Component
 class CookieArcheageServerResolver(private val archeageServerRepository: ArcheageServerRepository) : ArcheageServerResolver {
 
-    private val serverCookie = ResponseCookie.from(SERVER_COOKIE_NAME).path("/").sameSite("Lax").build()
+    companion object{
+        @JvmStatic
+        val SERVER_COOKIE = ResponseCookie.from(SERVER_COOKIE_NAME).path("/").sameSite("Lax").build()
+    }
 
     override fun resolveArcheageServer(request: HttpServletRequest): ArcheageServer? {
         val serverCookie = WebUtils.getCookie(request, SERVER_COOKIE_NAME)?.value?.toLongOrNull() ?: return null
@@ -24,6 +27,6 @@ class CookieArcheageServerResolver(private val archeageServerRepository: Archeag
     }
 
     override fun setArcheageServer(response : HttpServletResponse, server: ArcheageServer) {
-        response.addHeader(HttpHeaders.SET_COOKIE,serverCookie.mutate().value("${server.id}").build().toString())
+        response.addHeader(HttpHeaders.SET_COOKIE,SERVER_COOKIE.mutate().value("${server.id}").build().toString())
     }
 }

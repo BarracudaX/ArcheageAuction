@@ -4,19 +4,16 @@ import com.arslan.archeage.entity.ArcheageServer
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class ArcheageServerContextHolderTest {
 
     private val expected = ArcheageServer("TEST", 1)
 
-    companion object{
-
-        @AfterAll
-        fun clear(){
-            ArcheageServerContextHolder.clear()
-        }
-
+    @BeforeEach
+    fun setUp() {
+        ArcheageServerContextHolder.clear()
     }
 
     @Test

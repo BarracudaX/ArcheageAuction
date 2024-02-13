@@ -24,6 +24,7 @@ class WebConfiguration(
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(LocaleChangeInterceptor()).order(1)
+        //the order is important!
         registry.addInterceptor(archeageServerChangeInterceptor).order(2)
         registry.addInterceptor(archeageServerContextHandlerInterceptor).order(3)
     }

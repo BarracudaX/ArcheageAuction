@@ -15,8 +15,12 @@ import kotlin.jvm.optionals.getOrNull
 @Component
 class ArcheageServerChangeInterceptor(private val resolver: ArcheageServerResolver,private val archeageServerRepository: ArcheageServerRepository) : HandlerInterceptor {
 
+    companion object{
+        const val ARCHEAGE_SERVER_PARAMETER_NAME = "server"
+    }
+
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val server = request.getParameter("server")?.let { archeageServerRepository.findById(it.toLong()).getOrNull() }
+        val server = request.getParameter(ARCHEAGE_SERVER_PARAMETER_NAME)?.let { archeageServerRepository.findById(it.toLong()).getOrNull() }
 
         if(server != null){
             resolver.setArcheageServer(response,server)
