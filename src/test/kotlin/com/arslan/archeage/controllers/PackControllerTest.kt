@@ -26,7 +26,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
 
     private val archeageServer = availableServers[0]
     private val pageable = PageRequest.of(2,3)
-    private val packRequest = PackRequest(Continent.WEST,null,null,null)
+    private val packRequest = PackRequest(Continent.WEST, null, null, null)
     private val packPercentageUpdate = PackPercentageUpdate(1,120)
     private lateinit var packsPage: Page<PackDTO>
 

@@ -23,7 +23,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
-import kotlin.random.Random
 import kotlin.random.Random.Default.nextInt
 
 class   PackServiceITest(
@@ -72,6 +71,8 @@ class   PackServiceITest(
 
     private lateinit var category: Category
 
+    private lateinit var anotherCategory: Category
+
     private lateinit var anotherServerCategory: Category
 
 
@@ -117,10 +118,16 @@ class   PackServiceITest(
 
         val pack = packRepository.save(Pack(westLocation, PackPrice(randomPrice(),secondWestLocation),1,category,"ANY_NAME","ANY_DESC"))
 
-        packService.packs(PackRequest(continent,null,null,null),pageable,archeageServer).shouldBeEmpty()
-        packService.packs(PackRequest(continent,pack.price.sellLocation.id,pack.creationLocation.id,null),pageable,archeageServer).shouldBeEmpty()
-        packService.packs(PackRequest(continent,null,pack.creationLocation.id,null),pageable,archeageServer).shouldBeEmpty()
-        packService.packs(PackRequest(continent,pack.price.sellLocation.id,null,null),pageable,archeageServer).shouldBeEmpty()
+        packService.packs(PackRequest(continent, null, null, null),pageable,archeageServer).shouldBeEmpty()
+        packService.packs(PackRequest(
+            continent,
+            pack.price.sellLocation.id,
+            pack.creationLocation.id,
+            null,
+            emptyList<Long>()
+        ),pageable,archeageServer).shouldBeEmpty()
+        packService.packs(PackRequest(continent, null, pack.creationLocation.id, null),pageable,archeageServer).shouldBeEmpty()
+        packService.packs(PackRequest(continent, pack.price.sellLocation.id, null, null),pageable,archeageServer).shouldBeEmpty()
     }
 
 
@@ -132,13 +139,13 @@ class   PackServiceITest(
         val expectedEastPacks = listOf(createPack(eastLocation,"ANY_NAME_3",secondEastLocation), createPack(eastLocation,"ANY_NAME_4",secondEastLocation))
         val expectedNorthPacks = listOf(createPack(northLocation,"ANY_NAME_5",secondNorthLocation), createPack(northLocation,"ANY_NAME_6",secondNorthLocation))
 
-        packService.packs(PackRequest(Continent.WEST,null,null,null),pageable,archeageServer).content
+        packService.packs(PackRequest(Continent.WEST, null, null, null),pageable,archeageServer).content
             .shouldNotBeEmpty()
             .shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices,percentages))
-        packService.packs(PackRequest(Continent.EAST,null,null,null),pageable,archeageServer).content
+        packService.packs(PackRequest(Continent.EAST, null, null, null),pageable,archeageServer).content
             .shouldNotBeEmpty()
             .shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices,percentages))
-        packService.packs(PackRequest(Continent.NORTH,null,null,null),pageable,archeageServer).content
+        packService.packs(PackRequest(Continent.NORTH, null, null, null),pageable,archeageServer).content
             .shouldNotBeEmpty()
             .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices,percentages))
     }
@@ -152,13 +159,13 @@ class   PackServiceITest(
         val expectedEastPacks = listOf(createPack(eastLocation,"ANY_NAME_3",secondEastLocation), createPack(eastLocation,"ANY_NAME_4",secondEastLocation))
         val expectedNorthPacks = listOf(createPack(northLocation,"ANY_NAME_5",secondNorthLocation), createPack(northLocation,"ANY_NAME_6",secondNorthLocation))
 
-        packService.packs(PackRequest(Continent.WEST,westLocation.id,null,null),pageable,archeageServer).content
+        packService.packs(PackRequest(Continent.WEST, westLocation.id, null, null),pageable,archeageServer).content
             .shouldNotBeEmpty()
             .shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices,percentages))
-        packService.packs(PackRequest(Continent.EAST,eastLocation.id,null,null),pageable,archeageServer).content
+        packService.packs(PackRequest(Continent.EAST, eastLocation.id, null, null),pageable,archeageServer).content
             .shouldNotBeEmpty()
             .shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices,percentages))
-        packService.packs(PackRequest(Continent.NORTH,northLocation.id,null,null),pageable,archeageServer).content
+        packService.packs(PackRequest(Continent.NORTH, northLocation.id, null, null),pageable,archeageServer).content
             .shouldNotBeEmpty()
             .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices,percentages))
     }
@@ -175,13 +182,13 @@ class   PackServiceITest(
         val expectedEastPacks = listOf(createPack(eastLocation,"ANY_NAME_3",secondEastLocation), createPack(eastLocation,"ANY_NAME_4",secondEastLocation))
         val expectedNorthPacks = listOf(createPack(northLocation,"ANY_NAME_5",secondNorthLocation), createPack(northLocation,"ANY_NAME_6",secondNorthLocation))
 
-        packService.packs(PackRequest(Continent.WEST,null,secondWestLocation.id,null),pageable,archeageServer).content
+        packService.packs(PackRequest(Continent.WEST, null, secondWestLocation.id, null),pageable,archeageServer).content
             .shouldNotBeEmpty()
             .shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices,percentages))
-        packService.packs(PackRequest(Continent.EAST,null,secondEastLocation.id,null),pageable,archeageServer).content
+        packService.packs(PackRequest(Continent.EAST, null, secondEastLocation.id, null),pageable,archeageServer).content
             .shouldNotBeEmpty()
             .shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices,percentages))
-        packService.packs(PackRequest(Continent.NORTH,null,secondNorthLocation.id,null),pageable,archeageServer).content
+        packService.packs(PackRequest(Continent.NORTH, null, secondNorthLocation.id, null),pageable,archeageServer).content
             .shouldNotBeEmpty()
             .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices,percentages))
     }
@@ -196,13 +203,38 @@ class   PackServiceITest(
         val expectedEastPacks = listOf(createPack(eastLocation,"ANY_NAME_3",secondEastLocation), createPack(eastLocation,"ANY_NAME_4",secondEastLocation))
         val expectedNorthPacks = listOf(createPack(northLocation,"ANY_NAME_5",secondNorthLocation), createPack(northLocation,"ANY_NAME_6",secondNorthLocation))
 
-        packService.packs(PackRequest(Continent.WEST,westLocation.id,secondWestLocation.id,null),pageable,archeageServer).content
+        packService.packs(PackRequest(Continent.WEST, westLocation.id, secondWestLocation.id, null),pageable,archeageServer).content
             .shouldNotBeEmpty()
             .shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices,percentages))
-        packService.packs(PackRequest(Continent.EAST,eastLocation.id,secondEastLocation.id,null),pageable,archeageServer).content
+        packService.packs(PackRequest(Continent.EAST, eastLocation.id, secondEastLocation.id, null),pageable,archeageServer).content
             .shouldNotBeEmpty()
             .shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices,percentages))
-        packService.packs(PackRequest(Continent.NORTH,northLocation.id,secondNorthLocation.id,null),pageable,archeageServer).content
+        packService.packs(PackRequest(Continent.NORTH, northLocation.id, secondNorthLocation.id, null),pageable,archeageServer).content
+            .shouldNotBeEmpty()
+            .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices,percentages))
+    }
+
+    @Test
+    fun `should return packs that belong to any specified category`() {
+        preparePacksWithRandomCategory()
+        val category1 = categoryRepository.save(Category("ANY_CATEGORY_1",null,archeageServer))
+        val category2 = categoryRepository.save(Category("ANY_CATEGORY_2",null,archeageServer))
+        val expectedWestPacks = listOf(createPack(westLocation,"ANY_NAME_1",secondWestLocation, packCategory = category1), createPack(westLocation,"ANY_NAME_2",secondWestLocation, packCategory = category2))
+        val expectedEastPacks = listOf(createPack(eastLocation,"ANY_NAME_3",secondEastLocation, packCategory = category1), createPack(eastLocation,"ANY_NAME_4",secondEastLocation, packCategory = category2))
+        val expectedNorthPacks = listOf(createPack(northLocation,"ANY_NAME_5",secondNorthLocation, packCategory = category1), createPack(northLocation,"ANY_NAME_6",secondNorthLocation, packCategory = category2))
+
+        packService
+            .packs(PackRequest(Continent.WEST,categories = listOf(category1.id!!,category2.id!!)),pageable,archeageServer).content
+            .shouldNotBeEmpty()
+            .shouldContainExactlyInAnyOrder(expectedWestPacks.toDTO(materialPrices,percentages))
+
+        packService
+            .packs(PackRequest(Continent.EAST,categories = listOf(category1.id!!,category2.id!!)),pageable,archeageServer).content
+            .shouldNotBeEmpty()
+            .shouldContainExactlyInAnyOrder(expectedEastPacks.toDTO(materialPrices,percentages))
+
+        packService
+            .packs(PackRequest(Continent.NORTH,categories = listOf(category1.id!!,category2.id!!)),pageable,archeageServer).content
             .shouldNotBeEmpty()
             .shouldContainExactlyInAnyOrder(expectedNorthPacks.toDTO(materialPrices,percentages))
     }
@@ -252,6 +284,13 @@ class   PackServiceITest(
         createPack(westLocationOfDifferentServer,"NOT_INCLUDED_3",northLocationOfDifferentServer,purchasableOfAnotherServer,anotherServerCategory)
 
         testEntityManager.flush()
+    }
+
+    private fun preparePacksWithRandomCategory(){
+        val randomCategory = categoryRepository.save(Category("RANDOM_CATEGORY",null,archeageServer))
+        createPack(westLocation,"RANDOM_CATEGORY_1",secondWestLocation,purchasableItem,randomCategory)
+        createPack(eastLocation,"RANDOM_CATEGORY_2",secondEastLocation,purchasableItem,randomCategory)
+        createPack(northLocation,"RANDOM_CATEGORY_3",secondNorthLocation,purchasableItem,randomCategory)
     }
 
     private fun createPack(creationLocation: Location,name: String,sellLocation: Location,material: PurchasableItem = purchasableItem,packCategory: Category = category) : Pack{

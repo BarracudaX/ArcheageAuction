@@ -17,18 +17,21 @@ interface PackProfitRepository : JpaRepository<PackProfit,PackProfitKey>{
     @Query("""
         SELECT new com.arslan.archeage.repository.PackResult(pr.id.pack.id,pr.percentage) FROM PackProfit pr WHERE pr.id.pack.creationLocation.archeageServer = :archeageServer AND pr.id.pack.creationLocation.continent = :#{#packRequest.continent} AND pr.id.pack.price.sellLocation.id = :#{#packRequest.destinationLocation} AND pr.id.pack.creationLocation.id = :#{#packRequest.departureLocation} 
         AND (( :#{#packRequest.userID} IS NOT NULL AND pr.id.user.id = :#{#packRequest.userID}) OR (pr.id.user.id = (SELECT pr2.id.user.id FROM PackProfit pr2 WHERE pr2.id.pack = pr.id.pack AND pr2.timestamp = (SELECT MAX(pr3.timestamp) FROM PackProfit pr3 WHERE pr3.id.pack = pr.id.pack) )))
+        AND (:#{#packRequest.categories} IS NULL OR pr.id.pack.category.id IN (:#{#packRequest.categories}))
     """)
     fun packIDs(pageable: Pageable,packRequest: PackRequest,archeageServer: ArcheageServer) : Page<PackResult>
 
     @Query("""
         SELECT new com.arslan.archeage.repository.PackResult(pr.id.pack.id,pr.percentage)  FROM PackProfit pr WHERE pr.id.pack.creationLocation.archeageServer = :archeageServer AND pr.id.pack.creationLocation.continent = :#{#packRequest.continent}
         AND (( :#{#packRequest.userID} IS NOT NULL AND pr.id.user.id = :#{#packRequest.userID} ) OR (pr.id.user.id = (SELECT pr2.id.user.id FROM PackProfit pr2 WHERE pr2.id.pack = pr.id.pack AND pr2.timestamp = (SELECT MAX(pr3.timestamp) FROM PackProfit pr3 WHERE pr3.id.pack = pr.id.pack) )))
+        AND (:#{#packRequest.categories} IS NULL OR pr.id.pack.category.id IN (:#{#packRequest.categories}))
     """)
     fun allPackIDs(pageable: Pageable,packRequest: PackRequest,archeageServer: ArcheageServer) : Page<PackResult>
 
     @Query("""
         SELECT new com.arslan.archeage.repository.PackResult(pr.id.pack.id,pr.percentage)  FROM PackProfit pr WHERE pr.id.pack.creationLocation.archeageServer = :archeageServer AND pr.id.pack.creationLocation.continent = :#{#packRequest.continent} AND pr.id.pack.creationLocation.id = :#{#packRequest.departureLocation}
         AND (( :#{#packRequest.userID} IS NOT NULL AND pr.id.user.id = :#{#packRequest.userID} ) OR (pr.id.user.id = (SELECT pr2.id.user.id FROM PackProfit pr2 WHERE pr2.id.pack = pr.id.pack AND pr2.timestamp = (SELECT MAX(pr3.timestamp) FROM PackProfit pr3 WHERE pr3.id.pack = pr.id.pack) )))
+        AND (:#{#packRequest.categories} IS NULL OR pr.id.pack.category.id IN (:#{#packRequest.categories}))
     """)
     fun packsAtIDs(pageable: Pageable,packRequest: PackRequest,archeageServer: ArcheageServer) : Page<PackResult>
 
@@ -36,6 +39,7 @@ interface PackProfitRepository : JpaRepository<PackProfit,PackProfitKey>{
     @Query("""
         SELECT new com.arslan.archeage.repository.PackResult(pr.id.pack.id,pr.percentage)  FROM PackProfit pr WHERE pr.id.pack.creationLocation.archeageServer = :archeageServer AND pr.id.pack.creationLocation.continent = :#{#packRequest.continent} AND pr.id.pack.price.sellLocation.id = :#{#packRequest.destinationLocation}
         AND (( :#{#packRequest.userID} IS NOT NULL AND pr.id.user.id = :#{#packRequest.userID} ) OR (pr.id.user.id = (SELECT pr2.id.user.id FROM PackProfit pr2 WHERE pr2.id.pack = pr.id.pack AND pr2.timestamp = (SELECT MAX(pr3.timestamp) FROM PackProfit pr3 WHERE pr3.id.pack = pr.id.pack) )))
+        AND (:#{#packRequest.categories} IS NULL OR pr.id.pack.category.id IN (:#{#packRequest.categories}))
     """)
     fun packsToIDs(pageable: Pageable,packRequest: PackRequest,archeageServer: ArcheageServer) : Page<PackResult>
 

@@ -54,27 +54,30 @@ function fetchPage(page){
     const departureLocation = document.getElementById("departure_location").value
     const destinationLocation = document.getElementById("destination_location").value
     let continent = document.getElementById("continent").value
+    let categories = Array()
+    document.querySelectorAll(".category:checked").forEach(checkbox => { categories.push(`categories=${checkbox.value}`) })
+    const categoriesQueryParameter = categories.join("&")
 
     if(departureLocation === "all" && destinationLocation === "all"){
-        return fetch(`/pack?page=${page}&size=${pageSize}&continent=${continent}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc`)
+        return fetch(`/pack?page=${page}&size=${pageSize}&continent=${continent}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc&${categoriesQueryParameter}`)
             .then(response => handleResponse(response))
             .then(data => {
                 handlePacks(data)
             }).catch(reason => addError(reason.message))
     }else if(departureLocation === "all"){
-        return fetch(`/pack?page=${page}&size=${pageSize}&continent=${continent}&destinationLocation=${destinationLocation}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc`)
+        return fetch(`/pack?page=${page}&size=${pageSize}&continent=${continent}&destinationLocation=${destinationLocation}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc&${categoriesQueryParameter}`)
             .then(response => handleResponse(response))
             .then(data => {
                 handlePacks(data)
             }).catch(reason => addError(reason.message))
     }else if(destinationLocation === "all"){
-        return fetch(`/pack?page=${page}&size=${pageSize}&continent=${continent}&departureLocation=${departureLocation}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc`)
+        return fetch(`/pack?page=${page}&size=${pageSize}&continent=${continent}&departureLocation=${departureLocation}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc&${categoriesQueryParameter}`)
             .then(response => handleResponse(response))
             .then(data => {
                 handlePacks(data)
             }).catch(reason => addError(reason.message))
     }else{
-        return fetch(`/pack?page=${page}&size=${pageSize}&continent=${continent}&departureLocation=${departureLocation}&destinationLocation=${destinationLocation}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc`)
+        return fetch(`/pack?page=${page}&size=${pageSize}&continent=${continent}&departureLocation=${departureLocation}&destinationLocation=${destinationLocation}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc&${categoriesQueryParameter}`)
             .then(response => handleResponse(response))
             .then(data => {
                 handlePacks(data)

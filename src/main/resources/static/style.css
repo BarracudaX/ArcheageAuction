@@ -2,3 +2,11 @@
     writing-mode: vertical-lr;
     margin: 0;
 }
+
+.plus{
+    text-decoration: none;
+    border: none;
+    color: white;
+    background-color: #28a745;
+    border-radius: 15%;
+}
