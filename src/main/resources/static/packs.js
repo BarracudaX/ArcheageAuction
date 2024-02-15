@@ -58,6 +58,11 @@ function fetchPage(page){
     document.querySelectorAll(".category:checked").forEach(checkbox => { categories.push(`categories=${checkbox.value}`) })
     const categoriesQueryParameter = categories.join("&")
 
+    if(categories.length !== 0){
+        currentPage = 0
+        page = 0
+    }
+
     if(departureLocation === "all" && destinationLocation === "all"){
         return fetch(`/pack?page=${page}&size=${pageSize}&continent=${continent}&sort=netProfit.gold,desc&sort=netProfit.silver,desc&sort=netProfit.copper,desc&${categoriesQueryParameter}`)
             .then(response => handleResponse(response))
