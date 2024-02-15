@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
@@ -66,10 +67,12 @@ abstract class AbstractITest : AbstractTest(){
 
         private val containerLoggerConsumer = Slf4jLogConsumer(LoggerFactory.getLogger("Integration Test Containers"))
 
+        @ServiceConnection
         @JvmStatic
         val mysql = MySQLContainer("mysql:8.1.0")
             .withReuse(true)
 
+        @ServiceConnection
         @JvmStatic
         val elasticSearch = ElasticsearchContainer("elasticsearch:8.11.1")
             .withEnv("xpack.security.enabled","false")
@@ -82,13 +85,6 @@ abstract class AbstractITest : AbstractTest(){
             mysql.start()
             elasticSearch.start()
             mysql.followOutput(containerLoggerConsumer)
-            registry.add("spring.datasource.url"){ mysql.jdbcUrl }
-            registry.add("spring.datasource.username"){ mysql.username }
-            registry.add("spring.datasource.password"){ mysql.password }
-            registry.add("spring.datasource.url"){ mysql.jdbcUrl }
-            registry.add("spring.liquibase.user"){ mysql.username }
-            registry.add("spring.liquibase.password"){ mysql.password }
-            registry.add("spring.liquibase.url"){ mysql.jdbcUrl }
             registry.add("spring.jpa.properties.hibernate.search.backend.hosts"){ elasticSearch.httpHostAddress }
         }
     }
