@@ -74,6 +74,8 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.8")
     testImplementation("com.ninja-squad:springmockk:4.0.2")
     testImplementation("io.kotest:kotest-assertions-core-jvm:5.7.2")
+
+    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 }
 
 tasks.withType<KotlinCompile> {
