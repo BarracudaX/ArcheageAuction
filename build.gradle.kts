@@ -14,6 +14,10 @@ plugins {
 group = "com.arslan"
 version = "1.0-SNAPSHOT"
 
+allOpen {
+    annotation("jakarta.persistence.Entity")
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
