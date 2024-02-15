@@ -18,4 +18,22 @@ class UserPriceKey(
     var purchasableItem: PurchasableItem
 ) : Serializable{
     companion object{ private const val serialVersionUID: Long = 1L }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as UserPriceKey
+
+        if (user.id != other.user.id) return false
+        return purchasableItem.id == other.purchasableItem.id
+    }
+
+    override fun hashCode(): Int {
+        var result = user.id.hashCode()
+        result = 31 * result + purchasableItem.id.hashCode()
+        return result
+    }
+
+
 }

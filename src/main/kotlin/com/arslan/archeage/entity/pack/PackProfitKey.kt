@@ -16,4 +16,21 @@ class PackProfitKey(
 
     companion object{ private const val serialVersionUID: Long = 1L }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PackProfitKey
+
+        if (pack.id != other.pack.id) return false
+        return user.id == other.user.id
+    }
+
+    override fun hashCode(): Int {
+        var result = pack.id.hashCode()
+        result = 31 * result + user.id.hashCode()
+        return result
+    }
+
+
 }
