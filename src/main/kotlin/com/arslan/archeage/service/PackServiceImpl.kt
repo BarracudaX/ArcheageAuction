@@ -44,7 +44,7 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
         val materials = packs.flatMap { pack -> pack.materials().map(CraftingMaterial::item) }
         val prices = if(userID == null){
             itemPriceService
-                .prices(materials.filterIsInstance<PurchasableItem>())
+                .lastPrices(materials.filterIsInstance<PurchasableItem>())
                 .associateBy { itemPrice -> itemPrice.id.purchasableItem.id!! }
         }else{
             itemPriceService.userItemPrices(materials.filterIsInstance<PurchasableItem>(),userID)

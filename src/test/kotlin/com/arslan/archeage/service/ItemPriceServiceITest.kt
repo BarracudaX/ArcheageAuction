@@ -58,8 +58,8 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
     }
 
     @Test
-    fun `should return empty list when requesting prices for item that do not have any price specified`() {
-        itemPriceService.prices(listOf(someItem,anotherItem)).shouldBeEmpty()
+    fun `should return empty list when requesting prices for items that do not have any price specified`() {
+        itemPriceService.lastPrices(listOf(someItem,anotherItem)).shouldBeEmpty()
     }
 
     @Test
@@ -67,14 +67,14 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
         userPriceRepository.save(UserPrice(UserPriceKey(someUser,someItem), Price(1,1,1)))
         val lastPrice = userPriceRepository.save(UserPrice(UserPriceKey(anotherUser,someItem), Price(2,2,2)))
 
-        val result = itemPriceService.prices(listOf(someItem,anotherItem))
+        val result = itemPriceService.lastPrices(listOf(someItem,anotherItem))
 
         result.shouldHaveSize(1)
         result[0] shouldBe lastPrice
     }
 
     @Test
-    fun `should return empty list when requesting prices of specific user that have not specified any`() {
+    fun `should return empty list when requesting prices of specific user that have not specified any price`() {
         userPriceRepository.save(UserPrice(UserPriceKey(someUser,someItem), Price(1,1,1)))
         userPriceRepository.save(UserPrice(UserPriceKey(someUser,anotherItem), Price(1,1,1)))
 

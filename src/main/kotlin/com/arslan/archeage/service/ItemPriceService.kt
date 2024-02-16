@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable
 
 interface ItemPriceService {
 
-    fun prices(items: List<PurchasableItem>) : List<UserPrice>
+    fun lastPrices(items: List<PurchasableItem>) : List<UserPrice>
 
     fun userItemPrices(items: List<PurchasableItem>, userID: Long) : Map<Long,UserPrice>
     fun saveUserPrice(userPriceDTO: UserPriceDTO)

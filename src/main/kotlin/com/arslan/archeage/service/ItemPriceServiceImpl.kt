@@ -26,7 +26,7 @@ class ItemPriceServiceImpl(
     private val applicationEventPublisher: ApplicationEventPublisher
 ) : ItemPriceService {
 
-    override fun prices(items: List<PurchasableItem>): List<UserPrice> = userPriceRepository.latestPrices(items)
+    override fun lastPrices(items: List<PurchasableItem>): List<UserPrice> = userPriceRepository.latestPrices(items)
     override fun userItemPrices(items: List<PurchasableItem>, userID: Long): Map<Long, UserPrice> = userPriceRepository.userItemPrices(items,userID).associateBy { it.id.purchasableItem.id!! }
     override fun saveUserPrice(userPriceDTO: UserPriceDTO) {
         val user = userRepository.findById(userPriceDTO.userID!!).orElseThrow { EmptyResultDataAccessException(1) }
