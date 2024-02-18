@@ -12,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -38,20 +39,16 @@ class UserController(private val userService: UserService,private val itemPriceS
 
     @ResponseBody
     @GetMapping("/price")
-    fun userPrices(pageable: Pageable, archeageServer: ArcheageServer) : ResponseEntity<UserPrices>{
-        val userID = SecurityContextHolder.getContext().authentication.name.toLong()
-
-        val prices = itemPriceService.userPrices(userID,pageable)
+    fun userPrices(pageable: Pageable, archeageServer: ArcheageServer,@AuthenticationPrincipal authentication: Long) : ResponseEntity<UserPrices>{
+        val prices = itemPriceService.userPrices(authentication,pageable)
 
         return ResponseEntity.ok(UserPrices(prices.content.map { ItemDTO(it.id.purchasableItem.name,it.id.purchasableItem.id!!,it.price) },prices.hasNext(),prices.hasPrevious()))
     }
 
     @ResponseBody
     @PostMapping("/price",consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun userPrice(@RequestBody price: UserPriceDTO) : ResponseEntity<String>{
-        val userID = SecurityContextHolder.getContext().authentication.name.toLong()
-
-        itemPriceService.saveUserPrice(price.copy(userID = userID))
+    fun userPrice(@RequestBody price: UserPriceDTO,@AuthenticationPrincipal authentication: Long) : ResponseEntity<String>{
+        itemPriceService.saveUserPrice(price.copy(userID = authentication))
 
         return ResponseEntity.ok(messageSource.getMessage("price.save.success", emptyArray(),LocaleContextHolder.getLocale()))
     }

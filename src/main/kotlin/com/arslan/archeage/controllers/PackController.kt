@@ -10,6 +10,7 @@ import com.arslan.archeage.service.PackService
 import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -19,19 +20,15 @@ import java.util.*
 class PackController(private val packService: PackService,private val packProfitService: PackProfitService) {
 
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun packs(@ModelAttribute packRequest: PackRequest, archeageServer: ArcheageServer,pageable: Pageable) : ResponseEntity<Packs>{
-        val userID = SecurityContextHolder.getContext().authentication?.name?.toLongOrNull()
+    fun packs(@ModelAttribute packRequest: PackRequest, archeageServer: ArcheageServer,pageable: Pageable,@AuthenticationPrincipal authentication: Long?) : ResponseEntity<Packs>{
+        val packs = packService.packs(packRequest.copy(userID = authentication),pageable,archeageServer)
 
-        val packs = packService.packs(packRequest.copy(userID = userID),pageable,archeageServer)
-
-        return ResponseEntity.ok(Packs(packs.content,packs.hasNext(),packs.hasPrevious(),userID != null))
+        return ResponseEntity.ok(Packs(packs.content,packs.hasNext(),packs.hasPrevious(),authentication != null))
     }
 
     @PutMapping("/percentage", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun updateProfit(@RequestBody percentageUpdate: PackPercentageUpdate) : ResponseEntity<Unit>{
-        val userID = SecurityContextHolder.getContext().authentication?.name?.toLong()!!
-
-        packProfitService.updatePercentage(percentageUpdate.copy(userID = userID))
+    fun updateProfit(@RequestBody percentageUpdate: PackPercentageUpdate,@AuthenticationPrincipal authentication: Long) : ResponseEntity<Unit>{
+        packProfitService.updatePercentage(percentageUpdate.copy(userID = authentication))
 
         return ResponseEntity.ok(Unit)
     }
