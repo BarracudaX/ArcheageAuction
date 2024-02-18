@@ -1,12 +1,13 @@
 package com.arslan.archeage.unit
 
 import com.arslan.archeage.entity.Price
+import com.arslan.archeage.initialValue
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
-class PriceUnitTest {
+class PriceTest {
 
     @Test
     fun `should add two prices and return new price that is sum of the two`() {
@@ -141,4 +142,21 @@ class PriceUnitTest {
         shouldNotThrow<IllegalArgumentException> { Price(0,0,0) }
     }
 
+    @Test
+    fun `should return the initial price given the percentage that was used`() {
+        val initialValue = Price(10,10,10)
+        val percentage = 1.2 // +20%
+        val newValue = initialValue*percentage
+
+        newValue.initialValue(percentage) shouldBe initialValue
+    }
+
+    @Test
+    fun `should return the initial price given the percentage that was used (2)`() {
+        val initialValue = Price(10,10,10)
+        val percentage = 0.8 // -20%
+        val newValue = initialValue*percentage
+
+        newValue.initialValue(percentage) shouldBe initialValue
+    }
 }

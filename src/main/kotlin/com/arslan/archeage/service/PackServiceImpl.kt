@@ -19,17 +19,7 @@ import org.springframework.stereotype.Service
 class PackServiceImpl(private val packRepository: PackRepository,private val itemPriceService: ItemPriceService,private val packProfitRepository: PackProfitRepository) : PackService {
 
     override fun packs(packRequest: PackRequest,pageable: Pageable,archeageServer: ArcheageServer) :  Page<PackDTO> {
-        return with(packRequest){
-            if(departureLocation != null && destinationLocation != null){
-                convertPacksToDTOs(packProfitRepository.packIDs(pageable,packRequest,archeageServer))
-            }else if(departureLocation != null){
-                convertPacksToDTOs(packProfitRepository.packsAtIDs(pageable,packRequest,archeageServer))
-            }else if(destinationLocation != null){
-                convertPacksToDTOs(packProfitRepository.packsToIDs(pageable,packRequest,archeageServer))
-            }else{
-                convertPacksToDTOs(packProfitRepository.allPackIDs(pageable,packRequest,archeageServer))
-            }
-        }
+        return convertPacksToDTOs(packProfitRepository.packs(pageable,packRequest,archeageServer))
     }
 
     private fun convertPacksToDTOs(result: Page<PackResult>) : Page<PackDTO> {

@@ -6,8 +6,7 @@ import com.arslan.archeage.entity.item.Item
 import com.arslan.archeage.entity.item.UserPrice
 import com.arslan.archeage.entity.pack.Pack
 
-fun CraftingMaterial.toDTO(prices: Map<Long, UserPrice>): CraftingMaterialDTO =
-    CraftingMaterialDTO(quantity, item.toDTO(prices[item.id!!]?.price),prices[item.id!!]?.price?.times(quantity))
+fun CraftingMaterial.toDTO(prices: Map<Long, UserPrice>): CraftingMaterialDTO = CraftingMaterialDTO(quantity, item.toDTO(prices[item.id!!]?.price),prices[item.id!!]?.price?.times(quantity))
 
 fun Item.toDTO(price: Price?): ItemDTO = ItemDTO(name, id!!,price)
 
