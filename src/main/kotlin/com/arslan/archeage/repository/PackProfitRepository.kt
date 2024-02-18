@@ -19,7 +19,7 @@ interface PackProfitRepository : JpaRepository<PackProfit,PackProfitKey>{
         AND (:#{#packRequest.destinationLocation} IS NULL OR pr.id.pack.price.sellLocation.id = :#{#packRequest.destinationLocation})  
         AND (:#{#packRequest.departureLocation} IS NULL OR pr.id.pack.creationLocation.id = :#{#packRequest.departureLocation}) 
         AND (( :#{#packRequest.userID} IS NOT NULL AND pr.id.user.id = :#{#packRequest.userID}) OR (pr.id.user.id = (SELECT pr2.id.user.id FROM PackProfit pr2 WHERE pr2.id.pack = pr.id.pack AND pr2.timestamp = (SELECT MAX(pr3.timestamp) FROM PackProfit pr3 WHERE pr3.id.pack = pr.id.pack) )))
-        AND (:#{#packRequest.categories} IS NULL OR pr.id.pack.category.id IN (:#{#packRequest.categories}))
+        AND (:#{#packRequest.categories.size()} = 0 OR pr.id.pack.category.id IN (:#{#packRequest.categories}))
     """)
     fun packs(pageable: Pageable,packRequest: PackRequest,archeageServer: ArcheageServer) : Page<PackResult>
 

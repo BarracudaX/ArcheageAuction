@@ -66,7 +66,7 @@ data class Locations(val continentLocations: List<LocationDTO>,val continentFact
 @Serializable
 data class UserPriceDTO(val userID: Long? = null,val itemID: Long,val price: Price)
 
-data class PackRequest(val continent: Continent, val departureLocation: Long? = null, val destinationLocation: Long? = null, val userID: Long? = null, val categories: List<Long>? = null )
+data class PackRequest(val continent: Continent, val departureLocation: Long? = null, val destinationLocation: Long? = null, val userID: Long? = null, val categories: List<Long> = emptyList())
 
 @Serializable
 data class PackPercentageUpdate(
