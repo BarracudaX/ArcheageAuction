@@ -12,6 +12,7 @@ import com.arslan.archeage.entity.item.UserPriceKey
 import com.arslan.archeage.service.ArcheageServerContextHolder
 import io.mockk.*
 import kotlinx.serialization.encodeToString
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -20,6 +21,8 @@ import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.MediaType
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.test.context.support.WithAnonymousUser
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
@@ -78,9 +81,9 @@ class UserPriceControllerTest(private val mockMvc: MockMvc) : AbstractController
         }
     }
 
-    @WithMockUser("1")
     @Test
     fun `should return user prices`() {
+        SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext().apply { authentication = UsernamePasswordAuthenticationToken(1L,"") })
         mockMvc
             .get("/user/price?page=${pageable.pageNumber}&size=${pageable.pageSize}")
             .andExpect {
@@ -101,9 +104,9 @@ class UserPriceControllerTest(private val mockMvc: MockMvc) : AbstractController
         verifyAll { itemPriceServiceMock wasNot called }
     }
 
-    @WithMockUser("1")
     @Test
     fun `should save user price with user id replaced with id of authenticated user and return 200(OK) response with success message`() {
+        SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext().apply { authentication = UsernamePasswordAuthenticationToken(1L,"") })
         val price = UserPriceDTO(10,1,Price(10,5,5))
         every { itemPriceServiceMock.saveUserPrice(price.copy(userID = 1)) } just runs
 
@@ -153,5 +156,10 @@ class UserPriceControllerTest(private val mockMvc: MockMvc) : AbstractController
             }
 
         verifyAll { itemPriceServiceMock wasNot called }
+    }
+
+    @AfterEach
+    fun tearDown() {
+        SecurityContextHolder.clearContext()
     }
 }

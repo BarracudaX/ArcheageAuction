@@ -5,6 +5,7 @@ import com.arslan.archeage.entity.Price
 import com.arslan.archeage.service.ArcheageServerContextHolder
 import io.mockk.*
 import kotlinx.serialization.encodeToString
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -15,6 +16,8 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.MockMvc
@@ -186,9 +189,9 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         }
     }
 
-    @WithMockUser("1")
     @Test
     fun `should return 403(Forbidden) when trying to update pack percentage without csrf`() {
+        SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext().apply { authentication = UsernamePasswordAuthenticationToken(1,"") })
         mockMvc
             .put("/pack/percentage"){
                 content = json.encodeToString(packPercentageUpdate)
@@ -202,9 +205,9 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         }
     }
 
-    @WithMockUser("1")
     @Test
     fun `should return 200(OK) and update pack percentage`() {
+        SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext().apply { authentication = UsernamePasswordAuthenticationToken(1L,"") })
         every { packProfitServiceMock.updatePercentage(packPercentageUpdate.copy(userID = 1)) } just runs
 
         mockMvc
@@ -221,5 +224,8 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         }
     }
 
-
+    @AfterEach
+    fun tearDown() {
+        SecurityContextHolder.clearContext()
+    }
 }
