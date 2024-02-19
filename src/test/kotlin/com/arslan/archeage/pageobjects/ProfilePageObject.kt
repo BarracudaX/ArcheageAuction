@@ -9,7 +9,7 @@ import org.openqa.selenium.support.ui.LoadableComponent
 import java.util.List
 
 // page_url = http://localhost:8080/
-class ProfilePageObject(private val driver: WebDriver,private val navigation: NavigationPageComponent,private val port: Int) : LoadableComponent<ProfilePageObject>(){
+class ProfilePageObject(private val driver: WebDriver, private val port: Int) : LoadableComponent<ProfilePageObject>(){
 
     override fun load() {
         driver.get("http://localhost:${port}/profile")

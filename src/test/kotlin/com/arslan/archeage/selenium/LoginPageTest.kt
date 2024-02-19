@@ -1,11 +1,8 @@
 package com.arslan.archeage.selenium
 
-import com.arslan.archeage.UserNotAuthenticatedException
 import com.arslan.archeage.pageobjects.HomePageObject
 import com.arslan.archeage.pageobjects.LoginPageObject
 import com.arslan.archeage.pageobjects.NavigationPageComponent
-import io.kotest.assertions.throwables.shouldNotThrow
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -20,8 +17,8 @@ class LoginPageTest : SeleniumTest() {
     @BeforeEach
     override fun setUp() {
         navigation = NavigationPageComponent(webDriver,port)
-        homePage = HomePageObject(webDriver,navigation,port)
-        loginPage = LoginPageObject(webDriver,navigation,port)
+        homePage = HomePageObject(webDriver, port)
+        loginPage = LoginPageObject(webDriver, port)
         homePage.get()
     }
 

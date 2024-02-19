@@ -28,13 +28,13 @@ class NavigationPageComponent(private val driver: WebDriver,private val port: In
     fun toLoginPage() : LoginPageObject {
         driver.findElement(loginSelector).click()
 
-        return LoginPageObject(driver,this,port).get()
+        return LoginPageObject(driver, port).get()
     }
 
     fun toProfilePage() : ProfilePageObject {
         return try{
             driver.findElement(profileSelector)
-             ProfilePageObject(driver,this,port)
+             ProfilePageObject(driver, port)
         }catch (ex: NoSuchElementException){
             throw UserNotAuthenticatedException()
         }

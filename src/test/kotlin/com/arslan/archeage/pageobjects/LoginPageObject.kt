@@ -10,7 +10,7 @@ import org.openqa.selenium.support.PageFactory
 import org.openqa.selenium.support.ui.LoadableComponent
 
 // page_url = http://localhost:8080/login
-class LoginPageObject(private val driver: WebDriver, private val navigation: NavigationPageComponent, private val port: Int) : LoadableComponent<LoginPageObject>(){
+class LoginPageObject(private val driver: WebDriver, private val port: Int) : LoadableComponent<LoginPageObject>(){
 
     private val inputEmail = By.id("inputEmail")
 
