@@ -41,7 +41,7 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
 
     @BeforeEach
     fun setUp(){
-        clearDB()
+        clearDB(jdbcTemplate)
         archeageServer = archeageServerRepository.save(ArcheageServer("ANY"))
         user = userRepository.save(User("ANY_USER_EMAIL","ANY_USER_PASSWORD"))
         anotherUser = userRepository.save(User("ANY_USER_EMAIL_2","ANY_USER_PASSWORD_2"))

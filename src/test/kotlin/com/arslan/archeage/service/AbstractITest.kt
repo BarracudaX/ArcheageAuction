@@ -61,10 +61,6 @@ abstract class AbstractITest : AbstractTestContainerTest() {
     @Autowired
     protected lateinit var jdbcTemplate: JdbcTemplate
 
-    protected fun clearDB(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"pack_profits","user_prices","pack_materials","packs","purchasable_items","items","locations","categories","archeage_servers","users")
-    }
-
     fun createPack(archeageServer: ArcheageServer, continent: Continent) : PackDTO {
         val category = categoryRepository.save(Category("SOME_CATEGORY",null,archeageServer))
         val createLocation = locationRepository.save(Location("SOME_CREATE_LOCATION",continent,archeageServer,true))

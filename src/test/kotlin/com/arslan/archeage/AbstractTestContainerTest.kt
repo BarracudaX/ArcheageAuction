@@ -2,8 +2,10 @@ package com.arslan.archeage
 
 import org.slf4j.LoggerFactory
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
+import org.springframework.test.jdbc.JdbcTestUtils
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.elasticsearch.ElasticsearchContainer
@@ -36,4 +38,7 @@ abstract class AbstractTestContainerTest : AbstractTest(){
         }
     }
 
+    protected fun clearDB(jdbcTemplate: JdbcTemplate){
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"pack_profits","user_prices","pack_materials","packs","purchasable_items","items","locations","categories","archeage_servers","users")
+    }
 }
