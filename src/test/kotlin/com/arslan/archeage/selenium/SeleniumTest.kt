@@ -14,10 +14,11 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.context.MessageSource
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestConstructor
 
-@ActiveProfiles("test","selenium")
+@ActiveProfiles("test")
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract class SeleniumTest : AbstractTestContainerTest() {
@@ -31,6 +32,12 @@ abstract class SeleniumTest : AbstractTestContainerTest() {
     @Autowired
     protected lateinit var userService: UserService
 
+    @Autowired
+    protected lateinit var userRepository: UserRepository
+
+    @Autowired
+    protected lateinit var passwordEncoder: PasswordEncoder
+
     @LocalServerPort
     protected var port: Int = -1
 
@@ -39,10 +46,6 @@ abstract class SeleniumTest : AbstractTestContainerTest() {
     @BeforeEach
     fun setUp(){
         clearDB(jdbcTemplate)
-    }
-
-    fun createUser(email: String,password: String){
-        userService.register(RegistrationForm(email,password,password))
     }
 
     @AfterEach

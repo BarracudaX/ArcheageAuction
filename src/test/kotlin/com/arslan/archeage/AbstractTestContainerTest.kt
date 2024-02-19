@@ -39,6 +39,10 @@ abstract class AbstractTestContainerTest : AbstractTest(){
     }
 
     protected fun clearDB(jdbcTemplate: JdbcTemplate){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"pack_profits","user_prices","pack_materials","packs","purchasable_items","items","locations","categories","archeage_servers","users")
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"pack_profits","user_prices","pack_materials","packs","purchasable_items","items","locations")
+
+        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"categories","parent_category IS NOT NULL")
+
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"categories","archeage_servers","users")
     }
 }

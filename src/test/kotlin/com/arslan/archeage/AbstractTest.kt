@@ -32,6 +32,9 @@ abstract class AbstractTest {
         )
 
         @JvmStatic
+        fun blankStrings() : Array<String> = arrayOf("      ","","   ")
+
+        @JvmStatic
         fun invalidContinentValues() : Array<String> = arrayOf("wst","est","NR","WE","EST","","   ")
     }
 

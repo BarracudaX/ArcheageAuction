@@ -5,6 +5,7 @@ import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.service.ItemPriceService
 import com.arslan.archeage.service.UserService
 import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
@@ -57,6 +58,7 @@ class UserController(private val userService: UserService,private val itemPriceS
 @EqualPasswords(message = "{RegistrationForm.EqualPasswords.message}")
 data class RegistrationForm(
     @field:Email(message = "{RegistrationForm.Email.email.message}")
+    @field:NotBlank(message = "{RegistrationForm.NotBlank.email.message}")
     var email: String = "",
 
     @field:Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}\$", message = "{RegistrationForm.Pattern.password.message}")
