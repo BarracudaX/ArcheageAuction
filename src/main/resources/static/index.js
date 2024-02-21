@@ -1,3 +1,6 @@
+
+const errors = new Set()
+
 function changeLocale(language){
     let newURL = new URL(window.location.href)
     newURL.searchParams.set("locale",language)
@@ -12,6 +15,10 @@ function capitalizeStr(input){
 }
 
 function addError(error){
+    if (errors.has(error)){
+        return
+    }
+    errors.add(error)
     const errorElement = document.createElement("div")
     errorElement.className = "alert alert-danger alert-dismissible fade show mt-1"
     errorElement.innerHTML = `

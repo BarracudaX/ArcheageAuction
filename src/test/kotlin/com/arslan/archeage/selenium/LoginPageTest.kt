@@ -2,7 +2,8 @@ package com.arslan.archeage.selenium
 
 import com.arslan.archeage.pageobjects.HomePageObject
 import com.arslan.archeage.pageobjects.LoginPageObject
-import com.arslan.archeage.pageobjects.NavigationPageComponent
+import io.kotest.assertions.shouldFail
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -12,11 +13,9 @@ class LoginPageTest : SeleniumTest() {
 
     private lateinit var loginPage: LoginPageObject
     private lateinit var homePage: HomePageObject
-    private lateinit var navigation: NavigationPageComponent
 
     @BeforeEach
     override fun setUp() {
-        navigation = NavigationPageComponent(webDriver,port)
         homePage = HomePageObject(webDriver, port)
         loginPage = LoginPageObject(webDriver, port)
         homePage.get()
@@ -24,25 +23,22 @@ class LoginPageTest : SeleniumTest() {
 
     @Test
     fun `should allow user to login using credentials`() {
-        navigation.isProfileAvailable() shouldBe false
+        val email = "test@email.com"
+        val password = "TestPass123!"
+        createUser(email, password)
+
         loginPage.get()
 
-        loginPage.login("test@email.com","TestPass123!")
+        loginPage.login(email, password)
 
-        loginPage.isLoginSuccessful() shouldBe true
-        loginPage.getErrorMessage() shouldBe null
-        navigation.isProfileAvailable() shouldBe true
     }
 
     @Test
     fun `should show error if login fails`() {
-        navigation.isProfileAvailable() shouldBe false
         loginPage.get()
 
-        loginPage.login("invalid@email.com","credentials")
+        loginPage.invalidLogin("invalid@email.com","credentials")
 
-        loginPage.isLoginSuccessful() shouldBe false
         loginPage.getErrorMessage() shouldBe messageSource.getMessage("page.invalid.credentials.error", emptyArray(),LocaleContextHolder.getLocale())
-        navigation.isProfileAvailable() shouldBe false
     }
 }

@@ -1,5 +1,3 @@
-document.addEventListener("DOMContentLoaded", function () { fetchCategories() })
-
 function fetchCategories(){
     fetch("/category")
         .then(response => handleResponse(response))

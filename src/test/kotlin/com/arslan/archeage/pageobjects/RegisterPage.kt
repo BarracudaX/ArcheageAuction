@@ -9,7 +9,7 @@ import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.ui.LoadableComponent
 
 // page_url = http://localhost:8080/register
-class RegisterPage(private val driver: WebDriver,private val port: Int) : LoadableComponent<RegisterPage>() {
+class RegisterPage(private val driver: WebDriver,private val port: Int) : AbstractUnauthenticatedPageObject<RegisterPage>(driver,port) {
     
     private val inputEmail = By.id("inputEmail")
 
@@ -42,7 +42,7 @@ class RegisterPage(private val driver: WebDriver,private val port: Int) : Loadab
         driver.get("http://localhost:${port}/register")
     }
 
-    override fun isLoaded() {
+    override fun isSubclassLoaded() {
         driver.title shouldBe "Register"
     }
 

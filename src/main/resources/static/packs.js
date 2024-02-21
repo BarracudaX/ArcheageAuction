@@ -7,6 +7,7 @@ const percentageSelectIDPrefix = "percentage_select_"
 document.addEventListener("DOMContentLoaded", function () {
     refreshLocations()
     refreshPacks()
+    fetchCategories()
 })
 
 function refreshLocations(){
@@ -164,7 +165,7 @@ function handlePacks(data) {
         const packRow = document.createElement("div")
         const hrElement = document.createElement("hr")
         packRow.innerHTML = `
-                <div class="row w-100">
+                <div class="row w-100 pack">
                     <div class="d-flex justify-content-center col">
                         <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#pack_${pack.id}" aria-expanded="false" aria-controls="pack_${pack.id}">+</button>
                     </div>
