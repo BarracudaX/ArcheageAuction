@@ -10,27 +10,27 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchCategories()
 })
 
-function refreshLocations(){
+function refreshLocations(destinationLocation,departureLocation){
     let continent = document.getElementById("continent").value
-    if(selectedDepartureLocation !== undefined && selectedDestinationLocation !== undefined){
-        fetch(`/location?continent=${continent}&destinationLocation=${selectedDestinationLocation}&departureLocation=${selectedDepartureLocation}`)
+    if(departureLocation !== undefined && destinationLocation !== undefined){
+        fetch(`/location?continent=${continent}&destinationLocation=${destinationLocation}&departureLocation=${departureLocation}`)
             .then(response => handleResponse(response))
-            .then(locations => handleLocations(locations))
+            .then(locations => handleLocations(locations,departureLocation,destinationLocation))
             .catch(reason => addError(reason.message))
-    }else if(selectedDestinationLocation !== undefined){
-        fetch(`/location?continent=${continent}&destinationLocation=${selectedDestinationLocation}`)
+    }else if(destinationLocation !== undefined){
+        fetch(`/location?continent=${continent}&destinationLocation=${destinationLocation}`)
             .then(response => handleResponse(response))
-            .then(locations => handleLocations(locations))
+            .then(locations => handleLocations(locations,departureLocation,destinationLocation))
             .catch(reason => addError(reason.message))
-    }else if(selectedDepartureLocation !== undefined){
-        fetch(`/location?continent=${continent}&departureLocation=${selectedDepartureLocation}`)
+    }else if(departureLocation !== undefined){
+        fetch(`/location?continent=${continent}&departureLocation=${departureLocation}`)
             .then(response => handleResponse(response))
-            .then(locations => handleLocations(locations))
+            .then(locations => handleLocations(locations,departureLocation,destinationLocation))
             .catch(reason => addError(reason.message))
     }else{
         fetch(`/location?continent=${continent}`)
             .then(response => handleResponse(response))
-            .then(locations => handleLocations(locations))
+            .then(locations => handleLocations(locations,departureLocation,destinationLocation))
             .catch(reason => addError(reason.message))
     }
 }
@@ -91,7 +91,7 @@ function fetchPage(page){
     }
 }
 
-function handleLocations(locations) {
+function handleLocations(locations,departureLocation,destinationLocation) {
     const departureLocations = document.getElementById("departure_location")
     const destinationLocations = document.getElementById("destination_location")
     departureLocations.innerHTML = ""
@@ -113,7 +113,7 @@ function handleLocations(locations) {
     for (let i = 0; i < locations.continentLocations.length; i++) {
         const location = locations.continentLocations[i]
         const option = document.createElement("option")
-        if(selectedDepartureLocation === location.id){
+        if(departureLocation === location.id){
             option.selected = true
         }
         option.value = location.id
@@ -123,7 +123,7 @@ function handleLocations(locations) {
     for (let i = 0; i < locations.continentFactories.length; i++) {
         const location = locations.continentFactories[i]
         const option = document.createElement("option")
-        if(selectedDestinationLocation === location.id){
+        if(destinationLocation === location.id){
             option.selected = true
         }
         option.value = location.id
@@ -131,16 +131,20 @@ function handleLocations(locations) {
         destinationLocationsFragment.appendChild(option)
     }
 
-    if(selectedDepartureLocation === undefined){
-        allDepartureLocationsOption.selected = true
-    }
-
-    if(selectedDestinationLocation === undefined){
-        allDestinationLocationsOption.selected = true
-    }
-
     departureLocations.appendChild(departureLocationsFragment)
     destinationLocations.appendChild(destinationLocationsFragment)
+
+    if(departureLocation === undefined){
+        allDepartureLocationsOption.selected = true
+    }else{
+        selectedDepartureLocation = departureLocation
+    }
+
+    if(destinationLocation === undefined){
+        allDestinationLocationsOption.selected = true
+    }else{
+        selectedDestinationLocation = destinationLocation
+    }
 }
 
 function handlePacks(data) {
@@ -250,26 +254,28 @@ function changeContinent() {
 }
 
 function changeDepartureLocation() {
-    const value = document.getElementById("departure_location").value
-    if(value !== "all"){
-        selectedDepartureLocation = parseInt(value)
-    }else{
+    let value = document.getElementById("departure_location").value
+    if(value === "all"){
         selectedDepartureLocation = undefined
+        value = undefined
+    }else{
+        value = parseInt(value)
     }
     currentPage = 0
-    refreshLocations()
+    refreshLocations(selectedDestinationLocation,value)
     refreshPacks()
 }
 
 function changeDestinationLocation() {
-    const value = document.getElementById("destination_location").value
-    if(value !== "all"){
-        selectedDestinationLocation = parseInt(value)
-    }else{
+    let value = document.getElementById("destination_location").value
+    if(value === "all"){
         selectedDestinationLocation = undefined
+        value = undefined
+    }else{
+        value = parseInt(value)
     }
     currentPage = 0
-    refreshLocations()
+    refreshLocations(value,selectedDepartureLocation)
     refreshPacks()
 }
 

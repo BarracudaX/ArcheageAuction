@@ -63,7 +63,12 @@ abstract class SeleniumTest : AbstractTestContainerTest() {
 
     fun createArcheageServer() : ArcheageServer = archeageServerRepository.save(ArcheageServer("SOME_ARCHEAGE_SERVER"))
 
-    fun createWestLocation(archeageServer: ArcheageServer) = locationRepository.save(Location("SOME_WEST_LOCATION",Continent.WEST,archeageServer))
+    fun createWestDepartureLocation(name: String, archeageServer: ArcheageServer) = locationRepository.save(Location(name,Continent.WEST,archeageServer))
+
+    fun createEastDepartureLocation(name: String,archeageServer: ArcheageServer) = locationRepository.save(Location(name,Continent.EAST,archeageServer))
+
+    fun createWestDestinationLocation(name: String,archeageServer: ArcheageServer) = locationRepository.save(Location(name,Continent.WEST,archeageServer,true))
+    fun createEastDestinationLocation(name: String,archeageServer: ArcheageServer) = locationRepository.save(Location(name,Continent.EAST,archeageServer,true))
 
     fun createUser(email: String,password: String) = userRepository.save(User(email,passwordEncoder.encode(password)))
 

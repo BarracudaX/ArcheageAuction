@@ -40,4 +40,5 @@ abstract class AbstractTest {
 
 
     protected fun randomPrice() : Price = Price(Random.nextInt(0,100), Random.nextInt(0,99), Random.nextInt(0,99))
+
 }
