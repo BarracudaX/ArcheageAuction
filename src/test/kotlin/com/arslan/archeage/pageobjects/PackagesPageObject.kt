@@ -58,26 +58,37 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
 
     fun selectedContinent() : String = Select(driver.findElement(continentsSelect)).firstSelectedOption.text
 
-    fun departureLocations() : List<String> = driver.findElements(departureLocations).map { it.text }
+    fun departureLocations(consumer: List<String>.() -> Unit) : PackagesPageObject {
+        driver.findElements(departureLocations).map { it.text }.apply(consumer)
+        return this
+    }
 
-    fun destinationLocations() : List<String> = driver.findElements(destinationLocations).map { it.text }
+    fun destinationLocations(consumer: List<String>.() -> Unit) : PackagesPageObject {
+        driver.findElements(destinationLocations).map { it.text }.apply(consumer)
 
-    fun error() : String? {
-        return try{
+        return this
+    }
+
+    fun error(consumer: String?.() -> Unit) : PackagesPageObject {
+        try{
             driver.findElement(error).text
         }catch (_: NoSuchElementException){
             null
-        }
+        }.apply(consumer)
+
+        return this
     }
 
     /**
      * Selects provided continent and waits for the provided location to be loaded before returning.
      */
-    fun selectContinent(continent: Continent,location: Location) {
+    fun selectContinent(continent: Continent,location: Location) : PackagesPageObject {
         Select(driver.findElement(continentsSelect)).selectByValue(continent.name)
         FluentWait(driver)
             .withTimeout(Duration.ofSeconds(5))
             .until(numberOfElementsToBeMoreThan(By.xpath("//option[text()='${location.name.lowercase().capitalized()}']"),0))
+
+        return this
     }
 
     fun selectDepartureLocation(location: Location) : PackagesPageObject{
