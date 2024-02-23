@@ -2,8 +2,10 @@ package com.arslan.archeage.pageobjects
 
 import capitalized
 import com.arslan.archeage.Continent
+import com.arslan.archeage.NoOpCondition
 import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.Location
+import com.arslan.archeage.pageobjects.component.SelectComponent
 import io.kotest.assertions.fail
 import org.openqa.selenium.By
 import org.openqa.selenium.JavascriptExecutor
@@ -17,13 +19,25 @@ import java.time.Duration
 
 // page_url = http://localhost:8080/packs_view
 class PackagesPageObject(private val driver: WebDriver, private val port: Int) : AbstractUnauthenticatedPageObject<PackagesPageObject>(driver,port) {
-    
-    private val continents = By.xpath("//select[@id='continent']/option")
-    private val continentsSelect = By.id("continent")
-    private val departureSelect = By.xpath("//select[@id='departure_location']")
-    private val destinationSelect = By.xpath("//select[@id='destination_location']")
-    private val departureLocations = By.xpath("//select[@id='departure_location']/option")
-    private val destinationLocations = By.xpath("//select[@id='destination_location']/option")
+
+    private val continents = SelectComponent<Continent>(
+        "continent",
+        driver,{ select -> numberOfElementsToBe(select.optionsBy, Continent.entries.size)},
+        { continent -> continent.name }
+    )
+    private val departureLocations = SelectComponent<Location>(
+        "departure_location",
+        driver,
+        { NoOpCondition() },
+        { location -> location.id.toString() }
+    )
+    private val destinationLocations = SelectComponent<Location>(
+        "destination_location",
+        driver,
+        { NoOpCondition() },
+        {location -> location.id.toString()}
+    )
+
     private val categoriesBtn = By.id("categories_btn")
     private val categoriesOffCanvas = By.id("categories-offcanvas")
     private val previousBtn = By.id("previous_btn")
@@ -37,12 +51,13 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
     }
 
     override fun isSubclassLoaded() {
-        val condition = or(presenceOfElementLocated(error), numberOfElementsToBeMoreThan(departureLocations, 0))
+        val condition = or(presenceOfElementLocated(error), numberOfElementsToBeMoreThan(departureLocations.optionsBy, 0))
         val wait = FluentWait(driver)
             .withTimeout(Duration.ofSeconds(2))
             .ignoring(NoSuchElementException::class.java)
         try{
             wait.until(condition)
+            continents.isLoaded()
         }catch (ex: TimeoutException){
             fail("Not Loaded. Reason: ${ex.message}.")
         }
@@ -54,17 +69,17 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
         return get()
     }
 
-    fun continents() : List<String> = driver.findElements(continents).map { it.text }
+    fun continents() : List<String> = continents.options()
 
-    fun selectedContinent() : String = Select(driver.findElement(continentsSelect)).firstSelectedOption.text
+    fun selectedContinent() : Continent = Continent.valueOf(continents.selectedValue())
 
     fun departureLocations(consumer: List<String>.() -> Unit) : PackagesPageObject {
-        driver.findElements(departureLocations).map { it.text }.apply(consumer)
+        departureLocations.options().apply(consumer)
         return this
     }
 
     fun destinationLocations(consumer: List<String>.() -> Unit) : PackagesPageObject {
-        driver.findElements(destinationLocations).map { it.text }.apply(consumer)
+        destinationLocations.options().apply(consumer)
 
         return this
     }
@@ -83,7 +98,7 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
      * Selects provided continent and waits for the provided location to be loaded before returning.
      */
     fun selectContinent(continent: Continent,location: Location) : PackagesPageObject {
-        Select(driver.findElement(continentsSelect)).selectByValue(continent.name)
+        continents.selectValue(continent)
         FluentWait(driver)
             .withTimeout(Duration.ofSeconds(5))
             .until(numberOfElementsToBeMoreThan(By.xpath("//option[text()='${location.name.lowercase().capitalized()}']"),0))
@@ -92,7 +107,7 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
     }
 
     fun selectDepartureLocation(location: Location) : PackagesPageObject{
-        Select(driver.findElement(departureSelect)).selectByValue(location.id.toString())
+        departureLocations.selectValue(location)
         FluentWait(driver)
             .withTimeout(Duration.ofSeconds(5))
             .until { driver ->
@@ -107,7 +122,7 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
     }
 
     fun selectDestinationLocation(location: Location) : PackagesPageObject{
-        Select(driver.findElement(destinationSelect)).selectByValue(location.id.toString())
+        destinationLocations.selectValue(location)
 
         FluentWait(driver)
             .withTimeout(Duration.ofSeconds(5))

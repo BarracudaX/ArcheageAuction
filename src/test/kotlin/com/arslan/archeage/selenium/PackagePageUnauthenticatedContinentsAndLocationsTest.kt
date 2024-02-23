@@ -68,7 +68,7 @@ class PackagePageUnauthenticatedContinentsAndLocationsTest : SeleniumTest(){
     fun `should select by default the first continent`() {
         page
             .get()
-            .selectedContinent()shouldBe messageSource.getMessage("page.continent.${Continent.entries[0].name}", emptyArray(),LocaleContextHolder.getLocale())
+            .selectedContinent() shouldBe Continent.entries[0]
     }
 
     @Test
