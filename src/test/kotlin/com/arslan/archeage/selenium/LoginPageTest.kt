@@ -19,6 +19,7 @@ class LoginPageTest : SeleniumTest() {
         homePage = HomePageObject(webDriver, port)
         loginPage = LoginPageObject(webDriver, port)
         homePage.get()
+        loginPage.get()
     }
 
     @Test
@@ -27,16 +28,11 @@ class LoginPageTest : SeleniumTest() {
         val password = "TestPass123!"
         createUser(email, password)
 
-        loginPage.get()
-
         loginPage.login(email, password)
-
     }
 
     @Test
     fun `should show error if login fails`() {
-        loginPage.get()
-
         loginPage.invalidLogin("invalid@email.com","credentials")
 
         loginPage.getErrorMessage() shouldBe messageSource.getMessage("page.invalid.credentials.error", emptyArray(),LocaleContextHolder.getLocale())

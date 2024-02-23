@@ -37,13 +37,12 @@ class PackagePageUnauthenticatedContinentsAndLocationsTest : SeleniumTest(){
         westDestinationLocations.add(createWestDestinationLocation("SOME_WEST_DESTINATION_LOCATION_2",archeageServer))
         eastDestinationLocations.add(createEastDestinationLocation("SOME_EAST_DESTINATION_LOCATION_1",archeageServer))
         eastDestinationLocations.add(createEastDestinationLocation("SOME_EAST_DESTINATION_LOCATION_2",archeageServer))
-        page = PackagesPageObject(webDriver,port)
+        page = PackagesPageObject(webDriver,port).get()
     }
 
     @Test
     fun `should display error when user is accessing packs view page and user has not selected archeage server`() {
         page
-            .get()
             .error { this.shouldBe(messageSource.getMessage("archeage.server.not.chosen.error.message", emptyArray(),LocaleContextHolder.getLocale())) }
 
     }
@@ -51,7 +50,6 @@ class PackagePageUnauthenticatedContinentsAndLocationsTest : SeleniumTest(){
     @Test
     fun `should not display error after user has selected archeage server`() {
         page
-            .get()
             .error { this.shouldNotBe(null) }
             .selectServer(archeageServer)
             .error { this.shouldBe(null) }
@@ -60,21 +58,18 @@ class PackagePageUnauthenticatedContinentsAndLocationsTest : SeleniumTest(){
     @Test
     fun `should display continents to the user`() {
         page
-            .get()
             .continents() shouldContainExactlyInAnyOrder Continent.entries.map { messageSource.getMessage("page.continent.${it.name}", emptyArray(),LocaleContextHolder.getLocale()) }
     }
 
     @Test
     fun `should select by default the first continent`() {
         page
-            .get()
             .selectedContinent() shouldBe Continent.entries[0]
     }
 
     @Test
     fun `should display departure locations of selected continent`() {
         page
-            .get()
             .selectServer(archeageServer)
             .departureLocations{ this.shouldContainExactlyInAnyOrder(getExpectedDepartureLocations(Continent.EAST)) }
             .selectContinent(Continent.WEST,westDepartureLocations[0])
@@ -84,7 +79,6 @@ class PackagePageUnauthenticatedContinentsAndLocationsTest : SeleniumTest(){
     @Test
     fun `should display destination locations of selected continent`() {
         page
-            .get()
             .selectServer(archeageServer)
             .destinationLocations{ this.shouldContainExactlyInAnyOrder(getExpectedDestinationLocations(Continent.EAST)) }
             .selectContinent(Continent.WEST,westDestinationLocations[0])
@@ -94,7 +88,6 @@ class PackagePageUnauthenticatedContinentsAndLocationsTest : SeleniumTest(){
     @Test
     fun `should display empty destination and departure locations when archeage server is not selected`() {
         page
-            .get()
             .destinationLocations{ this.shouldHaveSize(0) }
             .departureLocations{ this.shouldHaveSize(0) }
     }
@@ -102,7 +95,6 @@ class PackagePageUnauthenticatedContinentsAndLocationsTest : SeleniumTest(){
     @Test
     fun `should not display destination location if it is selected as departure location`() {
         page
-            .get()
             .selectServer(archeageServer)
             .destinationLocations{ this.shouldContain(eastDestinationLocations[0].toDisplayedValue())  }
             .selectDepartureLocation(eastDestinationLocations[0])
@@ -112,7 +104,6 @@ class PackagePageUnauthenticatedContinentsAndLocationsTest : SeleniumTest(){
     @Test
     fun `should not display departure location if it is selected as destination location`() {
         page
-            .get()
             .selectServer(archeageServer)
             .departureLocations{ this.shouldContain(eastDestinationLocations[0].toDisplayedValue()) }
             .selectDestinationLocation(eastDestinationLocations[0])

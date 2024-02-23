@@ -25,7 +25,7 @@ class RegisterPageTest : SeleniumTest(){
     @BeforeEach
     override fun setUp() {
         super.setUp()
-        registerPage = RegisterPage(webDriver,port)
+        registerPage = RegisterPage(webDriver,port).get()
     }
 
     @MethodSource("invalidPasswords")
@@ -33,7 +33,7 @@ class RegisterPageTest : SeleniumTest(){
     fun `should fail registration if password is invalid`(invalidPassword: String) {
         userRepository.findByEmail(form.email) shouldBe null
 
-        val errors = (registerPage.get().register(form.copy(password = invalidPassword, repeatedPassword = invalidPassword)) as RegistrationFailure).errors
+        val errors = (registerPage.register(form.copy(password = invalidPassword, repeatedPassword = invalidPassword)) as RegistrationFailure).errors
 
         errors
             .shouldHaveSize(1)
@@ -46,7 +46,7 @@ class RegisterPageTest : SeleniumTest(){
     fun `should fail registration if email is invalid`(invalidEmail: String) {
         userRepository.findByEmail(invalidEmail) shouldBe null
 
-        val errors = (registerPage.get().register(form.copy(email = invalidEmail)) as RegistrationFailure).errors
+        val errors = (registerPage.register(form.copy(email = invalidEmail)) as RegistrationFailure).errors
 
         errors
             .shouldHaveSize(1)
@@ -58,7 +58,7 @@ class RegisterPageTest : SeleniumTest(){
     fun `should fail registration if email empty`() {
         userRepository.findByEmail("") shouldBe null
 
-        val errors = (registerPage.get().register(form.copy(email = "")) as RegistrationFailure).errors
+        val errors = (registerPage.register(form.copy(email = "")) as RegistrationFailure).errors
 
         errors
             .shouldHaveSize(1)
@@ -70,7 +70,7 @@ class RegisterPageTest : SeleniumTest(){
     fun `should fail registration if passwords do not match`() {
         userRepository.findByEmail(form.email) shouldBe null
 
-        val errors = (registerPage.get().register(form.copy(repeatedPassword = form.password.plus("1"))) as RegistrationFailure).errors
+        val errors = (registerPage.register(form.copy(repeatedPassword = form.password.plus("1"))) as RegistrationFailure).errors
 
         errors
             .shouldHaveSize(1)
@@ -82,7 +82,7 @@ class RegisterPageTest : SeleniumTest(){
     fun `should fail registration if user with provided email already exists`() {
         val existingUser = userRepository.save(User("test@email.com",passwordEncoder.encode("AnyPass123")))
 
-        val errors = (registerPage.get().register(form.copy(email = existingUser.email)) as RegistrationFailure).errors
+        val errors = (registerPage.register(form.copy(email = existingUser.email)) as RegistrationFailure).errors
 
         errors
             .shouldHaveSize(1)
@@ -94,7 +94,7 @@ class RegisterPageTest : SeleniumTest(){
     fun `should register new user`() {
         userRepository.findByEmail(form.email) shouldBe null
 
-        val successfulRegistration  = registerPage.get().register(form) as RegistrationResult.SuccessfulRegistration
+        val successfulRegistration  = registerPage.register(form) as RegistrationResult.SuccessfulRegistration
 
         successfulRegistration.successMessage shouldBe messageSource.getMessage("successful.registration.message", emptyArray(),LocaleContextHolder.getLocale())
         assertSoftly(userRepository.findByEmail(form.email)!!) {
