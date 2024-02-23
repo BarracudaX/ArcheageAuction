@@ -46,7 +46,6 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
     private val error = By.cssSelector("div.alert.alert-danger.alert-dismissible")
 
     override fun load() {
-        driver.manage().window().maximize()
         driver.get("http://localhost:${port}/packs_view")
     }
 
