@@ -99,9 +99,4 @@ abstract class SeleniumTest : AbstractTestContainerTest() {
 
     fun createUser(email: String,password: String) = userRepository.save(User(email,passwordEncoder.encode(password)))
 
-    @AfterEach
-    fun tearDown(){
-        webDriver.quit()
-    }
-
 }

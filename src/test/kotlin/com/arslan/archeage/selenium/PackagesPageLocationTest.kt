@@ -9,14 +9,11 @@ import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotContain
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.context.i18n.LocaleContextHolder
-import kotlin.math.exp
 
-class PackagePageUnauthenticatedContinentsAndLocationsTest : SeleniumTest(){
+class PackagesPageLocationTest : SeleniumTest(){
 
     private lateinit var page: PackagesPageObject
     private lateinit var archeageServer: ArcheageServer
@@ -38,33 +35,6 @@ class PackagePageUnauthenticatedContinentsAndLocationsTest : SeleniumTest(){
         eastDestinationLocations.add(createEastDestinationLocation("SOME_EAST_DESTINATION_LOCATION_1",archeageServer))
         eastDestinationLocations.add(createEastDestinationLocation("SOME_EAST_DESTINATION_LOCATION_2",archeageServer))
         page = PackagesPageObject(webDriver,port).get()
-    }
-
-    @Test
-    fun `should display error when user is accessing packs view page and user has not selected archeage server`() {
-        page
-            .error { this.shouldBe(messageSource.getMessage("archeage.server.not.chosen.error.message", emptyArray(),LocaleContextHolder.getLocale())) }
-
-    }
-
-    @Test
-    fun `should not display error after user has selected archeage server`() {
-        page
-            .error { this.shouldNotBe(null) }
-            .selectServer(archeageServer)
-            .error { this.shouldBe(null) }
-    }
-
-    @Test
-    fun `should display continents to the user`() {
-        page
-            .continents() shouldContainExactlyInAnyOrder Continent.entries.map { messageSource.getMessage("page.continent.${it.name}", emptyArray(),LocaleContextHolder.getLocale()) }
-    }
-
-    @Test
-    fun `should select by default the first continent`() {
-        page
-            .selectedContinent() shouldBe Continent.entries[0]
     }
 
     @Test
@@ -145,6 +115,4 @@ class PackagePageUnauthenticatedContinentsAndLocationsTest : SeleniumTest(){
         }.map{ location -> location.toDisplayedValue() }.plus(messageSource.getMessage("page.factories.all", emptyArray(), LocaleContextHolder.getLocale()))
 
     private fun Location.toDisplayedValue() : String = name.lowercase().capitalized()
-
-
 }
