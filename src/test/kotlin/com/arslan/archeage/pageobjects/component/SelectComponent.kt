@@ -9,15 +9,16 @@ import org.openqa.selenium.support.ui.Select
 import java.time.Duration
 
 class SelectComponent<V>(
-    selectID: String,
+    private val selectBy: By,
+    val optionsBy: By,
     private val driver: WebDriver,
     private val condition: (SelectComponent<V>) -> ExpectedCondition<*>,
     private val convertToValue: (V) -> String
 ) : LoadableComponent<SelectComponent<V>>() {
 
+    constructor( selectID: String, driver: WebDriver, condition: (SelectComponent<V>) -> ExpectedCondition<*>, convertToValue: (V) -> String) : this(By.xpath("//select[@id='${selectID}']"), By.xpath("//select[@id='${selectID}']/option"),driver,condition,convertToValue)
+
     private val wait = FluentWait(driver).withTimeout(Duration.ofSeconds(2))
-    val optionsBy = By.xpath("//select[@id='${selectID}']/option")
-    private val selectBy = By.xpath("//select[@id='${selectID}']")
 
     fun options() : List<String> = driver.findElements(optionsBy).map { it.text }
 

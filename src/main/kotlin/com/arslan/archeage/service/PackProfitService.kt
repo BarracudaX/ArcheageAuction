@@ -9,4 +9,5 @@ import org.springframework.validation.annotation.Validated
 interface PackProfitService : ItemPriceChangeEventListener {
 
     fun updatePercentage(@Valid update: PackPercentageUpdate)
+
 }

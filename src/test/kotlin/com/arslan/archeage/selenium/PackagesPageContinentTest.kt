@@ -23,7 +23,7 @@ class PackagesPageContinentTest : SeleniumTest(){
     @BeforeEach
     override fun setUp() {
         super.setUp()
-        archeageServer = createArcheageServer()
+        archeageServer = createArcheageServer("SOME_ARCHEAGE_SERVER")
         page = PackagesPageObject(webDriver,port).get()
     }
 

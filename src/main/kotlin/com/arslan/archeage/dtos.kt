@@ -29,13 +29,49 @@ data class PackDTO(
     val percentage: Int,
 
     val profit: Price
-)
+){
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PackDTO
+
+        if (name != other.name) return false
+        if (creationLocation != other.creationLocation) return false
+        if (destinationLocation != other.destinationLocation) return false
+        if (sellPrice != other.sellPrice) return false
+        if (producedQuantity != other.producedQuantity) return false
+        if (materials.sortedBy { it.itemDTO.id } != other.materials.sortedBy { it.itemDTO.id }) return false
+        if (id != other.id) return false
+        if (cost != other.cost) return false
+        if (percentage != other.percentage) return false
+        if (profit != other.profit) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + creationLocation.hashCode()
+        result = 31 * result + destinationLocation.hashCode()
+        result = 31 * result + sellPrice.hashCode()
+        result = 31 * result + producedQuantity
+        result = 31 * result + materials.hashCode()
+        result = 31 * result + id.hashCode()
+        result = 31 * result + cost.hashCode()
+        result = 31 * result + percentage
+        result = 31 * result + profit.hashCode()
+        return result
+    }
+}
 
 @Serializable
 data class CraftingMaterialDTO(val quantity: Int, val itemDTO: ItemDTO,val total: Price?)
 
 @Serializable
-class ItemDTO(val name: String,val id: Long,val price:Price? = null){
+class
+ItemDTO(val name: String,val id: Long,val price:Price? = null){
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

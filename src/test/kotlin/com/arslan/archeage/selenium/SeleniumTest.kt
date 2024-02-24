@@ -1,14 +1,17 @@
 package com.arslan.archeage.selenium
 
-import com.arslan.archeage.AbstractTestContainerTest
-import com.arslan.archeage.Continent
-import com.arslan.archeage.entity.ArcheageServer
-import com.arslan.archeage.entity.Location
-import com.arslan.archeage.entity.User
-import com.arslan.archeage.repository.ArcheageServerRepository
-import com.arslan.archeage.repository.LocationRepository
-import com.arslan.archeage.repository.PackRepository
-import com.arslan.archeage.repository.UserRepository
+import com.arslan.archeage.*
+import com.arslan.archeage.entity.*
+import com.arslan.archeage.entity.item.PurchasableItem
+import com.arslan.archeage.entity.item.UserPrice
+import com.arslan.archeage.entity.item.UserPriceKey
+import com.arslan.archeage.entity.pack.Pack
+import com.arslan.archeage.entity.pack.PackPrice
+import com.arslan.archeage.entity.pack.PackProfit
+import com.arslan.archeage.entity.pack.PackProfitKey
+import com.arslan.archeage.event.ItemPriceChangeEvent
+import com.arslan.archeage.repository.*
+import com.arslan.archeage.service.PackProfitService
 import com.arslan.archeage.service.UserService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -27,6 +30,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestConstructor
+import java.time.Duration
 
 @ActiveProfiles("test","headless")
 @Import(SeleniumTest.SeleniumConfiguration::class)
@@ -58,6 +62,21 @@ abstract class SeleniumTest : AbstractTestContainerTest() {
     @Autowired
     protected lateinit var packRepository: PackRepository
 
+    @Autowired
+    protected lateinit var packProfitRepository: PackProfitRepository
+
+    @Autowired
+    protected lateinit var userPriceRepository: UserPriceRepository
+
+    @Autowired
+    protected lateinit var purchasableItemRepository: PurchasableItemRepository
+
+    @Autowired
+    protected lateinit var categoryRepository: CategoryRepository
+
+    @Autowired
+    protected lateinit var packProfitService: PackProfitService
+
     @LocalServerPort
     protected var port: Int = -1
 
@@ -79,6 +98,7 @@ abstract class SeleniumTest : AbstractTestContainerTest() {
         @Bean(destroyMethod = "quit")
         fun nonHeadlessWebDriver() : WebDriver = ChromeDriver().apply {
             manage().window().maximize()
+            manage().timeouts().scriptTimeout(Duration.ofMinutes(5))
         }
 
     }
@@ -88,7 +108,7 @@ abstract class SeleniumTest : AbstractTestContainerTest() {
         clearDB(jdbcTemplate)
     }
 
-    fun createArcheageServer() : ArcheageServer = archeageServerRepository.save(ArcheageServer("SOME_ARCHEAGE_SERVER"))
+    fun createArcheageServer(name: String) : ArcheageServer = archeageServerRepository.save(ArcheageServer(name))
 
     fun createWestDepartureLocation(name: String, archeageServer: ArcheageServer) = locationRepository.save(Location(name,Continent.WEST,archeageServer))
 
@@ -96,6 +116,32 @@ abstract class SeleniumTest : AbstractTestContainerTest() {
 
     fun createWestDestinationLocation(name: String,archeageServer: ArcheageServer) = locationRepository.save(Location(name,Continent.WEST,archeageServer,true))
     fun createEastDestinationLocation(name: String,archeageServer: ArcheageServer) = locationRepository.save(Location(name,Continent.EAST,archeageServer,true))
+
+    fun createPack(name: String, createLocation: Location, sellLocation: Location, price: Price, quantity: Int, category: Category, materials: List<Triple<String,Price,Int>>) : PackDTO{
+        val pack = Pack(createLocation,PackPrice(price,sellLocation),quantity,category,name,"ANY_DESC")
+        val user = userRepository.findByEmail("some@email.com") ?: userRepository.save(User("some@email.com","ANY"))
+        val items = materials.map { (name,price,quantity) ->
+            val item = purchasableItemRepository.save(PurchasableItem(name, "ANY", sellLocation.archeageServer))
+            pack.addMaterial(CraftingMaterial(quantity, item))
+            item to price
+        }
+
+        packRepository.save(pack)
+
+        val userPrices = items.associate { (item,price) ->
+            val userPrice = userPriceRepository.save(UserPrice(UserPriceKey(user, item), price))
+            pack.addMaterial(CraftingMaterial(quantity, item))
+            packProfitService.onItemPriceChange(ItemPriceChangeEvent(this,item,user,price))
+            item.id!! to userPrice
+        }
+
+
+        return pack.toDTO(userPrices,100)
+    }
+
+    fun createCategory(name: String,archeageServer: ArcheageServer) : Category{
+        return categoryRepository.save(Category(name,null,archeageServer))
+    }
 
     fun createUser(email: String,password: String) = userRepository.save(User(email,passwordEncoder.encode(password)))
 

@@ -62,6 +62,8 @@ data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Pr
 
             return Price(gold,silver,copper)
         }
+
+        fun of(gold: Int,silver: Int,copper: Int) : Price = Price(gold,silver,copper)
     }
 
     private fun totalCopper() : Int = copper + silver* COPPER_COINS_PER_SILVER_COIN + gold*SILVER_COINS_PER_GOLD_COIN*COPPER_COINS_PER_SILVER_COIN

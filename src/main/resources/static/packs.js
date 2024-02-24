@@ -35,8 +35,8 @@ function refreshLocations(destinationLocation,departureLocation){
     }
 }
 
-function refreshPacks(){
-    fetchPage(currentPage).then()
+async function refreshPacks(){
+    await fetchPage(currentPage).then()
 }
 
 function nextPage(){
@@ -169,9 +169,9 @@ function handlePacks(data) {
         const packRow = document.createElement("div")
         const hrElement = document.createElement("hr")
         packRow.innerHTML = `
-                <div class="row w-100 pack">
+                <div class="row w-100 pack" id="pack_${pack.id}">
                     <div class="d-flex justify-content-center col">
-                        <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#pack_${pack.id}" aria-expanded="false" aria-controls="pack_${pack.id}">+</button>
+                        <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#pack_details_${pack.id}" aria-expanded="false" aria-controls="pack_details_${pack.id}">+</button>
                     </div>
                     <div class="text-center col">${pack.name}</div>
                     <div class="text-center col">${pack.creationLocation}</div>
@@ -185,7 +185,7 @@ function handlePacks(data) {
         packRow.appendChild(insertBeforeThis)
         const materialsDiv = document.createElement("div")
         materialsDiv.className="row m-0 mt-4 collapse"
-        materialsDiv.id = `pack_${pack.id}`
+        materialsDiv.id = `pack_details_${pack.id}`
         materialsDiv.innerHTML = `
             <div class="row">
                 <h4 class="text-center col">${producedQuantityLabel}</h4>
@@ -195,7 +195,7 @@ function handlePacks(data) {
                 <h4 class="text-center col">${pack.producedQuantity}</h4>
                 <h4 class="text-center col">${pack.cost.gold+' '+goldLabel+' '+pack.cost.silver+' '+silverLabel+' '+pack.cost.copper+' '+copperLabel}</h4>
             </div>
-            <div class="row">
+            <div class="row" >
                 <h4 class="text-center col">${materialNameLabel}</h4>
                 <h4 class="text-center col">${materialQuantityLabel}</h4>
                 <h4 class="text-center col">${materialPriceLabel}</h4>
@@ -207,6 +207,7 @@ function handlePacks(data) {
             const material = pack.materials[j]
             const materialRow = document.createElement("div")
             materialRow.className = "row"
+            materialRow.setAttribute("data-item-id",`${material.itemDTO.id}`)
             if (material.itemDTO.price != null) {
                 materialRow.innerHTML = `
                  <div class="text-center col">${material.itemDTO.name}</div>

@@ -3,15 +3,22 @@ package com.arslan.archeage.pageobjects
 import capitalized
 import com.arslan.archeage.Continent
 import com.arslan.archeage.NoOpCondition
+import com.arslan.archeage.PackDTO
 import com.arslan.archeage.entity.ArcheageServer
+import com.arslan.archeage.entity.Category
 import com.arslan.archeage.entity.Location
+import com.arslan.archeage.pageobjects.component.CategoriesComponent
+import com.arslan.archeage.pageobjects.component.PackComponent
 import com.arslan.archeage.pageobjects.component.SelectComponent
 import io.kotest.assertions.fail
+import io.kotest.assertions.withClue
+import org.junit.experimental.categories.Categories
 import org.openqa.selenium.By
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.TimeoutException
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.ExpectedConditions.*
 import org.openqa.selenium.support.ui.FluentWait
 import org.openqa.selenium.support.ui.Select
@@ -37,6 +44,7 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
         { NoOpCondition() },
         {location -> location.id.toString()}
     )
+    private val categoriesComponent = CategoriesComponent(driver)
 
     private val categoriesBtn = By.id("categories_btn")
     private val categoriesOffCanvas = By.id("categories-offcanvas")
@@ -63,21 +71,33 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
     }
 
     fun selectServer(archeageServer: ArcheageServer) : PackagesPageObject{
+        selectArcheageServer(archeageServer)
+        return get()
+    }
+
+    fun selectServer(archeageServer: ArcheageServer,packID: Long) : PackagesPageObject{
+        selectArcheageServer(archeageServer)
+
+        waitForPackRowWithID(packID)
+
+        return this
+    }
+
+    private fun selectArcheageServer(archeageServer: ArcheageServer) {
         driver.findElement(By.xpath("//a[text() = 'Server']")).click()
         driver.findElement(By.id("server_${archeageServer.id!!}")).click()
-        return get()
     }
 
     fun continents() : List<String> = continents.options()
 
     fun selectedContinent() : Continent = Continent.valueOf(continents.selectedValue())
 
-    fun departureLocations(consumer: List<String>.() -> Unit) : PackagesPageObject {
+    fun departureLocations(consumer: (List<String>) -> Unit) : PackagesPageObject {
         departureLocations.options().apply(consumer)
         return this
     }
 
-    fun destinationLocations(consumer: List<String>.() -> Unit) : PackagesPageObject {
+    fun destinationLocations(consumer: (List<String>) -> Unit) : PackagesPageObject {
         destinationLocations.options().apply(consumer)
 
         return this
@@ -101,6 +121,13 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
         FluentWait(driver)
             .withTimeout(Duration.ofSeconds(5))
             .until(numberOfElementsToBeMoreThan(By.xpath("//option[text()='${location.name.lowercase().capitalized()}']"),0))
+
+        return this
+    }
+
+    fun selectContinent(continent: Continent,packID: Long) : PackagesPageObject{
+        continents.selectValue(continent)
+        waitForPackRowWithID(packID)
 
         return this
     }
@@ -134,6 +161,86 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
             }
 
         return this
+    }
+
+    fun packs(consumer: (List<PackDTO>) -> Unit) : PackagesPageObject{
+        val packs = driver.findElements(packs).map { pack ->
+            PackComponent(driver,pack.getAttribute("id").replace("pack_","").toLong())
+        }.onEach(PackComponent::isLoaded).map(PackComponent::toPackDTO)
+
+        consumer(packs)
+
+        return this
+    }
+
+    fun hasPrevious(consumer: (Boolean) -> Unit) : PackagesPageObject{
+        val isEnabled = driver.findElement(previousBtn).isEnabled
+        withClue("Previous button should ${if(isEnabled){ "not" }else{ "" } } be enabled.") {
+            isEnabled.apply(consumer)
+        }
+        isEnabled.apply(consumer)
+        return this
+    }
+
+    fun hasNext(consumer: (Boolean) -> Unit) : PackagesPageObject{
+        val isEnabled = driver.findElement(nextBtn).isEnabled
+        withClue("Next button should ${if(isEnabled){ "not" }else{ "" } } be enabled.") {
+            isEnabled.apply(consumer)
+        }
+        return this
+    }
+
+    fun pageSize(consumer: (Long) -> Unit) : PackagesPageObject{
+        ((driver as JavascriptExecutor).executeScript("return pageSize") as Long).apply(consumer)
+        return this
+    }
+
+    /**
+     * Note: after calling this method, refresh must be done.
+     */
+    fun setPageSize(pageSize: Long) : PackagesPageObject{
+        (driver as JavascriptExecutor).executeScript("pageSize = $pageSize")
+
+        return this
+    }
+
+    fun refreshPacks(packID: Long): PackagesPageObject {
+        (driver as JavascriptExecutor).executeScript("await refreshPacks()")
+        waitForPackRowWithID(packID)
+
+        return this
+    }
+
+    fun nextPage(packID: Long) : PackagesPageObject{
+        driver.findElement(nextBtn).click()
+        waitForPackRowWithID(packID)
+
+        return this
+    }
+
+    fun selectCategory(category: Category,packID: Long) : PackagesPageObject{
+        categoriesComponent.selectCategory(category)
+        waitForPackRowWithID(packID)
+
+        return this
+    }
+
+    fun deselectCategory(category: Category,packID: Long) : PackagesPageObject{
+        categoriesComponent.selectCategory(category)
+        waitForPackRowWithID(packID)
+
+        return this
+    }
+
+    private fun waitForPackRowWithID(packID: Long) {
+        FluentWait(driver)
+            .withTimeout(Duration.ofSeconds(2))
+            .ignoring(NoSuchElementException::class.java)
+            .until(presenceOfElementLocated(By.id("pack_${packID}")))
+    }
+
+    fun changePercentage(pack: PackDTO, newPercentage: Int) {
+        PackComponent(driver,pack.id).changePercentage(newPercentage)
     }
 
 }

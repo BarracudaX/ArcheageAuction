@@ -25,7 +25,7 @@ class PackagesPageLocationTest : SeleniumTest(){
     @BeforeEach
     override fun setUp() {
         super.setUp()
-        archeageServer = createArcheageServer()
+        archeageServer = createArcheageServer("SOME_ARCHEAGE_SERVER")
         eastDepartureLocations.add(createEastDepartureLocation("SOME_EAST_DEPARTURE_LOCATION_1",archeageServer))
         eastDepartureLocations.add(createEastDepartureLocation("SOME_EAST_DEPARTURE_LOCATION_2",archeageServer))
         westDepartureLocations.add(createWestDepartureLocation("SOME_WEST_DEPARTURE_LOCATION_1",archeageServer))
@@ -41,43 +41,43 @@ class PackagesPageLocationTest : SeleniumTest(){
     fun `should display departure locations of selected continent`() {
         page
             .selectServer(archeageServer)
-            .departureLocations{ this.shouldContainExactlyInAnyOrder(getExpectedDepartureLocations(Continent.EAST)) }
+            .departureLocations{ departureLocations -> departureLocations.shouldContainExactlyInAnyOrder(getExpectedDepartureLocations(Continent.EAST)) }
             .selectContinent(Continent.WEST,westDepartureLocations[0])
-            .departureLocations{ this.shouldContainExactlyInAnyOrder(getExpectedDepartureLocations(Continent.WEST)) }
+            .departureLocations{ departureLocations -> departureLocations.shouldContainExactlyInAnyOrder(getExpectedDepartureLocations(Continent.WEST)) }
     }
 
     @Test
     fun `should display destination locations of selected continent`() {
         page
             .selectServer(archeageServer)
-            .destinationLocations{ this.shouldContainExactlyInAnyOrder(getExpectedDestinationLocations(Continent.EAST)) }
+            .destinationLocations{ destinationLocations -> destinationLocations.shouldContainExactlyInAnyOrder(getExpectedDestinationLocations(Continent.EAST)) }
             .selectContinent(Continent.WEST,westDestinationLocations[0])
-            .destinationLocations{ this.shouldContainExactlyInAnyOrder(getExpectedDestinationLocations(Continent.WEST)) }
+            .destinationLocations{ destinationLocations -> destinationLocations.shouldContainExactlyInAnyOrder(getExpectedDestinationLocations(Continent.WEST)) }
     }
 
     @Test
     fun `should display empty destination and departure locations when archeage server is not selected`() {
         page
-            .destinationLocations{ this.shouldHaveSize(0) }
-            .departureLocations{ this.shouldHaveSize(0) }
+            .destinationLocations{ strings -> strings.shouldHaveSize(0) }
+            .departureLocations{ strings -> strings.shouldHaveSize(0) }
     }
 
     @Test
     fun `should not display destination location if it is selected as departure location`() {
         page
             .selectServer(archeageServer)
-            .destinationLocations{ this.shouldContain(eastDestinationLocations[0].toDisplayedValue())  }
+            .destinationLocations{ destinationLocations -> destinationLocations.shouldContain(eastDestinationLocations[0].toDisplayedValue())  }
             .selectDepartureLocation(eastDestinationLocations[0])
-            .destinationLocations{ this.shouldNotContain(eastDestinationLocations[0].toDisplayedValue()) }
+            .destinationLocations{ destinationLocations -> destinationLocations.shouldNotContain(eastDestinationLocations[0].toDisplayedValue()) }
     }
 
     @Test
     fun `should not display departure location if it is selected as destination location`() {
         page
             .selectServer(archeageServer)
-            .departureLocations{ this.shouldContain(eastDestinationLocations[0].toDisplayedValue()) }
+            .departureLocations{ departureLocations -> departureLocations.shouldContain(eastDestinationLocations[0].toDisplayedValue()) }
             .selectDestinationLocation(eastDestinationLocations[0])
-            .departureLocations{ this.shouldNotContain(eastDestinationLocations[0].toDisplayedValue()) }
+            .departureLocations{ departureLocations -> departureLocations.shouldNotContain(eastDestinationLocations[0].toDisplayedValue()) }
     }
 
     @Test
@@ -85,9 +85,9 @@ class PackagesPageLocationTest : SeleniumTest(){
         page.get()
             .selectServer(archeageServer)
             .selectDepartureLocation(eastDestinationLocations[0])
-            .destinationLocations{ this.shouldNotContain(eastDestinationLocations[0].toDisplayedValue()) }
+            .destinationLocations{ destinationLocations -> destinationLocations.shouldNotContain(eastDestinationLocations[0].toDisplayedValue()) }
             .selectDepartureLocation(eastDepartureLocations[0])
-            .destinationLocations{ this.shouldContain(eastDestinationLocations[0].toDisplayedValue()) }
+            .destinationLocations{ destinationLocations -> destinationLocations.shouldContain(eastDestinationLocations[0].toDisplayedValue()) }
     }
 
     @Test
@@ -95,9 +95,9 @@ class PackagesPageLocationTest : SeleniumTest(){
         page.get()
             .selectServer(archeageServer)
             .selectDestinationLocation(eastDestinationLocations[0])
-            .departureLocations{ this.shouldNotContain(eastDestinationLocations[0].toDisplayedValue()) }
+            .departureLocations{ departureLocation -> departureLocation.shouldNotContain(eastDestinationLocations[0].toDisplayedValue()) }
             .selectDestinationLocation(eastDestinationLocations[1])
-            .departureLocations{ this.shouldContain(eastDestinationLocations[0].toDisplayedValue()) }
+            .departureLocations{ departureLocation -> departureLocation.shouldContain(eastDestinationLocations[0].toDisplayedValue()) }
     }
 
     private fun getExpectedDepartureLocations(continent: Continent) =
