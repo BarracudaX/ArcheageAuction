@@ -159,4 +159,13 @@ class PriceTest {
 
         newValue.initialValue(percentage) shouldBe initialValue
     }
+
+    @Test
+    fun `should divide price`() {
+        val price = Price(100,50,50)
+        val divisor = 2
+        val expectedPrice = Price(50,25,25)
+
+        price.div(divisor) shouldBe expectedPrice
+    }
 }

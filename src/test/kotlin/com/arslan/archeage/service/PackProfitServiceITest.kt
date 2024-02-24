@@ -58,7 +58,7 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
 
         val location = locationRepository.save(Location("ANY_LOCATION",Continent.WEST,archeageServer,true))
         val category = categoryRepository.save(Category("ANY_CATEGORY",null,archeageServer))
-        pack = packRepository.save(Pack(location,PackPrice(Price(30,20,10),location),5,category,"PACK","ANY"))
+        pack = packRepository.save(Pack(location,PackPrice(Price(30,20,10),location),5,category,100,"PACK","ANY"))
         nonPurchasableMaterials.forEach { material -> pack.addMaterial(CraftingMaterial(Random.nextInt(10),material)) }
         purchasableMaterials.forEach { material -> pack.addMaterial(CraftingMaterial(Random.nextInt(10),material)) }
         pack = packRepository.save(pack)

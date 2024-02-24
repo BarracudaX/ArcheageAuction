@@ -43,5 +43,23 @@
             <column name="percentage">100</column>
         </update>
     </changeSet>
+    
+    <changeSet id="5" author="barracuda">
+        <addColumn tableName="pack_profits">
+            <column name="gold_working_points_profit" defaultValue="0" type="integer">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <addColumn tableName="pack_profits">
+            <column name="silver_working_points_profit" defaultValue="0" type="integer">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <addColumn tableName="pack_profits">
+            <column name="copper_working_points_profit" defaultValue="0" type="integer">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

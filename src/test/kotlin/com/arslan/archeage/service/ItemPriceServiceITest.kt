@@ -124,7 +124,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
     fun `should throw EmptyResultDataAccessException when trying to save user price for non-purchasable item`() {
         val nonPurchasableItem = itemRepository.save(Item("NON_PURCHASABLE_ITEM","ANY",currentUserArcheageServer))
         val location = locationRepository.save(Location("ANY_NAME",Continent.EAST,currentUserArcheageServer,true))
-        val packItem = packRepository.save(Pack(location, PackPrice(Price(20,30,20),location),10,category,"PACK","ANY"))
+        val packItem = packRepository.save(Pack(location, PackPrice(Price(20,30,20),location),10,category,10,"PACK","ANY"))
 
         shouldThrow<EmptyResultDataAccessException> { itemPriceService.saveUserPrice(UserPriceDTO(someUser.id!!,nonPurchasableItem.id!!,Price(20,23,4))) }
         shouldThrow<EmptyResultDataAccessException> { itemPriceService.saveUserPrice(UserPriceDTO(someUser.id!!,packItem.id!!,Price(20,23,4))) }

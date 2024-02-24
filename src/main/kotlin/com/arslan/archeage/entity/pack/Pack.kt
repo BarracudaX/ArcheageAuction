@@ -7,6 +7,7 @@ import com.arslan.archeage.entity.Price
 import com.arslan.archeage.entity.item.Item
 import com.arslan.archeage.entity.item.PurchasableItem
 import jakarta.persistence.CollectionTable
+import jakarta.persistence.Column
 import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
 import jakarta.persistence.JoinColumn
@@ -27,6 +28,9 @@ class Pack(
     @ManyToOne
     @JoinColumn(name = "category_id")
     var category: Category,
+
+    @Column(name = "working_points")
+    var workingPoints: Int,
 
     name: String,
 

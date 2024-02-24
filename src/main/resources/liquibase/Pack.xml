@@ -32,19 +32,6 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="2" author="barracuda" context="dev" >
-        <loadData tableName="packs" file="csv/packs.csv">
-            <column name="creation_location_id" header="creation_location_id" type="NUMERIC" />
-            <column name="id" header="id" type="NUMERIC" />
-            <column name="sell_location_id" header="sell_location_id" type="NUMERIC" />
-            <column name="gold" header="gold" type="NUMERIC" />
-            <column name="silver" header="silver" type="NUMERIC" />
-            <column name="copper" header="copper" type="NUMERIC" />
-            <column name="produced_quantity" header="produced_quantity" type="NUMERIC" />
-            <column name="category_id" header="category_id" type="NUMERIC" />
-        </loadData>
-    </changeSet>
-
     <changeSet id="3" author="barracuda">
         <createTable tableName="pack_materials">
             <column name="pack_id" type="bigint">
@@ -59,7 +46,27 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4" author="barracuda" context="dev">
+    <changeSet id="5" author="barracuda">
+        <addColumn tableName="packs">
+            <column name="working_points" type="INTEGER" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="999" author="barracuda" context="dev" runOnChange="true">
+        <loadData tableName="packs" file="csv/packs.csv">
+            <column name="creation_location_id" header="creation_location_id" type="NUMERIC" />
+            <column name="id" header="id" type="NUMERIC" />
+            <column name="sell_location_id" header="sell_location_id" type="NUMERIC" />
+            <column name="gold" header="gold" type="NUMERIC" />
+            <column name="silver" header="silver" type="NUMERIC" />
+            <column name="copper" header="copper" type="NUMERIC" />
+            <column name="produced_quantity" header="produced_quantity" type="NUMERIC" />
+            <column name="category_id" header="category_id" type="NUMERIC" />
+            <column name="working_points" header="working_points" type="NUMERIC" />
+        </loadData>
         <loadData tableName="pack_materials" file="csv/pack_materials.csv">
             <column name="quantity" header="quantity" type="NUMERIC"/>
             <column name="item_id" header="item_id" type="NUMERIC"/>
@@ -67,4 +74,7 @@
         </loadData>
     </changeSet>
 
+    <changeSet id="1000" author="barracuda">
+        <dropDefaultValue tableName="packs" columnName="working_points" />
+    </changeSet>
 </databaseChangeLog>

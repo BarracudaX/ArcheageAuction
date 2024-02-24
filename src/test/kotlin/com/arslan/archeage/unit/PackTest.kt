@@ -28,7 +28,7 @@ class PackTest {
 
     @Test
     fun `should convert pack to dto`() {
-        val pack = Pack(createLocation,PackPrice(Price(100,0,0),sellLocation),10,category,"PACK","DESCRIPTION").apply {
+        val pack = Pack(createLocation,PackPrice(Price(100,0,0),sellLocation),10,category,100,"PACK","DESCRIPTION").apply {
             id = 1
             addMaterial(CraftingMaterial(10,item))
             addMaterial(CraftingMaterial(5,purchasableItem))
@@ -40,7 +40,7 @@ class PackTest {
 
     @Test
     fun `should convert packs to dto`() {
-        val pack = Pack(createLocation,PackPrice(Price(100,0,0),sellLocation),10,category,"PACK","DESCRIPTION").apply {
+        val pack = Pack(createLocation,PackPrice(Price(100,0,0),sellLocation),10,category,100,"PACK","DESCRIPTION").apply {
             id = 1
             addMaterial(CraftingMaterial(10,item))
             addMaterial(CraftingMaterial(5,purchasableItem))

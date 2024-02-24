@@ -69,8 +69,8 @@ abstract class AbstractITest : AbstractTestContainerTest() {
         val user = userRepository.findByEmail("SOME_EMAIL") ?: userRepository.save(User("SOME_EMAIL","ANY"))
         val userPrice = userPriceRepository.save(UserPrice(UserPriceKey(user,purchasableItem),randomPrice()))
 
-        val pack = packRepository.save(Pack(createLocation, PackPrice(randomPrice(),sellLocation),4,category,"SOME_PACK","SOME_DESC").apply { addMaterial(CraftingMaterial(5,purchasableItem)) })
-        val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice()))
+        val pack = packRepository.save(Pack(createLocation, PackPrice(randomPrice(),sellLocation),4,category,1,"SOME_PACK","SOME_DESC").apply { addMaterial(CraftingMaterial(5,purchasableItem)) })
+        val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice(),randomPrice()))
 
 
         return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage)
@@ -82,8 +82,8 @@ abstract class AbstractITest : AbstractTestContainerTest() {
         val user = userRepository.findByEmail("SOME_EMAIL") ?: userRepository.save(User("SOME_EMAIL","ANY"))
         val userPrice = userPriceRepository.save(UserPrice(UserPriceKey(user,purchasableItem),randomPrice()))
 
-        val pack = packRepository.save(Pack(departureLocation, PackPrice(randomPrice(),destinationLocation),4,category,"SOME_PACK","SOME_DESC").apply { addMaterial(CraftingMaterial(5,purchasableItem)) })
-        val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice()))
+        val pack = packRepository.save(Pack(departureLocation, PackPrice(randomPrice(),destinationLocation),4,category,100,"SOME_PACK","SOME_DESC").apply { addMaterial(CraftingMaterial(5,purchasableItem)) })
+        val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice(),randomPrice()))
 
         return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage)
     }
@@ -95,8 +95,8 @@ abstract class AbstractITest : AbstractTestContainerTest() {
         val user = userRepository.findByEmail("SOME_EMAIL") ?: userRepository.save(User("SOME_EMAIL","ANY"))
         val userPrice = userPriceRepository.save(UserPrice(UserPriceKey(user,purchasableItem),randomPrice()))
 
-        val pack = packRepository.save(Pack(departureLocation, PackPrice(randomPrice(),sellLocation),4,category,"SOME_PACK","SOME_DESC").apply { addMaterial(CraftingMaterial(5,purchasableItem)) })
-        val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice()))
+        val pack = packRepository.save(Pack(departureLocation, PackPrice(randomPrice(),sellLocation),4,category,100,"SOME_PACK","SOME_DESC").apply { addMaterial(CraftingMaterial(5,purchasableItem)) })
+        val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice(),randomPrice()))
 
 
         return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage)
@@ -109,8 +109,8 @@ abstract class AbstractITest : AbstractTestContainerTest() {
         val user = userRepository.findByEmail("SOME_EMAIL") ?: userRepository.save(User("SOME_EMAIL","ANY"))
         val userPrice = userPriceRepository.save(UserPrice(UserPriceKey(user,purchasableItem),randomPrice()))
 
-        val pack = packRepository.save(Pack(departureLocation, PackPrice(randomPrice(),destinationLocation),4,category,"SOME_PACK","SOME_DESC").apply { addMaterial(CraftingMaterial(5,purchasableItem)) })
-        val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice()))
+        val pack = packRepository.save(Pack(departureLocation, PackPrice(randomPrice(),destinationLocation),4,category,100,"SOME_PACK","SOME_DESC").apply { addMaterial(CraftingMaterial(5,purchasableItem)) })
+        val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice(),randomPrice()))
 
         return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage)
     }
@@ -122,8 +122,8 @@ abstract class AbstractITest : AbstractTestContainerTest() {
         val user = userRepository.findByEmail("SOME_EMAIL") ?: userRepository.save(User("SOME_EMAIL","ANY"))
         val userPrice = userPriceRepository.save(UserPrice(UserPriceKey(user,purchasableItem),randomPrice()))
 
-        val pack = packRepository.save(Pack(createLocation, PackPrice(randomPrice(),sellLocation),4,category,"SOME_PACK","SOME_DESC").apply { addMaterial(CraftingMaterial(5,purchasableItem)) })
-        val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice()))
+        val pack = packRepository.save(Pack(createLocation, PackPrice(randomPrice(),sellLocation),4,category,100,"SOME_PACK","SOME_DESC").apply { addMaterial(CraftingMaterial(5,purchasableItem)) })
+        val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice(),randomPrice()))
 
         return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage)
     }

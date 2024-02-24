@@ -118,7 +118,7 @@ abstract class SeleniumTest : AbstractTestContainerTest() {
     fun createEastDestinationLocation(name: String,archeageServer: ArcheageServer) = locationRepository.save(Location(name,Continent.EAST,archeageServer,true))
 
     fun createPack(name: String, createLocation: Location, sellLocation: Location, price: Price, quantity: Int, category: Category, materials: List<Triple<String,Price,Int>>) : PackDTO{
-        val pack = Pack(createLocation,PackPrice(price,sellLocation),quantity,category,name,"ANY_DESC")
+        val pack = Pack(createLocation,PackPrice(price,sellLocation),quantity,category,1,name,"ANY_DESC")
         val user = userRepository.findByEmail("some@email.com") ?: userRepository.save(User("some@email.com","ANY"))
         val items = materials.map { (name,price,quantity) ->
             val item = purchasableItemRepository.save(PurchasableItem(name, "ANY", sellLocation.archeageServer))

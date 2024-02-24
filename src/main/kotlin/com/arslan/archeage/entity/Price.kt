@@ -82,6 +82,10 @@ data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Pr
         return fromCopper((totalCopper()*d).toInt())
     }
 
+    operator fun div(i: Int) : Price{
+        return fromCopper(totalCopper()/i)
+    }
+
     override fun compareTo(other: Price): Int {
         val totalCopperCost = copper + silver * COPPER_COINS_PER_SILVER_COIN + gold * SILVER_COINS_PER_GOLD_COIN * COPPER_COINS_PER_SILVER_COIN
         val otherTotalCopperCost = other.copper + other.silver * COPPER_COINS_PER_SILVER_COIN + other.gold * SILVER_COINS_PER_GOLD_COIN * COPPER_COINS_PER_SILVER_COIN

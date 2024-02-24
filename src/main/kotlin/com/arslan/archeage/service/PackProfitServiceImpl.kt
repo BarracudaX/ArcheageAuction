@@ -26,6 +26,7 @@ class PackProfitServiceImpl(private val packRepository: PackRepository,private v
             .findAllByIdIn(packs.map { PackProfitKey(it,event.user) })
             .map { profit ->
                 profit.netProfit += event.priceChange
+                profit.workingPointsProfit = profit.netProfit/profit.id.pack.workingPoints
                 profit.id.pack.id!!
             }
         val requireNewProfit = packs.filter { !changedPacks.contains(it.id!!) }
@@ -35,8 +36,9 @@ class PackProfitServiceImpl(private val packRepository: PackRepository,private v
         val prices = itemPriceService.userItemPrices(requireNewProfit.flatMap { pack -> pack.materials().map(CraftingMaterial::item).filterIsInstance<PurchasableItem>() },event.user.id!!)
 
         requireNewProfit.forEach { pack ->
-            val profit = pack.profit(prices.mapValues { it.value.price },1.0)
-            packProfitRepository.save(PackProfit(PackProfitKey(pack,event.user),profit))
+            val netProfit = pack.profit(prices.mapValues { it.value.price },1.0)
+            val workingPointsProfit = netProfit / pack.workingPoints
+            packProfitRepository.save(PackProfit(PackProfitKey(pack,event.user),netProfit,workingPointsProfit))
         }
     }
 

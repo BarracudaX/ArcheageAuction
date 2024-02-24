@@ -22,6 +22,13 @@ class PackProfit(
     )
     var netProfit: Price,
 
+    @AttributeOverrides(
+        AttributeOverride(name = "gold", column = Column(name = "gold_working_points_profit")),
+        AttributeOverride(name = "silver", column = Column(name = "silver_working_points_profit")),
+        AttributeOverride(name = "copper", column = Column(name = "copper_working_points_profit"))
+    )
+    var workingPointsProfit: Price,
+
     var percentage: Int = 100,
 
     var timestamp: Instant = Instant.now()

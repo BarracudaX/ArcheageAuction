@@ -41,7 +41,7 @@ class ItemServiceITest(private val itemService: ItemService) : AbstractITest() {
     fun `should return empty page if there are not purchasable items`() {
         itemRepository.save(Item("NOT_PURCHASABLE_ITEM","ANY",archeageServer))
         val packLocation = locationRepository.save(Location("ANY",Continent.WEST,archeageServer,true))
-        packRepository.save(Pack(packLocation, PackPrice(Price(1,2,3),packLocation),10,category,"PACK","ANY"))
+        packRepository.save(Pack(packLocation, PackPrice(Price(1,2,3),packLocation),10,category,100,"PACK","ANY"))
 
         itemService.purchasableItems(Pageable.unpaged(),archeageServer).isEmpty.shouldBeTrue()
     }
