@@ -178,6 +178,7 @@ function handlePacks(data) {
                     <div class="text-center col">${pack.destinationLocation}</div>
                     <div class="text-center col">${pack.sellPrice.gold+' '+goldLabel+' '+pack.sellPrice.silver+' '+silverLabel+' '+pack.sellPrice.copper+' '+copperLabel}</div>
                     <div class="text-center col">${pack.profit.gold+' '+goldLabel+' '+pack.profit.silver+' '+silverLabel+' '+pack.profit.copper+' '+copperLabel}</div>
+                    <div class="text-center col">${pack.workingPointsProfit.gold+' '+goldLabel+' '+pack.workingPointsProfit.silver+' '+silverLabel+' '+pack.workingPointsProfit.copper+' '+copperLabel}</div>
                     <select class="form-select col" id="${percentageSelectIDPrefix}${pack.id}" ${data.isUserData ? '' : 'disabled'} onchange="updatePackPercentage(${pack.id})"></select>
                 </div>
         `
