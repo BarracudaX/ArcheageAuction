@@ -14,8 +14,9 @@ fun Pack.toDTO(prices: Map<Long, UserPrice>,percentage: Int) : PackDTO {
     val cost = materials().fold(Price(0,0,0)){ cost,material -> cost + (prices[material.item.id!!]?.price ?: Price(0,0,0))*material.quantity }
 
     val profit = price.price*(percentage/100.0) - cost
+    val workingPointProfit = profit.div(workingPoints)
 
-    return PackDTO(name,creationLocation.name,price.sellLocation.name,price.price,producedQuantity,materials().map { it.toDTO(prices) } ,id!!,cost,percentage,profit)
+    return PackDTO(name,creationLocation.name,price.sellLocation.name,price.price,producedQuantity,materials().map { it.toDTO(prices) } ,id!!,cost,percentage,profit,workingPointProfit)
 }
 
 fun List<Pack>.toDTO(prices: Map<Long, UserPrice>,percentages: Map<Long,Int>): List<PackDTO> = map { pack -> pack.toDTO(prices,percentages[pack.id!!]!!) }

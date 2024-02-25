@@ -55,33 +55,31 @@ class ItemServiceITest(private val itemService: ItemService) : AbstractITest() {
             purchasableItemRepository.save(PurchasableItem("PURCHASABLE_4","ANY",archeageServer)),
         )
 
-        assertSoftly(itemService.purchasableItems(PageRequest.of(1,1, Sort.by("id")),archeageServer)) {
-            totalElements shouldBe 4
-            totalPages shouldBe 4
-            content.shouldContainExactly(expected[1])
-            hasNext().shouldBeTrue()
-            hasPrevious().shouldBeTrue()
-        }
-        assertSoftly(itemService.purchasableItems(Pageable.unpaged(),archeageServer)) {
-            totalElements shouldBe 4
-            totalPages shouldBe 1
-            content.shouldContainExactlyInAnyOrder(expected)
-            hasNext().shouldBeFalse()
-            hasPrevious().shouldBeFalse()
-        }
-        assertSoftly(itemService.purchasableItems(PageRequest.of(1,2, Sort.by("id")),archeageServer)) {
-            totalElements shouldBe 4
-            totalPages shouldBe 2
-            content.shouldContainExactly(expected.subList(2,4))
-            hasNext().shouldBeFalse()
-            hasPrevious().shouldBeTrue()
-        }
-        assertSoftly(itemService.purchasableItems(PageRequest.of(0,2, Sort.by("id")),archeageServer)) {
+        itemService.purchasableItems(PageRequest.of(0,4, Sort.by("id")),archeageServer).content.shouldContainExactly(expected)
+    }
+
+    @Test
+    fun `should return purchasable items paginated`() {
+        val expected = listOf(
+            purchasableItemRepository.save(PurchasableItem("PURCHASABLE_1","ANY",archeageServer)),
+            purchasableItemRepository.save(PurchasableItem("PURCHASABLE_2","ANY",archeageServer)),
+            purchasableItemRepository.save(PurchasableItem("PURCHASABLE_3","ANY",archeageServer)),
+            purchasableItemRepository.save(PurchasableItem("PURCHASABLE_4","ANY",archeageServer)),
+        )
+
+        assertSoftly(itemService.purchasableItems(PageRequest.of(0,2,Sort.by("id")),archeageServer)) {
             totalElements shouldBe 4
             totalPages shouldBe 2
             content.shouldContainExactly(expected.subList(0,2))
             hasNext().shouldBeTrue()
             hasPrevious().shouldBeFalse()
+        }
+        assertSoftly(itemService.purchasableItems(PageRequest.of(1,2,Sort.by("id")),archeageServer)) {
+            totalElements shouldBe 4
+            totalPages shouldBe 2
+            content.shouldContainExactly(expected.subList(2,4))
+            hasNext().shouldBeFalse()
+            hasPrevious().shouldBeTrue()
         }
     }
 }

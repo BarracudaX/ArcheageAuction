@@ -38,9 +38,9 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         ArcheageServerContextHolder.setServerContext(archeageServer)
         packsPage = PageImpl(
             listOf(
-                PackDTO("PACK_1","ANY_LOC","ANY_DEST", Price(3,24,25),6, emptyList(),1,Price(52,23,11),100,Price(10,1,5)),
-                PackDTO("PACK_2","ANY_LOC","ANY_DEST", Price(200,1,4),9, emptyList(),2,Price(44,55,0),100,Price(12,13,20)),
-                PackDTO("PACK_3","ANY_LOC","ANY_DEST", Price(0,20,30),10, emptyList(),3,Price(1,12,15),100,Price(11,2,4))
+                PackDTO("PACK_1","ANY_LOC","ANY_DEST", Price(3,24,25),6, emptyList(),1,Price(52,23,11),100,Price(10,1,5),Price(0,5,5)),
+                PackDTO("PACK_2","ANY_LOC","ANY_DEST", Price(200,1,4),9, emptyList(),2,Price(44,55,0),100,Price(12,13,20),Price(0,5,5)),
+                PackDTO("PACK_3","ANY_LOC","ANY_DEST", Price(0,20,30),10, emptyList(),3,Price(1,12,15),100,Price(11,2,4),Price(0,5,5))
             ),
             pageable,100
         )

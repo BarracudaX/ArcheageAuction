@@ -25,7 +25,7 @@ class PackProfitServiceImpl(private val packRepository: PackRepository,private v
         val changedPacks = packProfitRepository
             .findAllByIdIn(packs.map { PackProfitKey(it,event.user) })
             .map { profit ->
-                profit.netProfit += event.priceChange
+                profit.netProfit += event.priceChange*profit.id.pack.requiredQuantity(event.item)
                 profit.workingPointsProfit = profit.netProfit/profit.id.pack.workingPoints
                 profit.id.pack.id!!
             }
@@ -47,6 +47,7 @@ class PackProfitServiceImpl(private val packRepository: PackRepository,private v
             .findPackProfit(update.packID,update.userID!!)
             .apply {
                 netProfit = netProfit.initialValue(percentage/100.0)*(update.percentage/100.0)
+                workingPointsProfit = netProfit/id.pack.workingPoints
                 percentage = update.percentage
             }
     }

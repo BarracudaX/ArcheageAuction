@@ -33,7 +33,11 @@ class PackTest {
             addMaterial(CraftingMaterial(10,item))
             addMaterial(CraftingMaterial(5,purchasableItem))
         }
-        val expectedDTO = with(pack){ PackDTO(name,createLocation.name,sellLocation.name,price.price,producedQuantity,materials().map { it.toDTO(userPrice) },id!!,Price(10,0,0),percentage,Price(110,0,0)) }
+        val expectedDTO = with(pack){
+            val profit = Price(110,0,0)
+            val workingPointsProfit=profit.div(pack.workingPoints)
+            PackDTO(name,createLocation.name,sellLocation.name,price.price,producedQuantity,materials().map { it.toDTO(userPrice) },id!!,Price(10,0,0),percentage,profit,workingPointsProfit)
+        }
 
         pack.toDTO(userPrice,percentage) shouldBe expectedDTO
     }
@@ -45,7 +49,11 @@ class PackTest {
             addMaterial(CraftingMaterial(10,item))
             addMaterial(CraftingMaterial(5,purchasableItem))
         }
-        val expectedDTO = with(pack){ PackDTO(name,createLocation.name,sellLocation.name,price.price,producedQuantity,materials().map { it.toDTO(userPrice) },id!!,Price(10,0,0),percentage,Price(110,0,0)) }
+        val expectedDTO = with(pack){
+            val profit = Price(110,0,0)
+            val workingPointsProfit = profit.div(pack.workingPoints)
+            PackDTO(name,createLocation.name,sellLocation.name,price.price,producedQuantity,materials().map { it.toDTO(userPrice) },id!!,Price(10,0,0),percentage,profit,workingPointsProfit)
+        }
 
         listOf(pack).toDTO(userPrice,mapOf(pack.id!! to percentage)).shouldContainExactly(expectedDTO)
     }

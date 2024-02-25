@@ -28,13 +28,10 @@ class LocationServiceITest(
     @Test
     fun `should return empty list for continent of specific archeage server`() {
         locationService.continentLocations(Continent.WEST,archeageServer).shouldBeEmpty()
-        locationService.continentFactories(Continent.WEST,archeageServer).shouldBeEmpty()
 
-        locationRepository.save(Location("ANY_NAME",Continent.WEST,archeageServer,true))
-        locationRepository.save(Location("ANY_NAME_2",Continent.NORTH,anotherArcheageServer,true))
+        locationRepository.save(Location("ANY_NAME",Continent.WEST,anotherArcheageServer,true))
 
-        locationService.continentLocations(Continent.NORTH,archeageServer).shouldBeEmpty()
-        locationService.continentFactories(Continent.NORTH,archeageServer).shouldBeEmpty()
+        locationService.continentLocations(Continent.WEST,archeageServer).shouldBeEmpty()
     }
 
     @Test

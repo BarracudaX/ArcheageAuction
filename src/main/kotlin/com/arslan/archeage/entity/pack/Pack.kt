@@ -58,4 +58,6 @@ class Pack(
 
         return price.price*sellPercentage - cost
     }
+
+    fun requiredQuantity(item: Item) : Int = materials.find { material -> material.item.id == item.id }?.quantity ?: throw NoSuchElementException("")
 }

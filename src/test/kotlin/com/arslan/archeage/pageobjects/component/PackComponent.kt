@@ -60,6 +60,7 @@ class PackComponent(private val driver: WebDriver,private val id: Long) : Loadab
         val recipeCost = driver.findElement(recipeCostBy).text.toPrice()!!
         val percentage = percentageSelectBy.selectedValue().toInt()
         val profit = driver.findElement(profitBy).text.toPrice()!!
+        val workingPointsProfit = Price.of(0,0,0)
         val materials = driver
             .findElements(materialsBy)
             .map { material ->
@@ -71,7 +72,7 @@ class PackComponent(private val driver: WebDriver,private val id: Long) : Loadab
                 CraftingMaterialDTO(materialQuantity,ItemDTO(name,itemID,materialPrice),totalPrice)
             }
 
-        return PackDTO(name,createLocation,destinationLocation,sellPrice,quantity,materials,id,recipeCost,percentage,profit)
+        return PackDTO(name,createLocation,destinationLocation,sellPrice,quantity,materials,id,recipeCost,percentage,profit,workingPointsProfit)
     }
 
     fun changePercentage(newPercentage: Int){

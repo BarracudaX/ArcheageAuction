@@ -28,7 +28,9 @@ data class PackDTO(
 
     val percentage: Int,
 
-    val profit: Price
+    val profit: Price,
+
+    val workingPointsProfit: Price
 ){
 
     override fun equals(other: Any?): Boolean {

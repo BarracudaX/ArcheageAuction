@@ -36,7 +36,6 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
     private lateinit var anotherUser: User
     private lateinit var archeageServer: ArcheageServer
     private val prices = mutableMapOf<Long,Price>()
-    private lateinit var materialsSumPrice: Price
     private lateinit var packPercentageUpdate: PackPercentageUpdate
 
     @BeforeEach
@@ -51,19 +50,18 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
 
         val purchasable1 = itemRepository.save(PurchasableItem("PURCHASABLE_1","ANY",archeageServer))
         val purchasable2 = itemRepository.save(PurchasableItem("PURCHASABLE_2","ANY",archeageServer))
-        prices[purchasable1.id!!] = Price(Random.nextInt(10),Random.nextInt(10),Random.nextInt(10))
-        prices[purchasable2.id!!] = Price(Random.nextInt(10),Random.nextInt(10),Random.nextInt(10))
+        prices[purchasable1.id!!] = Price.of(5,0,0)
+        prices[purchasable2.id!!] = Price.of(10,0,0)
         purchasableMaterials.add(purchasable1)
         purchasableMaterials.add(purchasable2)
 
         val location = locationRepository.save(Location("ANY_LOCATION",Continent.WEST,archeageServer,true))
         val category = categoryRepository.save(Category("ANY_CATEGORY",null,archeageServer))
-        pack = packRepository.save(Pack(location,PackPrice(Price(30,20,10),location),5,category,100,"PACK","ANY"))
-        nonPurchasableMaterials.forEach { material -> pack.addMaterial(CraftingMaterial(Random.nextInt(10),material)) }
-        purchasableMaterials.forEach { material -> pack.addMaterial(CraftingMaterial(Random.nextInt(10),material)) }
+        pack = packRepository.save(Pack(location,PackPrice(Price(100,0,0),location),5,category,10,"PACK","ANY"))
+        nonPurchasableMaterials.forEach { material -> pack.addMaterial(CraftingMaterial(10,material)) }
+        pack.addMaterial(CraftingMaterial(2,purchasable1))
+        pack.addMaterial(CraftingMaterial(4,purchasable2))
         pack = packRepository.save(pack)
-
-        materialsSumPrice = pack.materials().filter{ it.item is PurchasableItem }.map { prices[it.item.id!!]!!*it.quantity }.fold(Price(0,0,0)){ price, next -> price+next}
 
         packPercentageUpdate = PackPercentageUpdate(pack.id!!,110,user.id!!)
     }
@@ -90,7 +88,7 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
     }
 
     /**
-     * This test cases covers a case where pack has,for example,2 purchasable materials and for each material separate users have specified price,
+     * This test case covers a case where pack has,for example,2 purchasable materials and for each material separate users have specified price,
      * but none of the users have specified prices for all purchasable materials.
      */
     @Test
@@ -115,7 +113,8 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
 
         packProfitService.onItemPriceChange(ItemPriceChangeEvent(this,purchasablePrice2.id.purchasableItem,purchasablePrice2.id.user,purchasablePrice2.price))
         assertSoftly(packProfitRepository.findAll().shouldHaveSize(1).iterator().next()) {
-            netProfit shouldBe (pack.price.price - materialsSumPrice)
+            netProfit shouldBe Price.of(50,0,0)
+            workingPointsProfit shouldBe Price.of(5,0,0)
             id.pack.id shouldBe pack.id
             id.user.id shouldBe user.id
         }
@@ -123,16 +122,15 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
 
     @Test
     fun `should update pack profit when item price decreases and pack profit exists`() {
-        userPriceRepository.saveAndFlush(UserPrice(UserPriceKey(user,purchasableMaterials[0]),prices[purchasableMaterials[0].id!!]!!))
-        val decrease = Price(-1,-1,-1)
-        userPriceRepository.saveAndFlush(UserPrice(UserPriceKey(user,purchasableMaterials[1]),prices[purchasableMaterials[1].id!!]!!))
-        packProfitService.onItemPriceChange(ItemPriceChangeEvent(this,purchasableMaterials[1],user,prices[purchasableMaterials[1].id]!!))
-        userPriceRepository.saveAndFlush(UserPrice(UserPriceKey(user,purchasableMaterials[1]),prices[purchasableMaterials[1].id!!]!!.plus(decrease)))
+        setUserPricesForTestPack()
+        val decrease = Price(-5,0,0)
+        userPriceRepository.saveAndFlush(UserPrice(UserPriceKey(user,purchasableMaterials[1]),prices[purchasableMaterials[1].id!!]!!.plus(decrease))) // instead of 10 gold, the material costs 5 gold
 
         packProfitService.onItemPriceChange(ItemPriceChangeEvent(this,purchasableMaterials[1],user,decrease))
 
         assertSoftly(packProfitRepository.findAll().shouldHaveSize(1).iterator().next()) {
-            netProfit shouldBe (pack.price.price - materialsSumPrice + decrease)
+            netProfit shouldBe Price.of(30,0,0)
+            workingPointsProfit shouldBe Price.of(3,0,0)
             id.pack.id shouldBe pack.id
             id.user.id shouldBe user.id
         }
@@ -166,14 +164,14 @@ class PackProfitServiceITest(private val packProfitService: PackProfitService) :
     @Test
     fun `should update pack profit percentage`() {
         setUserPricesForTestPack()
-        val initialNetProfit = packProfitRepository.findById(PackProfitKey(pack,user)).get().netProfit
         packProfitRepository.findById(PackProfitKey(pack,user)).get().percentage shouldBe 100 //default value
 
         packProfitService.updatePercentage(packPercentageUpdate.copy(percentage = 120))
 
         assertSoftly(packProfitRepository.findById(PackProfitKey(pack,user)).get()) {
             percentage shouldBe 120
-            netProfit shouldBe initialNetProfit*1.2
+            netProfit shouldBe Price.of(60,0,0)
+            workingPointsProfit shouldBe Price.of(6,0,0)
         }
 
     }

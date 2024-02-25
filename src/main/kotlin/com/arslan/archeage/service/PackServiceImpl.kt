@@ -25,9 +25,10 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
     private fun convertPacksToDTOs(result: Page<PackResult>) : Page<PackDTO> {
         val percentages = result.content.associate { it.id to it.percentage }
         val packIDs = result.content.map(PackResult::id)
+
         val packs = packRepository.packs(packIDs)
             .map { it to packIDs.indexOf(it.id!!) }
-            .sortedBy { (_,position) -> position }
+            .sortedBy { (_,position) -> position } //packs can return packs in different order than the order of the initial result.
             .map { (pack,_) -> pack }
 
         val userID = SecurityContextHolder.getContext()?.authentication?.name?.toLongOrNull()
