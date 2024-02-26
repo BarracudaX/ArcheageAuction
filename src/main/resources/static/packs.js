@@ -8,6 +8,9 @@ $(document).ready(function () {
     refreshLocations()
     fetchCategories()
     packs = $('#packs').DataTable({
+        language: {
+            url : `/resource/dataTables/${locale}.json`
+        },
         rowId: function(data){
             return `pack_${data.id}`
         },
