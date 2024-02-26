@@ -6,6 +6,7 @@ import jakarta.validation.constraints.DecimalMax
 import jakarta.validation.constraints.DecimalMin
 import jakarta.validation.constraints.NotNull
 import kotlinx.serialization.Serializable
+import org.springframework.util.MultiValueMap
 
 enum class Continent{ EAST,WEST,NORTH }
 @Serializable
@@ -30,7 +31,9 @@ data class PackDTO(
 
     val profit: Price,
 
-    val workingPointsProfit: Price
+    val workingPointsProfit: Price,
+
+    val isUserData: Boolean
 ){
 
     override fun equals(other: Any?): Boolean {
@@ -132,3 +135,6 @@ data class CategoryDTO(val id: Long,val name: String,val subcategories: MutableL
     }
 
 }
+
+@Serializable
+data class DataTableResponse(val draw: Int, val recordsTotal: Long, val recordsFiltered: Long, val data: List<PackDTO>, val error: String? = null)

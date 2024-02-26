@@ -19,10 +19,12 @@ import org.springframework.stereotype.Service
 class PackServiceImpl(private val packRepository: PackRepository,private val itemPriceService: ItemPriceService,private val packProfitRepository: PackProfitRepository) : PackService {
 
     override fun packs(packRequest: PackRequest,pageable: Pageable,archeageServer: ArcheageServer) :  Page<PackDTO> {
-        return convertPacksToDTOs(packProfitRepository.packs(pageable,packRequest,archeageServer))
+        return convertPacksToDTOs(packProfitRepository.packs(pageable,packRequest,archeageServer),packRequest)
     }
 
-    private fun convertPacksToDTOs(result: Page<PackResult>) : Page<PackDTO> {
+    override fun numOfPacks(): Long = packRepository.count()
+
+    private fun convertPacksToDTOs(result: Page<PackResult>,request: PackRequest) : Page<PackDTO> {
         val percentages = result.content.associate { it.id to it.percentage }
         val packIDs = result.content.map(PackResult::id)
 
@@ -41,7 +43,7 @@ class PackServiceImpl(private val packRepository: PackRepository,private val ite
             itemPriceService.userItemPrices(materials.filterIsInstance<PurchasableItem>(),userID)
         }
 
-        return PageImpl(packs.toDTO(prices,percentages),result.pageable,result.totalElements)
+        return PageImpl(packs.toDTO(prices,percentages,request.userID != null),result.pageable,result.totalElements)
     }
 
 }

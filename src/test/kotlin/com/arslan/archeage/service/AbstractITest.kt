@@ -73,7 +73,7 @@ abstract class AbstractITest : AbstractTestContainerTest() {
         val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice(),randomPrice()))
 
 
-        return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage)
+        return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage,false)
     }
 
     fun createPack(destinationLocation: Location,archeageServer: ArcheageServer,departureLocation: Location,continent: Continent) : PackDTO{
@@ -85,7 +85,7 @@ abstract class AbstractITest : AbstractTestContainerTest() {
         val pack = packRepository.save(Pack(departureLocation, PackPrice(randomPrice(),destinationLocation),4,category,100,"SOME_PACK","SOME_DESC").apply { addMaterial(CraftingMaterial(5,purchasableItem)) })
         val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice(),randomPrice()))
 
-        return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage)
+        return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage,false)
     }
 
     fun createPackWithDepartureLocation(archeageServer: ArcheageServer, departureLocation: Location) : PackDTO{
@@ -99,7 +99,7 @@ abstract class AbstractITest : AbstractTestContainerTest() {
         val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice(),randomPrice()))
 
 
-        return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage)
+        return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage,false)
     }
 
     fun createPackWithDestinationLocation(archeageServer: ArcheageServer,destinationLocation: Location) : PackDTO{
@@ -112,7 +112,7 @@ abstract class AbstractITest : AbstractTestContainerTest() {
         val pack = packRepository.save(Pack(departureLocation, PackPrice(randomPrice(),destinationLocation),4,category,100,"SOME_PACK","SOME_DESC").apply { addMaterial(CraftingMaterial(5,purchasableItem)) })
         val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice(),randomPrice()))
 
-        return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage)
+        return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage,false)
     }
 
     fun createPackWithCategory(archeageServer: ArcheageServer,category: Category,continent: Continent) : PackDTO{
@@ -125,7 +125,7 @@ abstract class AbstractITest : AbstractTestContainerTest() {
         val pack = packRepository.save(Pack(createLocation, PackPrice(randomPrice(),sellLocation),4,category,100,"SOME_PACK","SOME_DESC").apply { addMaterial(CraftingMaterial(5,purchasableItem)) })
         val packProfit = packProfitRepository.save(PackProfit(PackProfitKey(pack,user),randomPrice(),randomPrice()))
 
-        return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage)
+        return pack.toDTO(mapOf(purchasableItem.id!! to userPrice),packProfit.percentage,false)
     }
 
     fun packsThatBelongToCategories(packService: PackService,continent: Continent,archeageServer: ArcheageServer,categories: List<Category>) : List<PackDTO> =

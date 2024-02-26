@@ -136,7 +136,7 @@ abstract class SeleniumTest : AbstractTestContainerTest() {
         }
 
 
-        return pack.toDTO(userPrices,100)
+        return pack.toDTO(userPrices,100,false)
     }
 
     fun createCategory(name: String,archeageServer: ArcheageServer) : Category{

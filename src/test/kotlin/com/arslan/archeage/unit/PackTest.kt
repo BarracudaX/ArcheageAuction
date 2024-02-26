@@ -36,10 +36,10 @@ class PackTest {
         val expectedDTO = with(pack){
             val profit = Price(110,0,0)
             val workingPointsProfit=profit.div(pack.workingPoints)
-            PackDTO(name,createLocation.name,sellLocation.name,price.price,producedQuantity,materials().map { it.toDTO(userPrice) },id!!,Price(10,0,0),percentage,profit,workingPointsProfit)
+            PackDTO(name,createLocation.name,sellLocation.name,price.price,producedQuantity,materials().map { it.toDTO(userPrice) },id!!,Price(10,0,0),percentage,profit,workingPointsProfit,false)
         }
 
-        pack.toDTO(userPrice,percentage) shouldBe expectedDTO
+        pack.toDTO(userPrice,percentage,false) shouldBe expectedDTO
     }
 
     @Test
@@ -52,9 +52,9 @@ class PackTest {
         val expectedDTO = with(pack){
             val profit = Price(110,0,0)
             val workingPointsProfit = profit.div(pack.workingPoints)
-            PackDTO(name,createLocation.name,sellLocation.name,price.price,producedQuantity,materials().map { it.toDTO(userPrice) },id!!,Price(10,0,0),percentage,profit,workingPointsProfit)
+            PackDTO(name,createLocation.name,sellLocation.name,price.price,producedQuantity,materials().map { it.toDTO(userPrice) },id!!,Price(10,0,0),percentage,profit,workingPointsProfit,false)
         }
 
-        listOf(pack).toDTO(userPrice,mapOf(pack.id!! to percentage)).shouldContainExactly(expectedDTO)
+        listOf(pack).toDTO(userPrice,mapOf(pack.id!! to percentage),false).shouldContainExactly(expectedDTO)
     }
 }

@@ -48,8 +48,8 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
 
     private val categoriesBtn = By.id("categories_btn")
     private val categoriesOffCanvas = By.id("categories-offcanvas")
-    private val previousBtn = By.id("previous_btn")
-    private val nextBtn = By.id("next_btn")
+    private val previousBtn = By.xpath("//li[.//a[@aria-label='Previous']]")
+    private val nextBtn = By.xpath("//li[.//a[@aria-label='Next']]")
     private val packs = By.className("pack")
     private val error = By.cssSelector("div.alert.alert-danger.alert-dismissible")
 
@@ -174,7 +174,7 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
     }
 
     fun hasPrevious(consumer: (Boolean) -> Unit) : PackagesPageObject{
-        val isEnabled = driver.findElement(previousBtn).isEnabled
+        val isEnabled = !driver.findElement(previousBtn).getAttribute("class").contains("disabled")
         withClue("Previous button should ${if(isEnabled){ "not" }else{ "" } } be enabled.") {
             isEnabled.apply(consumer)
         }
@@ -183,31 +183,10 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
     }
 
     fun hasNext(consumer: (Boolean) -> Unit) : PackagesPageObject{
-        val isEnabled = driver.findElement(nextBtn).isEnabled
+        val isEnabled = !driver.findElement(nextBtn).getAttribute("class").contains("disabled")
         withClue("Next button should ${if(isEnabled){ "not" }else{ "" } } be enabled.") {
             isEnabled.apply(consumer)
         }
-        return this
-    }
-
-    fun pageSize(consumer: (Long) -> Unit) : PackagesPageObject{
-        ((driver as JavascriptExecutor).executeScript("return pageSize") as Long).apply(consumer)
-        return this
-    }
-
-    /**
-     * Note: after calling this method, refresh must be done.
-     */
-    fun setPageSize(pageSize: Long) : PackagesPageObject{
-        (driver as JavascriptExecutor).executeScript("pageSize = $pageSize")
-
-        return this
-    }
-
-    fun refreshPacks(packID: Long): PackagesPageObject {
-        (driver as JavascriptExecutor).executeScript("await refreshPacks()")
-        waitForPackRowWithID(packID)
-
         return this
     }
 

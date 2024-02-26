@@ -65,6 +65,6 @@ function handleCategories(categories,container,parentCategory){
             document.getElementById(parent).checked = false
         }
 
-        refreshPacks()
+        packs.ajax.reload()
     }
 }

@@ -38,12 +38,13 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         ArcheageServerContextHolder.setServerContext(archeageServer)
         packsPage = PageImpl(
             listOf(
-                PackDTO("PACK_1","ANY_LOC","ANY_DEST", Price(3,24,25),6, emptyList(),1,Price(52,23,11),100,Price(10,1,5),Price(0,5,5)),
-                PackDTO("PACK_2","ANY_LOC","ANY_DEST", Price(200,1,4),9, emptyList(),2,Price(44,55,0),100,Price(12,13,20),Price(0,5,5)),
-                PackDTO("PACK_3","ANY_LOC","ANY_DEST", Price(0,20,30),10, emptyList(),3,Price(1,12,15),100,Price(11,2,4),Price(0,5,5))
+                PackDTO("PACK_1","ANY_LOC","ANY_DEST", Price(3,24,25),6, emptyList(),1,Price(52,23,11),100,Price(10,1,5),Price(0,5,5),true),
+                PackDTO("PACK_2","ANY_LOC","ANY_DEST", Price(200,1,4),9, emptyList(),2,Price(44,55,0),100,Price(12,13,20),Price(0,5,5),true),
+                PackDTO("PACK_3","ANY_LOC","ANY_DEST", Price(0,20,30),10, emptyList(),3,Price(1,12,15),100,Price(11,2,4),Price(0,5,5),true)
             ),
             pageable,100
         )
+        every { packServiceMock.numOfPacks() } returns 100
     }
 
     @Test
@@ -51,7 +52,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         ArcheageServerContextHolder.clear()
 
         mockMvc
-            .get("/pack?continent=${Continent.WEST}")
+            .get("/pack?draw=1&continent=${Continent.WEST}")
             .andExpect {
                 status { isBadRequest() }
                 content { string(messageSource.getMessage("archeage.server.not.chosen.error.message", emptyArray(),LocaleContextHolder.getLocale())) }
@@ -67,15 +68,18 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         every { packServiceMock.packs(expectedRequest,pageable,archeageServer) } returns packsPage
 
         mockMvc
-            .get("/pack?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}")
+            .get("/pack?draw=1&length=${pageable.pageSize}&start=${pageable.offset}&continent=${continent.name}")
             .andExpect {
                 status { isOk() }
                 content {
-                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious(),false)))
+                    json(json.encodeToString(DataTableResponse(1,100,100,packsPage.content)))
                 }
             }
 
-        verifyAll { packServiceMock.packs(expectedRequest,pageable,archeageServer) }
+        verifyAll {
+            packServiceMock.packs(expectedRequest,pageable,archeageServer)
+            packServiceMock.numOfPacks()
+        }
     }
 
     @MethodSource("continents")
@@ -85,15 +89,18 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         every { packServiceMock.packs(expectedPackRequest,pageable,archeageServer) } returns packsPage
 
         mockMvc
-            .get("/pack?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}&destinationLocation=1")
+            .get("/pack?draw=1&length=${pageable.pageSize}&start=${pageable.offset}&continent=${continent.name}&destinationLocation=1")
             .andExpect {
                 status { isOk() }
                 content {
-                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious(),false)))
+                    json(json.encodeToString(DataTableResponse(1,100,100,packsPage.content)))
                 }
             }
 
-        verifyAll { packServiceMock.packs(expectedPackRequest,pageable,archeageServer) }
+        verifyAll {
+            packServiceMock.packs(expectedPackRequest,pageable,archeageServer)
+            packServiceMock.numOfPacks()
+        }
     }
 
     @MethodSource("continents")
@@ -103,15 +110,18 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         every { packServiceMock.packs(expectedPackRequest,pageable,archeageServer) } returns packsPage
 
         mockMvc
-            .get("/pack?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}&departureLocation=5")
+            .get("/pack?draw=1&length=${pageable.pageSize}&start=${pageable.offset}&continent=${continent.name}&departureLocation=5")
             .andExpect {
                 status { isOk() }
                 content {
-                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious(),false)))
+                    json(json.encodeToString(DataTableResponse(1,100,100,packsPage.content)))
                 }
             }
 
-        verifyAll { packServiceMock.packs(expectedPackRequest,pageable,archeageServer)  }
+        verifyAll {
+            packServiceMock.packs(expectedPackRequest,pageable,archeageServer)
+            packServiceMock.numOfPacks()
+        }
     }
 
     @MethodSource("continents")
@@ -121,15 +131,18 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
         every { packServiceMock.packs(expectedPackRequest,pageable,archeageServer) } returns packsPage
 
         mockMvc
-            .get("/pack?size=${pageable.pageSize}&page=${pageable.pageNumber}&continent=${continent.name}&departureLocation=3&destinationLocation=1")
+            .get("/pack?draw=1&length=${pageable.pageSize}&start=${pageable.offset}&continent=${continent.name}&departureLocation=3&destinationLocation=1")
             .andExpect {
                 status { isOk() }
                 content {
-                    json(json.encodeToString(Packs(packsPage.content,packsPage.hasNext(),packsPage.hasPrevious(),false)))
+                    json(json.encodeToString(DataTableResponse(1,100,100,packsPage.content)))
                 }
             }
 
-        verifyAll { packServiceMock.packs(expectedPackRequest,pageable,archeageServer)  }
+        verifyAll {
+            packServiceMock.packs(expectedPackRequest,pageable,archeageServer)
+            packServiceMock.numOfPacks()
+        }
     }
 
     @MethodSource("contentTypesOtherThanJson")

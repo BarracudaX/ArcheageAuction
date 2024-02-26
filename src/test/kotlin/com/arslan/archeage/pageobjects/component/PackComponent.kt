@@ -17,20 +17,20 @@ class PackComponent(private val driver: WebDriver,private val id: Long) : Loadab
     private val wait = FluentWait(driver)
         .withTimeout(Duration.ofSeconds(2))
     private val condition = ExpectedConditions.visibilityOfElementLocated(By.id("pack_${id}"))
-    private val expandBtnBy = By.xpath("//*[@id='pack_${id}']/div[1]/button[1]")
-    private val packageNameBy = By.xpath("//*[@id='pack_${id}']/div[2]")
-    private val createLocationBy = By.xpath("//*[@id='pack_${id}']/div[3]")
-    private val destinationLocationBy = By.xpath("//*[@id='pack_${id}']/div[4]")
-    private val sellPriceBy = By.xpath("//*[@id='pack_${id}']/div[5]")
-    private val profitBy = By.xpath("//*[@id='pack_${id}']/div[6]")
-    private val percentageSelectBy = SelectComponent(By.xpath("//*[@id='pack_${id}']/select"),By.xpath("//*[@id='pack_${id}']/select/option"),driver,{ NoOpCondition() },Int::toString)
-    private val producedQuantityBy = By.xpath("//*[@id='pack_details_${id}']/div[2]/h4[1]")
-    private val recipeCostBy = By.xpath("//*[@id='pack_details_${id}']/div[2]/h4[2]")
-    private val materialsBy = By.xpath("//*[@id='pack_details_${id}']/div[position() >= 4]")
-    private val materialNameBy = By.xpath(".//div[1]")
-    private val materialQuantityBy = By.xpath(".//div[2]")
-    private val materialUnitPriceBy = By.xpath(".//div[3]")
-    private val materialTotalPriceBy = By.xpath(".//div[4]")
+    private val expandBtnBy = By.cssSelector("#pack_${id} td[class='dt-control']")
+    private val packageNameBy = By.xpath("//*[@id='pack_${id}']/td[2]")
+    private val createLocationBy = By.xpath("//*[@id='pack_${id}']/td[3]")
+    private val destinationLocationBy = By.xpath("//*[@id='pack_${id}']/td[4]")
+    private val sellPriceBy = By.xpath("//*[@id='pack_${id}']/td[5]")
+    private val profitBy = By.xpath("//*[@id='pack_${id}']/td[6]")
+    private val percentageSelectBy = SelectComponent(By.xpath("//*[@id='pack_${id}']/td/select"),By.xpath("//*[@id='pack_${id}']/td/select/option"),driver,{ NoOpCondition() },Int::toString)
+    private val producedQuantityBy = By.xpath("//*[@id='recipe_details_${id}']/tbody/tr/th[1]")
+    private val recipeCostBy = By.xpath("//*[@id='recipe_details_${id}']/tbody/tr/th[2]")
+    private val materialsBy = By.xpath("//*[@id='material_details_${id}']/tbody/tr")
+    private val materialNameBy = By.xpath(".//th[1]")
+    private val materialQuantityBy = By.xpath(".//th[2]")
+    private val materialUnitPriceBy = By.xpath(".//th[3]")
+    private val materialTotalPriceBy = By.xpath(".//th[4]")
     private var isExpanded = false
 
     override fun load() {
@@ -72,7 +72,7 @@ class PackComponent(private val driver: WebDriver,private val id: Long) : Loadab
                 CraftingMaterialDTO(materialQuantity,ItemDTO(name,itemID,materialPrice),totalPrice)
             }
 
-        return PackDTO(name,createLocation,destinationLocation,sellPrice,quantity,materials,id,recipeCost,percentage,profit,workingPointsProfit)
+        return PackDTO(name,createLocation,destinationLocation,sellPrice,quantity,materials,id,recipeCost,percentage,profit,workingPointsProfit,false)
     }
 
     fun changePercentage(newPercentage: Int){

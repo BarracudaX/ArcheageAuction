@@ -11,5 +11,6 @@ import org.springframework.data.domain.Pageable
 
 interface PackService {
     fun packs(packRequest: PackRequest,pageable: Pageable,archeageServer: ArcheageServer) : Page<PackDTO>
+    fun numOfPacks(): Long
 
 }
