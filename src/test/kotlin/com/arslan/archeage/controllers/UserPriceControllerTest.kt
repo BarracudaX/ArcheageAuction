@@ -1,6 +1,7 @@
 package com.arslan.archeage.controllers
 
 import com.arslan.archeage.ItemDTO
+import com.arslan.archeage.PricesDataTableResponse
 import com.arslan.archeage.UserPriceDTO
 import com.arslan.archeage.UserPrices
 import com.arslan.archeage.entity.ArcheageServer
@@ -43,7 +44,7 @@ class UserPriceControllerTest(private val mockMvc: MockMvc) : AbstractController
         pageable, 100
     )
     private val itemDTOs = userPrices.content.map { ItemDTO(it.id.purchasableItem.name,it.id.purchasableItem.id!!,it.price) }
-    private val expectedJson = json.encodeToString(UserPrices(itemDTOs,userPrices.hasNext(),userPrices.hasPrevious()))
+    private val expectedJson = json.encodeToString(PricesDataTableResponse(0,userPrices.totalElements,userPrices.totalElements,itemDTOs))
 
     @BeforeEach
     fun setUpTestContext(){
@@ -85,7 +86,7 @@ class UserPriceControllerTest(private val mockMvc: MockMvc) : AbstractController
     fun `should return user prices`() {
         SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext().apply { authentication = UsernamePasswordAuthenticationToken(1L,"") })
         mockMvc
-            .get("/user/price?page=${pageable.pageNumber}&size=${pageable.pageSize}")
+            .get("/user/price?start=${pageable.offset}&length=${pageable.pageSize}&draw=0")
             .andExpect {
                 status { isOk() }
                 content { json(expectedJson) }

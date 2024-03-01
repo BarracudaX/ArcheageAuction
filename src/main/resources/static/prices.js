@@ -1,103 +1,76 @@
-
-let currentPage = 0
-let pageSize = 20
-
-document.addEventListener("DOMContentLoaded", function () {
-    fetch(`/user/price?page=${currentPage}&size=${pageSize}`)
-        .then(response => handleResponse(response))
-        .then(data => { handleData(data) })
-        .catch(reason => addError(reason.message))
+$(document).ready(function(){
+    $.fn.dataTable.ext.errMode = 'throw';
+    $("#prices").DataTable({
+        language: { url : `/resource/dataTables/${locale}.json` },
+        rowId: function(data){return `item_${data.id}`},
+        createdRow: function(row, data, dataIndex) {$(row).addClass('price');},
+        serverSide: true,
+        searching: false,
+        columns:[
+            {
+                data : "name",
+                orderable: false,
+            },
+            {
+                data : "price.gold",
+                orderable: false,
+                render : function (data, type, row, meta) {
+                    return `<input type="number" value='${data}' id="${row.id}_gold" min="0" />`
+                }
+            },
+            {
+                data : "price.silver",
+                orderable: false,
+                render : function (data, type, row, meta) {
+                    return `<input type="number" value='${data}' id="${row.id}_silver" min="0" max="99"/>`
+                }
+            },
+            {
+                data : "price.copper",
+                orderable: false,
+                render : function (data, type, row, meta) {
+                    return `<input type="number" value='${data}' id="${row.id}_copper" min="0" max="99" />`
+                }
+            },
+            {
+                data: null,
+                orderable: false,
+                render : function(data,type,row,meta){
+                    const saveBtn = document.createElement("button")
+                    saveBtn.className = "btn btn-primary w-100"
+                    saveBtn.onclick = () => { savePrice(data.id) }
+                    saveBtn.textContent = saveBtnLabel
+                    return saveBtn
+                }
+            }
+        ],
+        ajax: {
+            url : "/user/price"
+        }
+    })
 })
 
+function savePrice(itemID){
+    let gold = document.getElementById(`${itemID}_gold`).value
+    let silver = document.getElementById(`${itemID}_silver`).value
+    let copper = document.getElementById(`${itemID}_copper`).value
 
-function nextPage(){
-    fetch(`/user/price?page=${currentPage+1}&size=${pageSize}`)
-        .then(response => handleResponse(response))
-        .then(data => {
-            currentPage = currentPage + 1
-            handleData(data)
-        }).catch(reason => addError(reason.message))
-}
-
-function previousPage(){
-    fetch(`/user/price?page=${currentPage - 1}&size=${pageSize}`)
-        .then(response => handleResponse(response))
-        .then(data => {
-            currentPage = currentPage - 1
-            handleData(data)
-        }).catch(reason => addError(reason.message))
-}
-
-function handleData(data){
-    let container = document.getElementById("pagination_container")
-    let previousPrices = document.getElementById("prices")
-    if(previousPrices != null){
-        let paginationButtons = document.getElementById("pagination_btns")
-        clearChildrenUntil(container,paginationButtons)
-    }
-    let fragment = document.createDocumentFragment()
-    let items = data.items
-    let prices = data.prices
-    let pricesDiv = document.createElement("div")
-    pricesDiv.id = "prices"
-    let h2Label = document.createElement("h2")
-    let hr = document.createElement("hr")
-    h2Label.className = "text-center col m-0 p-0"
-    h2Label.textContent = pricesLabel
-    pricesDiv.className = "row"
-    pricesDiv.appendChild(h2Label)
-
-    fragment.appendChild(pricesDiv)
-    fragment.appendChild(hr)
-
-    document.getElementById("previous_btn").disabled = !data.hasPrevious
-    document.getElementById("next_btn").disabled = !data.hasNext
-    for (let i = 0; i < items.length; i++) {
-        let item = document.createElement("div")
-        let price = items[i].price
-        item.className = "row gx-4 mt-2"
-        item.innerHTML = `
-                <h4 class="text-center col-4 p-0 m-0">${items[i].name}</h4>
-                <div class="col-2 m-0 row ">
-                    <label class="col p-0 text-center">${goldLabel}</label>
-                    <input id="item_${items[i].id}_gold" type="number" class="form-input col p-0" min="0" value="${price !== undefined && price !== null ? price.gold : ''}" />
-                 </div>
-                <div class="col-2 m-0 row ">
-                    <label class="col p-0 text-center">${silverLabel}</label>
-                    <input id="item_${items[i].id}_silver" type="number" class="form-input col p-0" min="0" max="99" value="${price !== undefined && price !== null ? price.silver : ''}"  />
-                </div>
-                 <div class="col-2 m-0 row ">
-                    <label class="col p-0 text-center">${copperLabel}</label>
-                    <input id="item_${items[i].id}_copper" type="number" class="form-input col p-0" min="0" max="99" value="${price !== undefined && price !== null ? price.copper : ''}" />
-                 </div>
-                 <button class="btn btn-primary col-2" onclick="savePrice(this)" id="item_${items[i].id}">${saveBtnLabel}</button>
-                `
-        fragment.appendChild(item)
-    }
-    container.insertBefore(fragment,container.firstChild)
-}
-
-function savePrice(source){
-    let gold = document.getElementById(`${source.id}_gold`).value
-    let silver = document.getElementById(`${source.id}_silver`).value
-    let copper = document.getElementById(`${source.id}_copper`).value
 
     if(gold === ""){
         gold = 0
-        document.getElementById(`${source.id}_gold`).value=0
+        document.getElementById(`${itemID}_gold`).value=0
     }
 
     if(silver === ""){
         silver = 0
-        document.getElementById(`${source.id}_silver`).value=0
+        document.getElementById(`${itemID}_silver`).value=0
     }
 
     if(copper === ""){
         copper = 0
-        document.getElementById(`${source.id}_copper`).value=0
+        document.getElementById(`${itemID}_copper`).value=0
     }
 
-    const itemID = source.id.substring(source.id.indexOf("_")+1)
     const headers = createCsrfHeaders()
     headers.append("Content-Type","application/json")
     const request = {

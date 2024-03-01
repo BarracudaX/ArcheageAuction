@@ -2,11 +2,11 @@ package com.arslan.archeage
 
 import com.arslan.archeage.entity.Category
 import com.arslan.archeage.entity.Price
+import com.arslan.archeage.entity.item.UserPrice
 import jakarta.validation.constraints.DecimalMax
 import jakarta.validation.constraints.DecimalMin
 import jakarta.validation.constraints.NotNull
 import kotlinx.serialization.Serializable
-import org.springframework.util.MultiValueMap
 
 enum class Continent{ EAST,WEST,NORTH }
 @Serializable
@@ -137,4 +137,7 @@ data class CategoryDTO(val id: Long,val name: String,val subcategories: MutableL
 }
 
 @Serializable
-data class DataTableResponse(val draw: Int, val recordsTotal: Long, val recordsFiltered: Long, val data: List<PackDTO>, val error: String? = null)
+data class PacksDataTableResponse(val draw: Int, val recordsTotal: Long, val recordsFiltered: Long, val data: List<PackDTO>, val error: String? = null)
+
+@Serializable
+data class PricesDataTableResponse(val draw: Int, val recordsTotal: Long, val recordsFiltered: Long, val data: List<ItemDTO>, val error: String? = null)

@@ -36,14 +36,8 @@ fun MultiValueMap<String, String>.toPacksRequest(userID: Long?): PackRequest{
     return PackRequest(continent,departureLocation,destinationLocation,userID,categories)
 }
 
-fun MultiValueMap<String,String>.pageable() : Pageable{
-    val orders = this
-        .filter { it.key.startsWith("order") && (it.key.contains("name") || it.key.contains("dir")) }
-        .map { it.key.split("[").map { part -> part.removeSuffix("]") } to it.value[0] }
-        .groupBy({ (param, _) -> param[1] }){ (_,value) ->
-            value
-        }.toSortedMap()
-        .values
+fun MultiValueMap<String,String>.packPageable() : Pageable{
+    val orders = dataTableOrders(this)
         .flatMap { order ->
             val (direction,property) = order[0] to order[1]
             when(property){
@@ -70,4 +64,30 @@ fun MultiValueMap<String,String>.pageable() : Pageable{
     return PageRequest.of(pageNumber,pageSize,Sort.by(orders))
 }
 
-fun Page<PackDTO>.toDataTableResponse(params: MultiValueMap<String,String>,numOfPacks: Long,userID: Long?) : DataTableResponse = DataTableResponse(params["draw"]!![0].toInt(),numOfPacks,totalElements,content)
+fun MultiValueMap<String,String>.pricesPageable() : Pageable{
+    val orders = dataTableOrders(this)
+        .flatMap { order ->
+            val (direction,property) = order[0] to order[1]
+            when(property){
+                "" -> listOf<Sort.Order>()
+                else -> throw IllegalArgumentException("Unknown sorting property $order.")
+            }
+        }
+
+    val pageSize = get("length")!![0].toInt()
+    val pageNumber = get("start")!![0].toInt()/pageSize
+    return PageRequest.of(pageNumber,pageSize,Sort.by(orders))
+}
+
+fun dataTableOrders(params: MultiValueMap<String,String>) : Collection<List<String>> =
+    params
+        .filter { it.key.startsWith("order") && (it.key.contains("name") || it.key.contains("dir")) }
+        .map { it.key.split("[").map { part -> part.removeSuffix("]") } to it.value[0] }
+        .groupBy({ (param, _) -> param[1] }){ (_,value) -> value }
+            .toSortedMap()
+            .values
+
+fun Page<PackDTO>.toDataTableResponse(params: MultiValueMap<String,String>,numOfPacks: Long) : PacksDataTableResponse = PacksDataTableResponse(params["draw"]!![0].toInt(),numOfPacks,totalElements,content)
+
+fun Page<UserPrice>.toDataTableResponse(params: MultiValueMap<String, String>) : PricesDataTableResponse =
+    PricesDataTableResponse(params["draw"]!![0].toInt(),totalElements,totalElements,content.map { ItemDTO(it.id.purchasableItem.name,it.id.purchasableItem.id!!,it.price) })

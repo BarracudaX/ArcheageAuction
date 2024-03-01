@@ -8,20 +8,9 @@ $(document).ready(function () {
     refreshLocations()
     fetchCategories()
     packs = $('#packs').DataTable({
-        language: {
-            url : `/resource/dataTables/${locale}.json`
-        },
-        rowId: function(data){
-            return `pack_${data.id}`
-        },
-        createdRow: function(row, data, dataIndex) {
-            // 'row' parameter represents the <tr> element
-            // 'data' parameter represents the row data object
-            // 'dataIndex' parameter represents the index of the row in the DataTable
-
-            // Add a class to the row
-            $(row).addClass('pack');
-        },
+        language: { url : `/resource/dataTables/${locale}.json` },
+        rowId: function(data){return `pack_${data.id}`},
+        createdRow: function(row, data, dataIndex) {$(row).addClass('pack');},
         serverSide: true,
         searching: false,
         columns: [
@@ -78,14 +67,7 @@ $(document).ready(function () {
                 document.querySelectorAll(".category:checked").forEach(checkbox => {
                     categories.push(`categories=${checkbox.value}`)
                 })
-                const categoriesQueryParameter = categories.join("&")
-
-                if (categories.length !== 0) {
-                    currentPage = 0
-                    page = 0
-                }
-
-                params.category = categoriesQueryParameter
+                params.category = categories.join("&")
                 params.continent = continent
                 params.departureLocation = departureLocation
                 params.destinationLocation = destinationLocation
@@ -170,10 +152,6 @@ $(document).ready(function () {
         }
     })
 })
-
-function formatPrice(data){
-    return `${data.gold} ${goldLabel} ${data.silver} ${silverLabel} ${data.copper} ${copperLabel}`
-}
 
 function formatPercentage(data,type,row) {
     const select = document.createElement("select")

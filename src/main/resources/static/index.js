@@ -64,3 +64,7 @@ function createCsrfHeaders() {
 
     return headers
 }
+
+function formatPrice(data){
+    return `${data.gold} ${goldLabel} ${data.silver} ${silverLabel} ${data.copper} ${copperLabel}`
+}

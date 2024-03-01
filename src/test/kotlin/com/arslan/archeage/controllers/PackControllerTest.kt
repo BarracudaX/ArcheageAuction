@@ -72,7 +72,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             .andExpect {
                 status { isOk() }
                 content {
-                    json(json.encodeToString(DataTableResponse(1,100,100,packsPage.content)))
+                    json(json.encodeToString(PacksDataTableResponse(1,100,100,packsPage.content)))
                 }
             }
 
@@ -93,7 +93,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             .andExpect {
                 status { isOk() }
                 content {
-                    json(json.encodeToString(DataTableResponse(1,100,100,packsPage.content)))
+                    json(json.encodeToString(PacksDataTableResponse(1,100,100,packsPage.content)))
                 }
             }
 
@@ -114,7 +114,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             .andExpect {
                 status { isOk() }
                 content {
-                    json(json.encodeToString(DataTableResponse(1,100,100,packsPage.content)))
+                    json(json.encodeToString(PacksDataTableResponse(1,100,100,packsPage.content)))
                 }
             }
 
@@ -135,7 +135,7 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
             .andExpect {
                 status { isOk() }
                 content {
-                    json(json.encodeToString(DataTableResponse(1,100,100,packsPage.content)))
+                    json(json.encodeToString(PacksDataTableResponse(1,100,100,packsPage.content)))
                 }
             }
 

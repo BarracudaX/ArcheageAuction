@@ -17,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
+import org.springframework.util.MultiValueMap
 import org.springframework.validation.BindingResult
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -40,10 +41,10 @@ class UserController(private val userService: UserService,private val itemPriceS
 
     @ResponseBody
     @GetMapping("/price")
-    fun userPrices(pageable: Pageable, archeageServer: ArcheageServer,@AuthenticationPrincipal authentication: Long) : ResponseEntity<UserPrices>{
-        val prices = itemPriceService.userPrices(authentication,pageable)
+    fun userPrices(@RequestParam params: MultiValueMap<String,String>, archeageServer: ArcheageServer,@AuthenticationPrincipal authentication: Long) : ResponseEntity<PricesDataTableResponse>{
+        val pageable = params.pricesPageable()
 
-        return ResponseEntity.ok(UserPrices(prices.content.map { ItemDTO(it.id.purchasableItem.name,it.id.purchasableItem.id!!,it.price) },prices.hasNext(),prices.hasPrevious()))
+        return ResponseEntity.ok(itemPriceService.userPrices(authentication,pageable).toDataTableResponse(params))
     }
 
     @ResponseBody
