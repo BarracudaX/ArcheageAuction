@@ -61,7 +61,15 @@ dependencies {
 
     //other
     runtimeOnly("com.mysql:mysql-connector-j")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.11.5")
+
+    //metrics & tracing
+    implementation("io.micrometer:micrometer-tracing")
+    implementation("io.micrometer:micrometer-observation")
+    implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation("io.micrometer:micrometer-tracing-bridge-brave")
+    implementation("io.zipkin.reporter2:zipkin-reporter-brave")
+    implementation("io.zipkin.brave:brave-instrumentation-mysql8:6.0.2")
+
     implementation("org.slf4j:slf4j-api:2.0.9")
     implementation("ch.qos.logback:logback-classic:1.4.11")
     implementation("org.liquibase:liquibase-core:4.24.0")

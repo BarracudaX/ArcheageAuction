@@ -48,13 +48,17 @@ services:
       - jenkins_docker_certs:/certs/client:ro
     ports:
       - "8085:8085"
-#  prometheus:
-#    image: bitnami/prometheus:latest
-#    ports:
-#      - "9090:9090"
-#    volumes:
-#      - prometheus_data:/opt/bitnami/prometheus/data
-#      - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+  zipkin:
+    image: openzipkin/zipkin:latest
+    ports:
+      - "9411:9411"
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus_data:/opt/bitnami/prometheus/data
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
 networks:
   jenkins_net:
 volumes:

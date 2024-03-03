@@ -1,5 +1,7 @@
 package com.arslan.archeage.config
 
+import brave.handler.SpanHandler
+import io.micrometer.tracing.exporter.SpanReporter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Bean
@@ -8,6 +10,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.context.event.ContextClosedEvent
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import zipkin2.reporter.brave.AsyncZipkinSpanHandler
 import java.nio.file.Files
 import java.security.SecureRandom
 import kotlin.io.path.Path

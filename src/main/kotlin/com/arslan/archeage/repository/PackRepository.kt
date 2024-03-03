@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 interface PackRepository : JpaRepository<Pack,Long>{
+
     @Query("SELECT distinct p FROM Pack p JOIN FETCH p.creationLocation JOIN FETCH p.price LEFT JOIN FETCH p.materials m LEFT JOIN FETCH m.item WHERE p.id IN (:ids)")
     fun packs(ids: Collection<Long>) : List<Pack>
 

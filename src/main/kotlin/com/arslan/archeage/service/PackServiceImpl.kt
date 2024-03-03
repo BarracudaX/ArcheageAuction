@@ -14,10 +14,11 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class PackServiceImpl(private val packRepository: PackRepository,private val itemPriceService: ItemPriceService,private val packProfitRepository: PackProfitRepository) : PackService {
-
     override fun packs(packRequest: PackRequest,pageable: Pageable,archeageServer: ArcheageServer) :  Page<PackDTO> {
         return convertPacksToDTOs(packProfitRepository.packs(pageable,packRequest,archeageServer),packRequest)
     }
