@@ -10,11 +10,11 @@ function handleCategories(categories,container,parentCategory){
         const categoryFragment = document.createDocumentFragment()
         const categoryFlexbox = document.createElement("div")
         const categoryDataFlexbox = document.createElement("div")
-        categoryFlexbox.appendChild(categoryDataFlexbox)
-        categoryFragment.appendChild(categoryFlexbox)
         const categoryExpandButton = document.createElement("button")
         const categoryCheckbox = document.createElement("input")
         const categoryLabel = document.createElement("label")
+        categoryFlexbox.appendChild(categoryDataFlexbox)
+        categoryFragment.appendChild(categoryFlexbox)
 
         categoryFlexbox.className = "d-flex flex-column"
         categoryDataFlexbox.className = "d-flex align-items-center"
@@ -47,6 +47,7 @@ function handleCategories(categories,container,parentCategory){
             categoryExpandButton.setAttribute("aria-expanded","false")
             categoryExpandButton.setAttribute("aria-controls",subcategories.id)
             categoryExpandButton.setAttribute("data-bs-target",`#${subcategories.id}`)
+            categoryExpandButton.onclick = (event) => { onCategoryBtn(event) }
             handleCategories(category.subcategories,subcategories,category)
         }else{
             categoryExpandButton.style.visibility = "hidden"
@@ -66,5 +67,15 @@ function handleCategories(categories,container,parentCategory){
         }
 
         packs.ajax.reload()
+    }
+
+    function onCategoryBtn(event){
+        if(event.target.textContent === "+"){
+            event.target.textContent = "-"
+            event.target.className = "minus"
+        }else{
+            event.target.textContent = "+"
+            event.target.className = "plus"
+        }
     }
 }

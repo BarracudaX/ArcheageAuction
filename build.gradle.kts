@@ -63,7 +63,6 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
 
     //metrics & tracing
-    implementation("io.micrometer:micrometer-tracing")
     implementation("io.micrometer:micrometer-observation")
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("io.micrometer:micrometer-tracing-bridge-brave")

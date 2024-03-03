@@ -10,3 +10,11 @@
     background-color: #28a745;
     border-radius: 15%;
 }
+
+.minus{
+    text-decoration: none;
+    border: none;
+    color: white;
+    background-color: #af1e1e;
+    border-radius: 15%;
+}
