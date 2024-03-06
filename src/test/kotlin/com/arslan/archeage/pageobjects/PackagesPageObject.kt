@@ -173,30 +173,6 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
         return this
     }
 
-    fun hasPrevious(consumer: (Boolean) -> Unit) : PackagesPageObject{
-        val isEnabled = !driver.findElement(previousBtn).getAttribute("class").contains("disabled")
-        withClue("Previous button should ${if(isEnabled){ "not" }else{ "" } } be enabled.") {
-            isEnabled.apply(consumer)
-        }
-        isEnabled.apply(consumer)
-        return this
-    }
-
-    fun hasNext(consumer: (Boolean) -> Unit) : PackagesPageObject{
-        val isEnabled = !driver.findElement(nextBtn).getAttribute("class").contains("disabled")
-        withClue("Next button should ${if(isEnabled){ "not" }else{ "" } } be enabled.") {
-            isEnabled.apply(consumer)
-        }
-        return this
-    }
-
-    fun nextPage(packID: Long) : PackagesPageObject{
-        driver.findElement(nextBtn).click()
-        waitForPackRowWithID(packID)
-
-        return this
-    }
-
     fun selectCategory(category: Category,packID: Long) : PackagesPageObject{
         categoriesComponent.selectCategory(category)
         waitForPackRowWithID(packID)

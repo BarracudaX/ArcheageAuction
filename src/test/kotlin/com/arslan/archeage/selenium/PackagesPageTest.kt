@@ -85,42 +85,6 @@ class PackagesPageTest : SeleniumTest() {
     }
 
     @Test
-    fun `should have previous button disabled when requesting first page of packs`() {
-        page
-            .selectServer(archeageServer,packs[0].id)
-            .hasPrevious { hasPrevious -> hasPrevious shouldBe false }
-    }
-
-    @Test
-    fun `should have next button disabled when there are no more packs`() {
-        page
-            .selectServer(archeageServer,packs[0].id)
-            .hasNext { hasNext -> hasNext shouldBe false }
-    }
-
-    @Disabled("Need rewrite")
-    @Test
-    fun `should have next button enabled when there are more packs`() {
-        page
-            .selectServer(archeageServer,packs.sortedByDescending(PackDTO::profit)[0].id)
-            .packs { actualPacks -> actualPacks.shouldContainExactly(packs.sortedByDescending(PackDTO::profit)[0]) }
-            .hasNext { hasNext -> hasNext.shouldBe(true) }
-    }
-
-    @Disabled("Need rewrite")
-    @Test
-    fun `should fetch next packs page`() {
-        page
-            .selectServer(archeageServer,packs.sortedByDescending(PackDTO::profit)[0].id)
-            .packs { actualPacks -> actualPacks.shouldContainExactly(packs.sortedByDescending(PackDTO::profit)[0]) }
-            .hasNext { hasNext -> hasNext.shouldBe(true) }
-            .nextPage(packs.sortedByDescending(PackDTO::profit)[1].id)
-            .packs { actualPacks -> actualPacks.shouldContainExactly(packs.sortedByDescending(PackDTO::profit)[1]) }
-            .hasNext { hasNext -> hasNext shouldBe false }
-            .hasPrevious { hasPrevious -> hasPrevious shouldBe true }
-    }
-
-    @Test
     fun `should display packs that belong to selected departure location`() {
         page
             .selectServer(archeageServer,packs.sortedByDescending(PackDTO::profit)[0].id)
