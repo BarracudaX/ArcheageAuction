@@ -21,7 +21,7 @@ data class PackDTO(
 
     val producedQuantity: Int,
 
-    val materials: List<CraftingMaterialDTO>,
+    val materials: Collection<CraftingMaterialDTO>,
 
     val id : Long,
 
@@ -52,6 +52,8 @@ data class PackDTO(
         if (cost != other.cost) return false
         if (percentage != other.percentage) return false
         if (profit != other.profit) return false
+        if (workingPointsProfit != other.workingPointsProfit) return false
+        if (isUserData != other.isUserData) return false
 
         return true
     }
@@ -62,17 +64,37 @@ data class PackDTO(
         result = 31 * result + destinationLocation.hashCode()
         result = 31 * result + sellPrice.hashCode()
         result = 31 * result + producedQuantity
-        result = 31 * result + materials.hashCode()
+        result = 31 * result + materials.sortedBy { it.itemDTO.id }.hashCode()
         result = 31 * result + id.hashCode()
         result = 31 * result + cost.hashCode()
         result = 31 * result + percentage
         result = 31 * result + profit.hashCode()
+        result = 31 * result + workingPointsProfit.hashCode()
+        result = 31 * result + isUserData.hashCode()
         return result
     }
 }
 
 @Serializable
-data class CraftingMaterialDTO(val quantity: Int, val itemDTO: ItemDTO,val total: Price?)
+data class CraftingMaterialDTO(val quantity: Int, val itemDTO: ItemDTO,val total: Price?){
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CraftingMaterialDTO
+
+        if (quantity != other.quantity) return false
+        if (itemDTO != other.itemDTO) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = quantity
+        result = 31 * result + itemDTO.hashCode()
+        return result
+    }
+}
 
 @Serializable
 class

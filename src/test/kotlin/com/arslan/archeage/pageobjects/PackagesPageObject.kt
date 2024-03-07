@@ -11,17 +11,13 @@ import com.arslan.archeage.pageobjects.component.CategoriesComponent
 import com.arslan.archeage.pageobjects.component.PackComponent
 import com.arslan.archeage.pageobjects.component.SelectComponent
 import io.kotest.assertions.fail
-import io.kotest.assertions.withClue
-import org.junit.experimental.categories.Categories
 import org.openqa.selenium.By
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.TimeoutException
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.ExpectedConditions.*
 import org.openqa.selenium.support.ui.FluentWait
-import org.openqa.selenium.support.ui.Select
 import java.time.Duration
 
 // page_url = http://localhost:8080/packs_view
@@ -44,12 +40,8 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
         { NoOpCondition() },
         {location -> location.id.toString()}
     )
+    private val pageSelect = SelectComponent<Int>(By.xpath("//select[@name='packs_length']"),By.xpath("//select[@name='packs_length']/option"),driver,{ NoOpCondition() },{ option -> option.toString() })
     private val categoriesComponent = CategoriesComponent(driver)
-
-    private val categoriesBtn = By.id("categories_btn")
-    private val categoriesOffCanvas = By.id("categories-offcanvas")
-    private val previousBtn = By.xpath("//li[.//a[@aria-label='Previous']]")
-    private val nextBtn = By.xpath("//li[.//a[@aria-label='Next']]")
     private val packs = By.className("pack")
     private val error = By.cssSelector("div.alert.alert-danger.alert-dismissible")
 
@@ -69,6 +61,9 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
             fail("Not Loaded. Reason: ${ex.message}.")
         }
     }
+
+    fun currentPageSize() : Int = pageSelect.selectedValue().toInt()
+
 
     fun selectServer(archeageServer: ArcheageServer) : PackagesPageObject{
         selectArcheageServer(archeageServer)
@@ -187,15 +182,22 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
         return this
     }
 
+    fun changePageSize(pageSize: Int, packID: Long) : PackagesPageObject{
+        pageSelect.selectValue(pageSize)
+        waitForPackRowWithID(packID)
+
+        return this
+    }
+
+    fun changePercentage(pack: PackDTO, newPercentage: Int) {
+        PackComponent(driver,pack.id).changePercentage(newPercentage)
+    }
+
     private fun waitForPackRowWithID(packID: Long) {
         FluentWait(driver)
             .withTimeout(Duration.ofSeconds(2))
             .ignoring(NoSuchElementException::class.java)
             .until(presenceOfElementLocated(By.id("pack_${packID}")))
-    }
-
-    fun changePercentage(pack: PackDTO, newPercentage: Int) {
-        PackComponent(driver,pack.id).changePercentage(newPercentage)
     }
 
 }

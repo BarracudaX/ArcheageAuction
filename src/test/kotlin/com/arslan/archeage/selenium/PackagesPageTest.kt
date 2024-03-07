@@ -9,11 +9,11 @@ import com.arslan.archeage.entity.Price
 import com.arslan.archeage.pageobjects.PackagesPageObject
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.longs.shouldBeGreaterThan
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.context.i18n.LocaleContextHolder
 import java.lang.UnsupportedOperationException
@@ -133,5 +133,23 @@ class PackagesPageTest : SeleniumTest() {
             .packs { actualPacks ->
                 actualPacks.forEach { pack -> shouldThrow<UnsupportedOperationException> { page.changePercentage(pack,100) } }
             }
+    }
+
+    @Test
+    fun `should show more packs if more page size is increased`() {
+        val initialPageSize = page.currentPageSize()
+        assertThat(initialPageSize).isEqualTo(10)
+        repeat(initialPageSize){
+            packs.add(createPack("SOME_PACK_$it",departureLocation,destinationLocation,Price.of(10,0,0),2,category,listOf(Triple("M1",Price(5,0,0),5))))
+        }
+        val expectedPacks = packs.sortedByDescending(PackDTO::profit).subList(0,page.currentPageSize())
+        page
+            .selectServer(archeageServer,expectedPacks[0].id)
+            .packs { actualPacks ->
+                actualPacks shouldHaveSize page.currentPageSize()
+                actualPacks shouldContainExactly packs.sortedByDescending(PackDTO::profit).subList(0,initialPageSize)
+            }
+            .changePageSize(25,packs.sortedByDescending(PackDTO::profit)[initialPageSize].id)
+            .packs { actualPacks -> actualPacks.shouldContainExactly(packs.sortedByDescending(PackDTO::profit)) }
     }
 }

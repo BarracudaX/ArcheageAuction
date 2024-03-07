@@ -34,4 +34,5 @@ abstract class AbstractUnauthenticatedPageObject<T : AbstractUnauthenticatedPage
     }
 
     protected abstract fun isSubclassLoaded()
+
 }

@@ -6,7 +6,12 @@ import com.arslan.archeage.NoOpCondition
 import com.arslan.archeage.PackDTO
 import com.arslan.archeage.entity.Price
 import org.openqa.selenium.By
+import org.openqa.selenium.ElementClickInterceptedException
+import org.openqa.selenium.JavascriptExecutor
+import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.interactions.Actions
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.FluentWait
 import org.openqa.selenium.support.ui.LoadableComponent
@@ -23,6 +28,7 @@ class PackComponent(private val driver: WebDriver,private val id: Long) : Loadab
     private val destinationLocationBy = By.xpath("//*[@id='pack_${id}']/td[4]")
     private val sellPriceBy = By.xpath("//*[@id='pack_${id}']/td[5]")
     private val profitBy = By.xpath("//*[@id='pack_${id}']/td[6]")
+    private val workingPointsProfit = By.xpath("//*[@id='pack_${id}']/td[7]")
     private val percentageSelectBy = SelectComponent(By.xpath("//*[@id='pack_${id}']/td/select"),By.xpath("//*[@id='pack_${id}']/td/select/option"),driver,{ NoOpCondition() },Int::toString)
     private val producedQuantityBy = By.xpath("//*[@id='recipe_details_${id}']/tbody/tr/th[1]")
     private val recipeCostBy = By.xpath("//*[@id='recipe_details_${id}']/tbody/tr/th[2]")
@@ -43,8 +49,21 @@ class PackComponent(private val driver: WebDriver,private val id: Long) : Loadab
 
     private fun expand(){
         if (!isExpanded) {
-            driver.findElement(expandBtnBy).click()
-            wait.until(ExpectedConditions.visibilityOfElementLocated(producedQuantityBy))
+            (driver as JavascriptExecutor).executeScript("arguments[0].scrollIntoView(true);", driver.findElement(expandBtnBy))
+            Actions(driver)
+                .moveToElement(driver.findElement(expandBtnBy))
+                .click(driver.findElement(expandBtnBy))
+                .perform()
+
+            (driver as JavascriptExecutor).executeScript("arguments[0].scrollIntoView(true);", driver.findElement(producedQuantityBy))
+            Actions(driver)
+                .scrollToElement(driver.findElement(producedQuantityBy))
+                .perform()
+
+            wait.ignoring(NoSuchElementException::class.java)
+                .withTimeout(Duration.ofSeconds(1))
+                .until(ExpectedConditions.visibilityOfElementLocated(producedQuantityBy))
+
             isExpanded = true
         }
     }
@@ -60,7 +79,7 @@ class PackComponent(private val driver: WebDriver,private val id: Long) : Loadab
         val recipeCost = driver.findElement(recipeCostBy).text.toPrice()!!
         val percentage = percentageSelectBy.selectedValue().toInt()
         val profit = driver.findElement(profitBy).text.toPrice()!!
-        val workingPointsProfit = Price.of(0,0,0)
+        val workingPointsProfit = driver.findElement(workingPointsProfit).text.toPrice()!!
         val materials = driver
             .findElements(materialsBy)
             .map { material ->
@@ -69,9 +88,8 @@ class PackComponent(private val driver: WebDriver,private val id: Long) : Loadab
                 val materialName = material.findElement(materialNameBy).text
                 val materialPrice = material.findElement(materialUnitPriceBy).text.toPrice()
                 val totalPrice = material.findElement(materialTotalPriceBy).text.toPrice()
-                CraftingMaterialDTO(materialQuantity,ItemDTO(name,itemID,materialPrice),totalPrice)
+                CraftingMaterialDTO(materialQuantity,ItemDTO(materialName,itemID,materialPrice),totalPrice)
             }
-
         return PackDTO(name,createLocation,destinationLocation,sellPrice,quantity,materials,id,recipeCost,percentage,profit,workingPointsProfit,false)
     }
 
