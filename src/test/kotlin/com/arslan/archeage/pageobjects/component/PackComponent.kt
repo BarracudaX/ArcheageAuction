@@ -1,5 +1,6 @@
 package com.arslan.archeage.pageobjects.component
 
+import click
 import com.arslan.archeage.CraftingMaterialDTO
 import com.arslan.archeage.ItemDTO
 import com.arslan.archeage.NoOpCondition
@@ -9,12 +10,14 @@ import org.openqa.selenium.By
 import org.openqa.selenium.ElementClickInterceptedException
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.NoSuchElementException
+import org.openqa.selenium.TimeoutException
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.FluentWait
 import org.openqa.selenium.support.ui.LoadableComponent
+import scrollInto
 import java.time.Duration
 
 class PackComponent(private val driver: WebDriver,private val id: Long) : LoadableComponent<PackComponent>(){
@@ -49,16 +52,10 @@ class PackComponent(private val driver: WebDriver,private val id: Long) : Loadab
 
     private fun expand(){
         if (!isExpanded) {
-            (driver as JavascriptExecutor).executeScript("arguments[0].scrollIntoView(true);", driver.findElement(expandBtnBy))
-            Actions(driver)
-                .moveToElement(driver.findElement(expandBtnBy))
-                .click(driver.findElement(expandBtnBy))
-                .perform()
-
-            (driver as JavascriptExecutor).executeScript("arguments[0].scrollIntoView(true);", driver.findElement(producedQuantityBy))
-            Actions(driver)
-                .scrollToElement(driver.findElement(producedQuantityBy))
-                .perform()
+            expandBtnBy.scrollInto(driver)
+            expandBtnBy.click(driver)
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='recipe_details_${id}']/tbody")))
+            producedQuantityBy.scrollInto(driver)
 
             wait.ignoring(NoSuchElementException::class.java)
                 .withTimeout(Duration.ofSeconds(1))

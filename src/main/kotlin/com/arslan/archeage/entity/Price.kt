@@ -70,6 +70,8 @@ data class Price(val gold: Int,val silver: Int, val copper: Int) : Comparable<Pr
 
     operator fun plus(price: Price) : Price = fromCopper(totalCopper() + price.totalCopper())
 
+    operator fun div(price: Price) : Int = totalCopper()/price.totalCopper()
+
     operator fun minus(price: Price) : Price {
         return fromCopper(totalCopper() - price.totalCopper())
     }

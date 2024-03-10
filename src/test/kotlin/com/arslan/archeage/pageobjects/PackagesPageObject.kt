@@ -1,23 +1,25 @@
 package com.arslan.archeage.pageobjects
 
 import capitalized
+import click
 import com.arslan.archeage.Continent
 import com.arslan.archeage.NoOpCondition
 import com.arslan.archeage.PackDTO
 import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.Category
 import com.arslan.archeage.entity.Location
-import com.arslan.archeage.pageobjects.component.CategoriesComponent
-import com.arslan.archeage.pageobjects.component.PackComponent
-import com.arslan.archeage.pageobjects.component.SelectComponent
+import com.arslan.archeage.pageobjects.component.*
 import io.kotest.assertions.fail
 import org.openqa.selenium.By
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.NoSuchElementException
+import org.openqa.selenium.StaleElementReferenceException
 import org.openqa.selenium.TimeoutException
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.ExpectedConditions.*
 import org.openqa.selenium.support.ui.FluentWait
+import scrollInto
 import java.time.Duration
 
 // page_url = http://localhost:8080/packs_view
@@ -44,6 +46,8 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
     private val categoriesComponent = CategoriesComponent(driver)
     private val packs = By.className("pack")
     private val error = By.cssSelector("div.alert.alert-danger.alert-dismissible")
+    private val paginationComponent = PaginationComponent(driver)
+    private val orderComponent = TableOrderComponent(driver,"packs")
 
     override fun load() {
         driver.get("http://localhost:${port}/packs_view")
@@ -70,6 +74,17 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
         return get()
     }
 
+    fun pagination(consumer: (PaginationData) -> Unit) : PackagesPageObject{
+        paginationComponent.data().apply(consumer)
+        return this
+    }
+
+    fun selectPage(pageNum: Int,packID: Long) : PackagesPageObject{
+        paginationComponent.selectPage(pageNum)
+        waitForPackRowWithID(packID)
+        return this
+    }
+
     fun selectServer(archeageServer: ArcheageServer,packID: Long) : PackagesPageObject{
         selectArcheageServer(archeageServer)
 
@@ -79,8 +94,9 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
     }
 
     private fun selectArcheageServer(archeageServer: ArcheageServer) {
-        driver.findElement(By.xpath("//a[text() = 'Server']")).click()
-        driver.findElement(By.id("server_${archeageServer.id!!}")).click()
+        By.xpath("//a[text() = 'Server']").scrollInto(driver)
+        By.xpath("//a[text() = 'Server']").click(driver)
+        By.id("server_${archeageServer.id!!}").click(driver)
     }
 
     fun continents() : List<String> = continents.options()
@@ -188,9 +204,23 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
 
         return this
     }
+    
+    fun changePageSize(pageSize: Int,expectedPackID: Long,removedPackID: Long) : PackagesPageObject{
+        pageSelect.selectValue(pageSize)
+        waitForPackRowWithID(expectedPackID)
+        waitForPackToDisappear(removedPackID)
+        return this
+    }
 
     fun changePercentage(pack: PackDTO, newPercentage: Int) {
         PackComponent(driver,pack.id).changePercentage(newPercentage)
+    }
+
+    private fun waitForPackToDisappear(removedPackID: Long) {
+        FluentWait(driver)
+            .withTimeout(Duration.ofSeconds(2))
+            .ignoring(NoSuchElementException::class.java)
+            .until(invisibilityOfElementLocated(By.id("pack_${removedPackID}")))
     }
 
     private fun waitForPackRowWithID(packID: Long) {
@@ -198,6 +228,37 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int) :
             .withTimeout(Duration.ofSeconds(2))
             .ignoring(NoSuchElementException::class.java)
             .until(presenceOfElementLocated(By.id("pack_${packID}")))
+    }
+
+    fun nextPage(packID: Long) : PackagesPageObject{
+        paginationComponent.nextPage()
+
+        waitForPackRowWithID(packID)
+        return this
+    }
+
+    fun lastPage(packID: Long) : PackagesPageObject{
+        paginationComponent.lastPage()
+        waitForPackRowWithID(packID)
+        return this
+    }
+
+    fun previousPage(packID: Long) : PackagesPageObject{
+        paginationComponent.previousPage()
+        waitForPackRowWithID(packID)
+        return this
+    }
+
+    fun firstPage(packID: Long) : PackagesPageObject {
+        paginationComponent.firstPage()
+        waitForPackRowWithID(packID)
+        return this
+    }
+
+    fun sortByWorkingPointsProfitDesc(packID: Long) : PackagesPageObject{
+        orderComponent.orderBy(orderComponent.orderableColumns().find { it.name == "Profit Per Working Point" }!!.copy(direction = OrderDirection.DESC))
+        waitForPackRowWithID(packID)
+        return this
     }
 
 }
