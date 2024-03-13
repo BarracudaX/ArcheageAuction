@@ -5,13 +5,19 @@ import com.arslan.archeage.pageobjects.component.OrderDirection.*
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.FluentWait
 import scrollInto
+import java.time.Duration
 
-class TableOrderComponent(private val driver: WebDriver, val tableID: String,) {
+class TableOrderComponent(private val driver: WebDriver, private val tableID: String) {
 
-    private val headerColumns = By.xpath("//*[@id='packs']/thead/tr[1]/th")
+    private val headerColumns = By.xpath("//*[@id='${tableID}']/thead/tr[1]/th")
 
     fun orderableColumns() : List<OrderableColumn>{
+        val orderBy = driver.findElement(headerColumns)
+        orderBy.scrollInto(driver)
+        FluentWait(driver).withTimeout(Duration.ofSeconds(2)).until(ExpectedConditions.visibilityOfElementLocated(headerColumns))
         return driver.findElements(headerColumns).filter { element ->
             val classAttribute = element.getAttribute("class")
             !classAttribute.contains("dt-orderable-none") && classAttribute.contains("dt-orderable-asc") && classAttribute.contains("dt-orderable-desc")
@@ -29,7 +35,7 @@ class TableOrderComponent(private val driver: WebDriver, val tableID: String,) {
     }
 
     fun orderBy(column: OrderableColumn) {
-        val orderBy = driver.findElement(By.xpath("//*[@id='packs']/thead/tr[1]/th[span = '${column.name}']"))
+        val orderBy = driver.findElement(By.xpath("//*[@id='${tableID}']/thead/tr[1]/th[span = '${column.name}']"))
         orderBy.scrollInto(driver)
         when(column.direction){
             ASC -> orderAsc(orderBy)

@@ -17,10 +17,11 @@ import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.FluentWait
 import org.openqa.selenium.support.ui.LoadableComponent
+import org.springframework.retry.support.RetryTemplate
 import scrollInto
 import java.time.Duration
 
-class PackComponent(private val driver: WebDriver,private val id: Long) : LoadableComponent<PackComponent>(){
+class PackComponent(private val driver: WebDriver,private val id: Long,private val retryTemplate: RetryTemplate) : LoadableComponent<PackComponent>(){
 
     private val wait = FluentWait(driver)
         .withTimeout(Duration.ofSeconds(2))
@@ -32,7 +33,7 @@ class PackComponent(private val driver: WebDriver,private val id: Long) : Loadab
     private val sellPriceBy = By.xpath("//*[@id='pack_${id}']/td[5]")
     private val profitBy = By.xpath("//*[@id='pack_${id}']/td[6]")
     private val workingPointsProfit = By.xpath("//*[@id='pack_${id}']/td[7]")
-    private val percentageSelectBy = SelectComponent(By.xpath("//*[@id='pack_${id}']/td/select"),By.xpath("//*[@id='pack_${id}']/td/select/option"),driver,{ NoOpCondition() },Int::toString)
+    private val percentageSelectBy = SelectComponent(By.xpath("//*[@id='pack_${id}']/td/select"),By.xpath("//*[@id='pack_${id}']/td/select/option"),driver,{ NoOpCondition() },Int::toString,retryTemplate)
     private val producedQuantityBy = By.xpath("//*[@id='recipe_details_${id}']/tbody/tr/th[1]")
     private val recipeCostBy = By.xpath("//*[@id='recipe_details_${id}']/tbody/tr/th[2]")
     private val materialsBy = By.xpath("//*[@id='material_details_${id}']/tbody/tr")

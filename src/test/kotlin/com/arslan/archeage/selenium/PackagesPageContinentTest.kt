@@ -24,19 +24,17 @@ class PackagesPageContinentTest : SeleniumTest(){
     override fun setUp() {
         super.setUp()
         archeageServer = createArcheageServer("SOME_ARCHEAGE_SERVER")
-        page = PackagesPageObject(webDriver,port).get()
+        page = PackagesPageObject(webDriver,port,packService,retryTemplate).get()
     }
 
     @Test
     fun `should display continents to the user`() {
-        page
-            .continents() shouldContainExactlyInAnyOrder Continent.entries.map { messageSource.getMessage("page.continent.${it.name}", emptyArray(),LocaleContextHolder.getLocale()) }
+        page.continents() shouldContainExactlyInAnyOrder Continent.entries.map { messageSource.getMessage("page.continent.${it.name}", emptyArray(),LocaleContextHolder.getLocale()) }
     }
 
     @Test
     fun `should select by default the first continent`() {
-        page
-            .selectedContinent() shouldBe Continent.entries[0]
+        page.selectedContinent() shouldBe Continent.entries[0]
     }
 
 

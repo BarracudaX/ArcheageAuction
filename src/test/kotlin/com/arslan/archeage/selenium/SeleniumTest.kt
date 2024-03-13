@@ -12,9 +12,12 @@ import com.arslan.archeage.entity.pack.PackProfitKey
 import com.arslan.archeage.event.ItemPriceChangeEvent
 import com.arslan.archeage.repository.*
 import com.arslan.archeage.service.PackProfitService
+import com.arslan.archeage.service.PackService
 import com.arslan.archeage.service.UserService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.openqa.selenium.NoSuchElementException
+import org.openqa.selenium.StaleElementReferenceException
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
@@ -27,6 +30,10 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.retry.backoff.BackOffPolicy
+import org.springframework.retry.backoff.BackOffPolicyBuilder
+import org.springframework.retry.support.RetryTemplate
+import org.springframework.retry.support.RetryTemplateBuilder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestConstructor
@@ -39,7 +46,10 @@ import java.time.Duration
 abstract class SeleniumTest : AbstractTestContainerTest() {
 
     @Autowired
-    private lateinit var locationRepository: LocationRepository
+    protected lateinit var retryTemplate: RetryTemplate
+
+    @Autowired
+    protected lateinit var locationRepository: LocationRepository
 
     @Autowired
     protected lateinit var archeageServerRepository: ArcheageServerRepository
@@ -67,6 +77,9 @@ abstract class SeleniumTest : AbstractTestContainerTest() {
 
     @Autowired
     protected lateinit var userPriceRepository: UserPriceRepository
+
+    @Autowired
+    protected lateinit var packService: PackService
 
     @Autowired
     protected lateinit var purchasableItemRepository: PurchasableItemRepository
@@ -101,6 +114,13 @@ abstract class SeleniumTest : AbstractTestContainerTest() {
             manage().timeouts().scriptTimeout(Duration.ofMinutes(5))
         }
 
+        @Bean
+        fun retryTemplate() : RetryTemplate = RetryTemplateBuilder()
+            .retryOn(StaleElementReferenceException::class.java)
+            .retryOn(NoSuchElementException::class.java)
+            .customBackoff(BackOffPolicyBuilder.newBuilder().delay(500).build())
+            .maxAttempts(5)
+            .build()
     }
 
     @BeforeEach

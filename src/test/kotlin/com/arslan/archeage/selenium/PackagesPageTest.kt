@@ -7,6 +7,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.Test
 import org.springframework.context.i18n.LocaleContextHolder
+import sortByWorkingPointsProfitAsc
+import sortByWorkingPointsProfitDesc
 
 class PackagesPageTest : AbstractPackagesPageTest() {
 
@@ -26,58 +28,48 @@ class PackagesPageTest : AbstractPackagesPageTest() {
     @Test
     fun `should display packs of the selected archeage server sorted by profit`() {
         page
-            .selectServer(archeageServer,archeageServerEastPacks[0].id)
+            .selectServer(archeageServer)
             .packs{ actualPacks -> actualPacks.shouldContainExactly(archeageServerEastPacks.subList(0,page.currentPageSize())) }
-            .selectServer(anotherArcheageServer,anotherArcheageServerEastPacks[0].id)
-            .packs { actualPacks -> actualPacks.shouldContainExactly(anotherArcheageServerEastPacks.subList(0,page.currentPageSize())) }
+            .selectServer(anotherArcheageServer)
+            .packs { actualPacks -> actualPacks.shouldContainExactly(anotherArcheageServerEastPack) }
     }
 
     @Test
     fun `should display packs that belong to selected departure location`() {
         page
-            .selectServer(archeageServer,archeageServerEastPacks[0].id)
+            .selectServer(archeageServer)
             .selectDepartureLocation(eastDepartureLocation)
-            .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerEastDepartureLocationPacks.subList(0,10)) }
-            .selectDepartureLocation(anotherEastDepartureLocation)
-            .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerEastOtherDepartureLocationPacks.subList(0,10)) }
+            .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerEastDepartureLocationPack) }
     }
 
     @Test
     fun `should display packs that belong to selected destination location`() {
         page
-            .selectServer(archeageServer,archeageServerEastPacks[0].id)
+            .selectServer(archeageServer)
             .selectDestinationLocation(eastDestinationLocation)
-            .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerDestinationLocationPacks.subList(0,10)) }
-            .selectDestinationLocation(anotherEastDestinationLocation)
-            .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerOtherDestinationLocationPacks.subList(0,10)) }
+            .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerEastDestinationLocationPack) }
     }
 
     @Test
     fun `should display packs that belong to selected category`() {
         page
-            .selectServer(archeageServer,archeageServerEastPacks[0].id)
-            .selectCategory(category,archeageServerEastCategoryPacks[0].id)
-            .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerEastCategoryPacks.subList(0,10)) }
-            .deselectCategory(category,archeageServerEastPacks[0].id)
-            .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerEastPacks.subList(0,10)) }
-            .selectCategory(anotherCategory,archeageServerEastOtherCategoryPacks[0].id)
-            .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerEastOtherCategoryPacks.subList(0,10)) }
+            .selectServer(archeageServer)
+            .selectCategory(anotherCategory)
+            .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerEastOtherCategoryPack) }
     }
 
     @Test
     fun `should display packs that belong to selected continent`() {
         page
-            .selectServer(archeageServer,archeageServerEastPacks[0].id)
-            .selectContinent(Continent.WEST,archeageServerWestPacks[0].id)
-            .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerWestPacks.subList(0,10)) }
-            .selectContinent(Continent.EAST,archeageServerEastPacks[0].id)
-            .packs{ actualPacks -> actualPacks.shouldContainExactly(archeageServerEastPacks.subList(0,10)) }
+            .selectServer(archeageServer)
+            .selectContinent(Continent.WEST)
+            .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerWestPack) }
     }
 
     @Test
     fun `should not allow user to change pack percentage when user is not authenticated`() {
         page
-            .selectServer(archeageServer,archeageServerEastPacks[0].id)
+            .selectServer(archeageServer)
             .packs { actualPacks ->
                 actualPacks.forEach { pack -> shouldThrow<UnsupportedOperationException> { page.changePercentage(pack,100) } }
             }
@@ -86,73 +78,83 @@ class PackagesPageTest : AbstractPackagesPageTest() {
     @Test
     fun `should show more packs if more page size is increased`() {
         page
-            .selectServer(archeageServer,archeageServerEastPacks[0].id)
+            .selectServer(archeageServer)
             .packs { actualPacks ->
                 actualPacks shouldHaveSize page.currentPageSize()
                 actualPacks shouldContainExactly archeageServerEastPacks.subList(0,10)
             }
-            .changePageSize(25,archeageServerEastPacks[24].id)
+            .changePageSize(25)
             .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerEastPacks.subList(0,25)) }
     }
 
     @Test
     fun `should show less packs if page size is decreased`() {
         page
-            .selectServer(archeageServer, archeageServerEastPacks[0].id)
-            .changePageSize(25, archeageServerEastPacks[24].id)
-            .changePageSize(10, archeageServerEastPacks[0].id,archeageServerEastPacks[24].id)
+            .selectServer(archeageServer)
+            .changePageSize(25)
+            .changePageSize(10)
             .packs { actualPacks -> actualPacks.shouldContainExactly(archeageServerEastPacks.subList(0,10)) }
     }
 
     @Test
     fun `should show next packs when user requests next packs`() {
         page
-            .selectServer(archeageServer,archeageServerEastPacks[0].id)
-            .nextPage(archeageServerEastPacks[10].id)
+            .selectServer(archeageServer)
+            .nextPage()
             .packs { actualPacks -> actualPacks shouldContainExactly archeageServerEastPacks.subList(10,20) }
     }
 
     @Test
     fun `should show previous packs when user requests previous packs`() {
         page
-            .selectServer(archeageServer,archeageServerEastPacks[0].id)
-            .nextPage(archeageServerEastPacks[10].id)
-            .previousPage(archeageServerEastPacks[0].id)
+            .selectServer(archeageServer)
+            .nextPage()
+            .previousPage()
             .packs { actualPacks -> actualPacks shouldContainExactly archeageServerEastPacks.subList(0,10) }
     }
 
     @Test
     fun `should show packs of selected page when users requests it`() {
         page
-            .selectServer(archeageServer,archeageServerEastPacks[0].id)
-            .selectPage(2,archeageServerEastPacks[10].id)
+            .selectServer(archeageServer)
+            .selectPage(2)
             .packs { actualPacks -> actualPacks shouldContainExactly archeageServerEastPacks.subList(10,20) }
     }
 
     @Test
     fun `should show last packs when user requests it`() {
         page
-            .selectServer(archeageServer,archeageServerEastPacks[0].id)
-            .lastPage(archeageServerEastPacks.last().id)
-            .packs { actualPacks -> actualPacks shouldContainExactly archeageServerEastPacks.takeLast(10) }
+            .selectServer(archeageServer)
+        val expectedPacks = archeageServerEastPacks.drop(page.currentPageSize()*(page.paginationData().paginationNums.maxOfOrNull { it.content.toInt() }!! -1))
+        page
+            .lastPage()
+            .packs { actualPacks -> actualPacks shouldContainExactly expectedPacks }
     }
 
     @Test
     fun `should show first packs when user requests it`() {
         page
-            .selectServer(archeageServer,archeageServerEastPacks[0].id)
-            .selectPage(3,archeageServerEastPacks[25].id)
-            .firstPage(archeageServerEastPacks[0].id)
+            .selectServer(archeageServer)
+            .selectPage(3)
+            .firstPage()
             .packs { actualPacks -> actualPacks shouldContainExactly archeageServerEastPacks.subList(0,10) }
     }
 
 
     @Test
-    fun `should allow user to sort packs by working points profit`() {
+    fun `should allow user to sort packs by working points profit in descending order`() {
         page
-            .selectServer(archeageServer,archeageServerEastPacks[0].id)
+            .selectServer(archeageServer)
             .packs { actualPacks -> actualPacks shouldContainExactly archeageServerEastPacks.subList(0,10) }
-            .sortByWorkingPointsProfitDesc(archeageServerEastPacks.sortByWorkingPointsProfit()[0].id)
-            .packs { actualPacks -> actualPacks shouldContainExactly archeageServerEastPacks.sortByWorkingPointsProfit().subList(0,10) }
+            .sortByWorkingPointsProfitDesc()
+            .packs { actualPacks -> actualPacks shouldContainExactly archeageServerEastPacks.sortByWorkingPointsProfitDesc().subList(0,10) }
+    }
+
+    @Test
+    fun `should allow user to sort packs by working points profit in ascending order`() {
+        page
+            .selectServer(archeageServer)
+            .sortByWorkingPointsProfitAsc()
+            .packs { actualPacks -> actualPacks shouldContainExactly archeageServerEastPacks.sortByWorkingPointsProfitAsc().subList(0,10) }
     }
 }

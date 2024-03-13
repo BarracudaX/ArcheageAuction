@@ -11,6 +11,7 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotContain
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.openqa.selenium.NoSuchElementException
 import org.springframework.context.i18n.LocaleContextHolder
 
 class PackagesPageLocationTest : SeleniumTest(){
@@ -25,7 +26,7 @@ class PackagesPageLocationTest : SeleniumTest(){
     @BeforeEach
     override fun setUp() {
         super.setUp()
-        archeageServer = createArcheageServer("SOME_ARCHEAGE_SERVER")
+        archeageServer = createArcheageServer("ARCHEAGE_SERVER")
         eastDepartureLocations.add(createEastDepartureLocation("SOME_EAST_DEPARTURE_LOCATION_1",archeageServer))
         eastDepartureLocations.add(createEastDepartureLocation("SOME_EAST_DEPARTURE_LOCATION_2",archeageServer))
         westDepartureLocations.add(createWestDepartureLocation("SOME_WEST_DEPARTURE_LOCATION_1",archeageServer))
@@ -34,7 +35,7 @@ class PackagesPageLocationTest : SeleniumTest(){
         westDestinationLocations.add(createWestDestinationLocation("SOME_WEST_DESTINATION_LOCATION_2",archeageServer))
         eastDestinationLocations.add(createEastDestinationLocation("SOME_EAST_DESTINATION_LOCATION_1",archeageServer))
         eastDestinationLocations.add(createEastDestinationLocation("SOME_EAST_DESTINATION_LOCATION_2",archeageServer))
-        page = PackagesPageObject(webDriver,port).get()
+        page = PackagesPageObject(webDriver,port,packService,retryTemplate).get()
     }
 
     @Test
@@ -42,7 +43,7 @@ class PackagesPageLocationTest : SeleniumTest(){
         page
             .selectServer(archeageServer)
             .departureLocations{ departureLocations -> departureLocations.shouldContainExactlyInAnyOrder(getExpectedDepartureLocations(Continent.EAST)) }
-            .selectContinent(Continent.WEST,westDepartureLocations[0])
+            .selectContinent(Continent.WEST)
             .departureLocations{ departureLocations -> departureLocations.shouldContainExactlyInAnyOrder(getExpectedDepartureLocations(Continent.WEST)) }
     }
 
@@ -51,7 +52,7 @@ class PackagesPageLocationTest : SeleniumTest(){
         page
             .selectServer(archeageServer)
             .destinationLocations{ destinationLocations -> destinationLocations.shouldContainExactlyInAnyOrder(getExpectedDestinationLocations(Continent.EAST)) }
-            .selectContinent(Continent.WEST,westDestinationLocations[0])
+            .selectContinent(Continent.WEST)
             .destinationLocations{ destinationLocations -> destinationLocations.shouldContainExactlyInAnyOrder(getExpectedDestinationLocations(Continent.WEST)) }
     }
 

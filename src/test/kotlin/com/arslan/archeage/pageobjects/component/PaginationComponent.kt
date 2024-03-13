@@ -13,7 +13,6 @@ class PaginationComponent(private val driver: WebDriver) {
     private val pageNumsBy = By.xpath("//ul[@class='pagination']/li[position() > 2 and position() < last() - 1]")
 
     fun data(): PaginationData {
-
         val firstBtn = driver.findElement(firstBy).toPaginationButton()
         val previousBtn = driver.findElement(previousBy).toPaginationButton()
         val paginationNums =
@@ -24,15 +23,6 @@ class PaginationComponent(private val driver: WebDriver) {
         return PaginationData(firstBtn, previousBtn, paginationNums, nextBtn, lastBtn)
     }
 
-    private fun WebElement.toPaginationButton(): PaginationButton {
-        val elementState = if (getAttribute("class").contains("disabled")) {
-            ElementState.DISABLED
-        } else {
-            ElementState.ENABLED
-        }
-
-        return PaginationButton(text, elementState, getAttribute("class").contains("active"))
-    }
 
     fun selectPage(pageNum: Int) {
         driver.findElement(By.xpath("//ul[@class='pagination']/li/a[text() = '$pageNum']")).click()
@@ -52,6 +42,16 @@ class PaginationComponent(private val driver: WebDriver) {
 
     fun firstPage() {
         driver.findElement(firstBy).click()
+    }
+
+    private fun WebElement.toPaginationButton(): PaginationButton {
+        val elementState = if (getAttribute("class").contains("disabled")) {
+            ElementState.DISABLED
+        } else {
+            ElementState.ENABLED
+        }
+
+        return PaginationButton(text, elementState, getAttribute("class").contains("active"))
     }
 }
 

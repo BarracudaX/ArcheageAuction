@@ -12,7 +12,7 @@ import java.time.Duration
 class CategoriesComponent(private val driver: WebDriver) {
 
     private val categoriesButton = By.id("categories_btn")
-
+    private val categoriesBy = By.cssSelector("#categories input:checked")
     private val closeCanvasButton = By.xpath("//*[@id='categories-offcanvas']/div/button[@class='btn-close']")
 
     fun selectCategory(category: Category){
@@ -40,7 +40,7 @@ class CategoriesComponent(private val driver: WebDriver) {
             shrink(categoryThatNeedsShrinking)
         }
 
-        driver.findElement(closeCanvasButton).click()
+        closeCanvasButton.click(driver)
     }
 
     private fun expand(parent: Category, child: Category){
@@ -55,6 +55,16 @@ class CategoriesComponent(private val driver: WebDriver) {
 
     private fun shrink(category: Category){
         driver.findElement(By.xpath("//*[@id='category${category.id}']/preceding-sibling::button")).click()
+    }
+
+    fun selectedCategories(): List<Long> {
+        categoriesButton.click(driver)
+
+        val categories = driver.findElements(categoriesBy).map { it.getAttribute("value").toLong() }
+
+        closeCanvasButton.click(driver)
+
+        return categories
     }
 
 }
