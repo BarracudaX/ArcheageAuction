@@ -1,6 +1,6 @@
 package com.arslan.archeage.pageobjects
 
-import click
+import com.arslan.archeage.click
 import com.arslan.archeage.Continent
 import com.arslan.archeage.NoOpCondition
 import com.arslan.archeage.PackDTO
@@ -21,7 +21,7 @@ import org.openqa.selenium.support.ui.LoadableComponent
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.retry.support.RetryTemplate
-import scrollInto
+import com.arslan.archeage.scrollInto
 import java.time.Duration
 
 // page_url = http://localhost:8080/packs_view

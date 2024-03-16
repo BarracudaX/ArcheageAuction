@@ -9,8 +9,8 @@ import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.context.i18n.LocaleContextHolder
-import sortByWorkingPointsProfitAsc
-import sortByWorkingPointsProfitDesc
+import com.arslan.archeage.sortByWorkingPointsProfitAsc
+import com.arslan.archeage.sortByWorkingPointsProfitDesc
 
 class PacksPageTest : AbstractPacksPageTest() {
 

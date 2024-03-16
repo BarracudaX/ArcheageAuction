@@ -1,13 +1,13 @@
 package com.arslan.archeage.pageobjects.component
 
-import click
+import com.arslan.archeage.click
 import com.arslan.archeage.pageobjects.component.OrderDirection.*
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.FluentWait
-import scrollInto
+import com.arslan.archeage.scrollInto
 import java.time.Duration
 
 class TableOrderComponent(private val driver: WebDriver, private val tableID: String) {

@@ -1,6 +1,6 @@
 package com.arslan.archeage.selenium
 
-import capitalized
+import com.arslan.archeage.capitalized
 import com.arslan.archeage.Continent
 import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.Location
