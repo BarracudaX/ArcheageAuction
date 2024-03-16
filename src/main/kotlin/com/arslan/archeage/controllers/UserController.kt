@@ -44,7 +44,7 @@ class UserController(private val userService: UserService,private val itemPriceS
     fun userPrices(@RequestParam params: MultiValueMap<String,String>, archeageServer: ArcheageServer,@AuthenticationPrincipal authentication: Long) : ResponseEntity<PricesDataTableResponse>{
         val pageable = params.pricesPageable()
 
-        return ResponseEntity.ok(itemPriceService.userPrices(authentication,pageable).toDataTableResponse(params))
+        return ResponseEntity.ok(itemPriceService.userPrices(authentication,archeageServer,pageable).toDataTableResponse(params))
     }
 
     @ResponseBody

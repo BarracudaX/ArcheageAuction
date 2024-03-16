@@ -49,7 +49,7 @@ class UserPriceControllerTest(private val mockMvc: MockMvc) : AbstractController
     @BeforeEach
     fun setUpTestContext(){
         ArcheageServerContextHolder.setServerContext(archeageServer)
-        every { itemPriceServiceMock.userPrices(1,pageable) } returns userPrices
+        every { itemPriceServiceMock.userPrices(1,archeageServer,pageable) } returns userPrices
     }
 
     @WithAnonymousUser
@@ -92,7 +92,7 @@ class UserPriceControllerTest(private val mockMvc: MockMvc) : AbstractController
                 content { json(expectedJson) }
             }
 
-        verifyAll { itemPriceServiceMock.userPrices(1,pageable) }
+        verifyAll { itemPriceServiceMock.userPrices(1,archeageServer,pageable) }
     }
 
     @WithAnonymousUser

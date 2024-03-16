@@ -1,5 +1,6 @@
 package com.arslan.archeage.repository
 
+import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.item.Item
 import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.entity.item.UserPrice
@@ -21,6 +22,6 @@ interface UserPriceRepository : JpaRepository<UserPrice,UserPriceKey> {
     """)
     fun userItemPrices(items: Collection<PurchasableItem>, userID: Long) : List<UserPrice>
 
-    @Query("SELECT u FROM UserPrice u WHERE u.id.user.id = :userID")
-    fun findByUserID(userID: Long, pageable: Pageable) : Page<UserPrice>
+    @Query("SELECT u FROM UserPrice u WHERE u.id.user.id = :userID AND u.id.purchasableItem.archeageServer = :archeageServer")
+    fun findByUserID(userID: Long,archeageServer: ArcheageServer, pageable: Pageable) : Page<UserPrice>
 }

@@ -188,12 +188,12 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
         val idOfNonExistingUser = 100231051L
         userRepository.existsById(idOfNonExistingUser).shouldBeFalse()
 
-        itemPriceService.userPrices(idOfNonExistingUser, Pageable.unpaged()).isEmpty.shouldBeTrue()
+        itemPriceService.userPrices(idOfNonExistingUser,currentUserArcheageServer, Pageable.unpaged()).isEmpty.shouldBeTrue()
     }
 
     @Test
     fun `should return empty page when requesting user prices of user that have not provided any prices`() {
-        itemPriceService.userPrices(someUser.id!!, Pageable.unpaged()).isEmpty.shouldBeTrue()
+        itemPriceService.userPrices(someUser.id!!,currentUserArcheageServer, Pageable.unpaged()).isEmpty.shouldBeTrue()
     }
 
     @Test
@@ -203,7 +203,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
             userPriceRepository.save(UserPrice(UserPriceKey(someUser,anotherItem),Price(10,10,20)))
         )
 
-        assertSoftly(itemPriceService.userPrices(someUser.id!!, Pageable.unpaged())) {
+        assertSoftly(itemPriceService.userPrices(someUser.id!!,currentUserArcheageServer, Pageable.unpaged())) {
             hasNext() shouldBe false
             hasPrevious() shouldBe false
             totalPages shouldBe 1
@@ -219,7 +219,7 @@ class ItemPriceServiceITest(private val itemPriceService: ItemPriceService) : Ab
             userPriceRepository.save(UserPrice(UserPriceKey(someUser,anotherItem),Price(10,10,20)))
         )
 
-        assertSoftly(itemPriceService.userPrices(someUser.id!!, PageRequest.of(0,1, Sort.by("id.purchasableItem.id")))){
+        assertSoftly(itemPriceService.userPrices(someUser.id!!,currentUserArcheageServer, PageRequest.of(0,1, Sort.by("id.purchasableItem.id")))){
             hasNext().shouldBeTrue()
             hasPrevious().shouldBeFalse()
             content.shouldContainExactly(expectedPrices[0])

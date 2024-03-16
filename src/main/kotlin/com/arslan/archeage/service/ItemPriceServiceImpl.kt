@@ -1,6 +1,7 @@
 package com.arslan.archeage.service
 
 import com.arslan.archeage.UserPriceDTO
+import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.Price
 import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.entity.item.UserPrice
@@ -41,6 +42,6 @@ class ItemPriceServiceImpl(
         applicationEventPublisher.publishEvent(ItemPriceChangeEvent(this,item,user,diff))
     }
 
-    override fun userPrices(userID: Long, pageable: Pageable): Page<UserPrice> = userPriceRepository.findByUserID(userID,pageable)
+    override fun userPrices(userID: Long,archeageServer: ArcheageServer, pageable: Pageable): Page<UserPrice> = userPriceRepository.findByUserID(userID,archeageServer,pageable)
 
 }

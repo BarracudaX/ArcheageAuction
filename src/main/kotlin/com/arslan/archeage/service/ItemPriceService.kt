@@ -1,6 +1,7 @@
 package com.arslan.archeage.service
 
 import com.arslan.archeage.UserPriceDTO
+import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.item.PurchasableItem
 import com.arslan.archeage.entity.item.UserPrice
 import org.springframework.data.domain.Page
@@ -13,5 +14,5 @@ interface ItemPriceService {
     fun userItemPrices(items: List<PurchasableItem>, userID: Long) : Map<Long,UserPrice>
     fun saveUserPrice(userPriceDTO: UserPriceDTO)
 
-    fun userPrices(userID: Long,pageable: Pageable) : Page<UserPrice>
+    fun userPrices(userID: Long,archeageServer: ArcheageServer,pageable: Pageable) : Page<UserPrice>
 }
