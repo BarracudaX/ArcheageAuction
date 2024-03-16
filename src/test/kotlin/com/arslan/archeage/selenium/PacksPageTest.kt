@@ -1,16 +1,26 @@
 package com.arslan.archeage.selenium
 
 import com.arslan.archeage.Continent
+import com.arslan.archeage.pageobjects.PacksPageObject
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.*
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.context.i18n.LocaleContextHolder
 import sortByWorkingPointsProfitAsc
 import sortByWorkingPointsProfitDesc
 
-class PackagesPageTest : AbstractPackagesPageTest() {
+class PacksPageTest : AbstractPacksPageTest() {
+
+    private lateinit var page: PacksPageObject
+
+    @BeforeEach
+    override fun setUp() {
+        super.setUp()
+        page = PacksPageObject(webDriver, port, packService, retryTemplate).get()
+    }
 
     @Test
     fun `should display error when user is accessing packs view page and user has not selected archeage server`() {
@@ -71,7 +81,7 @@ class PackagesPageTest : AbstractPackagesPageTest() {
         page
             .selectServer(archeageServer)
             .packs { actualPacks ->
-                actualPacks.forEach { pack -> shouldThrow<UnsupportedOperationException> { page.changePercentage(pack,100) } }
+                actualPacks.forEach { pack -> shouldThrow<UnsupportedOperationException> { page.changePercentage(pack.id,100) } }
             }
     }
 

@@ -159,7 +159,7 @@ function formatPercentage(data,type,row) {
     select.disabled = !row.isUserData
 
     select.id=`${percentageSelectIDPrefix}${row.id}`
-    select.addEventListener("change",function(){ updatePackPercentage(row.id) })
+    select.addEventListener("change",function(){updatePackPercentage(row.id) })
 
     for(let i = 80; i <= 130; i+= 10){
         const option = document.createElement("option")

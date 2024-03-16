@@ -17,6 +17,7 @@ import org.openqa.selenium.TimeoutException
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.ExpectedConditions.*
 import org.openqa.selenium.support.ui.FluentWait
+import org.openqa.selenium.support.ui.LoadableComponent
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.retry.support.RetryTemplate
@@ -24,7 +25,7 @@ import scrollInto
 import java.time.Duration
 
 // page_url = http://localhost:8080/packs_view
-class PackagesPageObject(private val driver: WebDriver, private val port: Int,private val packService: PackService,private val retryTemplate: RetryTemplate) : AbstractUnauthenticatedPageObject<PackagesPageObject>(driver,port) {
+open class PacksPageObject(protected val driver: WebDriver, protected val port: Int, private val packService: PackService, private val retryTemplate: RetryTemplate) : LoadableComponent<PacksPageObject>() {
 
     private val continents = SelectComponent<Continent>(
         "continent",
@@ -61,7 +62,7 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
         driver.get("http://localhost:${port}/packs_view")
     }
 
-    override fun isSubclassLoaded() {
+    override fun isLoaded() {
         val condition = or(presenceOfElementLocated(errorBy), numberOfElementsToBeMoreThan(departureLocations.optionsBy, 0))
         val wait = FluentWait(driver)
             .withTimeout(Duration.ofSeconds(2))
@@ -76,7 +77,7 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
 
     fun currentPageSize() : Int = pageSelect.selectedValue().toInt()
 
-    fun selectServer(archeageServer: ArcheageServer) : PackagesPageObject{
+    fun selectServer(archeageServer: ArcheageServer) : PacksPageObject{
         selectArcheageServer(archeageServer)
         currentArcheageServer = archeageServer
         currentPacks = packs()
@@ -85,12 +86,12 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
     }
 
 
-    fun pagination(consumer: (PaginationData) -> Unit) : PackagesPageObject{
+    fun pagination(consumer: (PaginationData) -> Unit) : PacksPageObject{
         paginationComponent.data().apply(consumer)
         return this
     }
 
-    fun selectPage(pageNum: Int) : PackagesPageObject{
+    fun selectPage(pageNum: Int) : PacksPageObject{
         checkArcheageServerSelected()
         paginationComponent.selectPage(pageNum)
         currentPage = pageNum - 1
@@ -104,18 +105,18 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
 
     fun selectedContinent() : Continent = Continent.valueOf(continents.selectedValue())
 
-    fun departureLocations(consumer: (List<String>) -> Unit) : PackagesPageObject {
+    fun departureLocations(consumer: (List<String>) -> Unit) : PacksPageObject {
         departureLocations.options().apply(consumer)
         return this
     }
 
-    fun destinationLocations(consumer: (List<String>) -> Unit) : PackagesPageObject {
+    fun destinationLocations(consumer: (List<String>) -> Unit) : PacksPageObject {
         destinationLocations.options().apply(consumer)
 
         return this
     }
 
-    fun error(consumer: String?.() -> Unit) : PackagesPageObject {
+    fun error(consumer: String?.() -> Unit) : PacksPageObject {
         try{
             driver.findElement(errorBy).text
         }catch (_: NoSuchElementException){
@@ -128,14 +129,14 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
     /**
      * Selects provided continent and waits for the provided location to be loaded before returning.
      */
-    fun selectContinent(continent: Continent) : PackagesPageObject {
+    fun selectContinent(continent: Continent) : PacksPageObject {
         checkArcheageServerSelected()
         continents.selectValue(continent)
         currentPacks = waitForNewPacks()
         return this
     }
 
-    fun selectDepartureLocation(location: Location) : PackagesPageObject{
+    fun selectDepartureLocation(location: Location) : PacksPageObject{
         checkArcheageServerSelected()
         departureLocations.selectValue(location)
         currentPacks = waitForNewPacks()
@@ -143,7 +144,7 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
         return this
     }
 
-    fun selectDestinationLocation(location: Location) : PackagesPageObject{
+    fun selectDestinationLocation(location: Location) : PacksPageObject{
         checkArcheageServerSelected()
         destinationLocations.selectValue(location)
         currentPacks = waitForNewPacks()
@@ -151,7 +152,7 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
         return this
     }
 
-    fun packs(consumer: (List<PackDTO>) -> Unit) : PackagesPageObject{
+    fun packs(consumer: (List<PackDTO>) -> Unit) : PacksPageObject{
         val packs = driver.findElements(packsBy).map { pack ->
             PackComponent(driver,pack.getAttribute("id").replace("pack_","").toLong(),retryTemplate)
         }.onEach(PackComponent::isLoaded).map(PackComponent::toPackDTO)
@@ -161,20 +162,14 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
         return this
     }
 
-    fun selectCategory(category: Category) : PackagesPageObject{
+    fun selectCategory(category: Category) : PacksPageObject{
         checkArcheageServerSelected()
         categoriesComponent.selectCategory(category)
         currentPacks = waitForNewPacks()
         return this
     }
 
-    fun deselectCategory(category: Category) : PackagesPageObject{
-        categoriesComponent.selectCategory(category)
-        currentPacks = waitForNewPacks()
-        return this
-    }
-
-    fun changePageSize(pageSize: Int) : PackagesPageObject{
+    fun changePageSize(pageSize: Int) : PacksPageObject{
         checkArcheageServerSelected()
         pageSelect.selectValue(pageSize)
         currentPacks = packs()
@@ -182,11 +177,12 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
         return this
     }
 
-    fun changePercentage(pack: PackDTO, newPercentage: Int) {
-        PackComponent(driver,pack.id,retryTemplate).changePercentage(newPercentage)
+    fun changePercentage(packID: Long, newPercentage: Int) {
+        PackComponent(driver, packID, retryTemplate).changePercentage(newPercentage)
+        waitForNewPacks()
     }
 
-    fun nextPage() : PackagesPageObject{
+    fun nextPage() : PacksPageObject{
         paginationComponent.nextPage()
         currentPage += 1
         currentPacks = packs()
@@ -194,7 +190,7 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
         return this
     }
 
-    fun lastPage() : PackagesPageObject{
+    fun lastPage() : PacksPageObject{
         currentPage = paginationComponent.data().paginationNums.maxOfOrNull { it.content.toInt() }!! - 1
         paginationComponent.lastPage()
         currentPacks = packs()
@@ -202,7 +198,7 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
         return this
     }
 
-    fun previousPage() : PackagesPageObject{
+    fun previousPage() : PacksPageObject{
         paginationComponent.previousPage()
         currentPage -= 1
         currentPacks = packs()
@@ -210,7 +206,7 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
         return this
     }
 
-    fun firstPage() : PackagesPageObject {
+    fun firstPage() : PacksPageObject {
         paginationComponent.firstPage()
         currentPage = 0
         currentPacks = packs()
@@ -218,16 +214,20 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
         return this
     }
 
-    fun sortByWorkingPointsProfitDesc() : PackagesPageObject{
+    fun sortByWorkingPointsProfitDesc() : PacksPageObject{
         orderComponent.orderBy(orderComponent.orderableColumns().find { it.name == "Profit Per Working Point" }!!.copy(direction = OrderDirection.DESC))
         currentPacks = waitForNewPacks()
         return this
     }
 
-    fun sortByWorkingPointsProfitAsc() : PackagesPageObject{
+    fun sortByWorkingPointsProfitAsc() : PacksPageObject{
         orderComponent.orderBy(orderComponent.orderableColumns().find { it.name == "Profit Per Working Point" }!!.copy(direction = OrderDirection.ASC))
         currentPacks = waitForNewPacks()
         return this
+    }
+
+    open fun userID() : Long?{
+        return null
     }
 
     private fun WaitPackStrategy.toXpath() : By = when(val strategy = this){
@@ -279,7 +279,7 @@ class PackagesPageObject(private val driver: WebDriver, private val port: Int,pr
 
         val categories = categoriesComponent.selectedCategories()
 
-        val packRequest = PackRequest(Continent.valueOf(continents.selectedValue()), departureLocation, destinationLocation, null, categories)
+        val packRequest = PackRequest(Continent.valueOf(continents.selectedValue()), departureLocation, destinationLocation, userID(), categories)
         val pageable = PageRequest.of(currentPage, currentPageSize(), orderComponent.orderableColumns().toSort())
         return packService.packs(packRequest, pageable,currentArcheageServer!!).content
     }

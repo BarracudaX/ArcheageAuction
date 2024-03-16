@@ -10,7 +10,7 @@ import org.openqa.selenium.support.PageFactory
 import org.openqa.selenium.support.ui.LoadableComponent
 
 // page_url = http://localhost:8080/login
-class LoginPageObject(private val driver: WebDriver, private val port: Int) : AbstractUnauthenticatedPageObject<LoginPageObject>(driver,port){
+class LoginPageObject(private val driver: WebDriver, private val port: Int) : LoadableComponent<LoginPageObject>(){
 
     private val inputEmail = By.id("inputEmail")
 
@@ -21,7 +21,7 @@ class LoginPageObject(private val driver: WebDriver, private val port: Int) : Ab
     private val errorAlert = By.cssSelector("div.alert.alert-danger")
 
     private val url = "http://localhost:${port}/login"
-    override fun isSubclassLoaded() {
+    override fun isLoaded() {
         driver.title shouldBe "Login"
     }
 
@@ -29,8 +29,8 @@ class LoginPageObject(private val driver: WebDriver, private val port: Int) : Ab
         driver.get("http://localhost:${port}/login")
     }
 
-    fun login(email: String,password: String) : AuthenticatedHomePage{
-        performLogin(email, password)
+    fun login(authenticationData: AuthenticationData) : AuthenticatedHomePage{
+        performLogin(authenticationData.email, authenticationData.password)
 
         return AuthenticatedHomePage(driver,port).get()
     }
@@ -53,4 +53,6 @@ class LoginPageObject(private val driver: WebDriver, private val port: Int) : Ab
             null
         }
     }
+
 }
+data class AuthenticationData(val email: String,val password: String,val userID: Long)

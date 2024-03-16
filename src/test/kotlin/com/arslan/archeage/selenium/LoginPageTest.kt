@@ -1,5 +1,6 @@
 package com.arslan.archeage.selenium
 
+import com.arslan.archeage.pageobjects.AuthenticationData
 import com.arslan.archeage.pageobjects.HomePageObject
 import com.arslan.archeage.pageobjects.LoginPageObject
 import io.kotest.assertions.shouldFail
@@ -26,9 +27,10 @@ class LoginPageTest : SeleniumTest() {
     fun `should allow user to login using credentials`() {
         val email = "test@email.com"
         val password = "TestPass123!"
-        createUser(email, password)
+        val userID = createUser(email, password).id!!
 
-        loginPage.login(email, password)
+
+        loginPage.login(AuthenticationData(email,password,userID))
     }
 
     @Test

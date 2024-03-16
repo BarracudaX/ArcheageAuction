@@ -1,13 +1,22 @@
 package com.arslan.archeage.selenium
 
-import com.arslan.archeage.PackDTO
+import com.arslan.archeage.pageobjects.PacksPageObject
 import com.arslan.archeage.pageobjects.component.ElementState
 import com.arslan.archeage.pageobjects.component.PaginationButton
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class PackagesPagePaginationTest : AbstractPackagesPageTest() {
+class PacksPagePaginationTest : AbstractPacksPageTest() {
+
+    private lateinit var page: PacksPageObject
+
+    @BeforeEach
+    override fun setUp() {
+        super.setUp()
+        page = PacksPageObject(webDriver, port, packService, retryTemplate).get()
+    }
 
     @Test
     fun `should have first and previous pagination buttons disabled when user is on the first page`() {

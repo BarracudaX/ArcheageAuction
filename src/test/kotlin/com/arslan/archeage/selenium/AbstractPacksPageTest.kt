@@ -2,16 +2,11 @@ package com.arslan.archeage.selenium
 
 import com.arslan.archeage.Continent
 import com.arslan.archeage.PackDTO
-import com.arslan.archeage.entity.ArcheageServer
-import com.arslan.archeage.entity.Category
-import com.arslan.archeage.entity.Location
-import com.arslan.archeage.entity.Price
+import com.arslan.archeage.entity.*
 import com.arslan.archeage.entity.pack.Pack
-import com.arslan.archeage.pageobjects.PackagesPageObject
 import org.junit.jupiter.api.BeforeEach
 
-abstract class AbstractPackagesPageTest : SeleniumTest(){
-    protected lateinit var page: PackagesPageObject
+abstract class AbstractPacksPageTest : SeleniumTest(){
 
     protected lateinit var archeageServer: ArcheageServer
     protected lateinit var anotherArcheageServer: ArcheageServer
@@ -40,10 +35,13 @@ abstract class AbstractPackagesPageTest : SeleniumTest(){
     protected lateinit var archeageServerEastDestinationLocationPack: PackDTO
     protected lateinit var archeageServerEastOtherCategoryPack: PackDTO
     protected lateinit var archeageServerWestPack: PackDTO
+    protected lateinit var user: User
+    protected val userPassword = "SomePass123!"
 
     @BeforeEach
     override fun setUp() {
         super.setUp()
+        user = createUser("some@email.com",userPassword)
         archeageServer = createArcheageServer("SOME_ARCHEAGE_SERVER")
         anotherArcheageServer = createArcheageServer("ANOTHER_ARCHEAGE_SERVER")
 
@@ -74,7 +72,7 @@ abstract class AbstractPackagesPageTest : SeleniumTest(){
             targetWorkingPointsProfit += Price(10, 0, 0)
             workingPoints = price / targetWorkingPointsProfit
 
-            createPack("SOME_PACK_${it}", createEastDepartureLocation("SOME_EAST_CREATE_LOCATION_${it}", archeageServer), createEastDestinationLocation("SOME_EAST_SELL_LOCATION_${it}", archeageServer), price, 1, someCategory, materials, workingPoints).also { (pack,packDTO) ->
+            createPack("SOME_PACK_${it}", createEastDepartureLocation("SOME_EAST_CREATE_LOCATION_${it}", archeageServer), createEastDestinationLocation("SOME_EAST_SELL_LOCATION_${it}", archeageServer), price, 1, someCategory, materials, workingPoints,user).also { (pack,packDTO) ->
                 archeageServerPacks.add(pack to packDTO)
             }
         }
@@ -82,7 +80,7 @@ abstract class AbstractPackagesPageTest : SeleniumTest(){
         targetWorkingPointsProfit += Price(10, 0, 0)
         workingPoints = price / targetWorkingPointsProfit
 
-        createPack("SOME_WEST_PACK", westDepartureLocation, westDestinationLocation, price, 1, someCategory, materials, workingPoints).also { (pack,packDTO) ->
+        createPack("SOME_WEST_PACK", westDepartureLocation, westDestinationLocation, price, 1, someCategory, materials, workingPoints,user).also { (pack,packDTO) ->
             archeageServerPacks.add(pack to packDTO)
             archeageServerWestPack = packDTO
         }
@@ -91,7 +89,7 @@ abstract class AbstractPackagesPageTest : SeleniumTest(){
         targetWorkingPointsProfit += Price(10, 0, 0)
         workingPoints = price / targetWorkingPointsProfit
 
-        createPack("ANOTHER_SERVER_PACK",anotherArcheageServerEastDepartureLocation,anotherArcheageServerEastDestinationLocation,price,1,anotherArcheageServerCategory,materials,workingPoints).also { (pack,packDTO) ->
+        createPack("ANOTHER_SERVER_PACK",anotherArcheageServerEastDepartureLocation,anotherArcheageServerEastDestinationLocation,price,1,anotherArcheageServerCategory,materials,workingPoints,user).also { (pack,packDTO) ->
             anotherArcheageServerPacks.add(pack to packDTO)
             anotherArcheageServerEastPack = packDTO
         }
@@ -100,7 +98,7 @@ abstract class AbstractPackagesPageTest : SeleniumTest(){
         targetWorkingPointsProfit += Price(10, 0, 0)
         workingPoints = price / targetWorkingPointsProfit
 
-        createPack("ANOTHER_DEPARTURE_AND_DESTINATION_LOCATION_PACK", eastDepartureLocation, eastDestinationLocation, price, 1, category,materials, workingPoints).also { (pack,packDTO) ->
+        createPack("ANOTHER_DEPARTURE_AND_DESTINATION_LOCATION_PACK", eastDepartureLocation, eastDestinationLocation, price, 1, category,materials, workingPoints,user).also { (pack,packDTO) ->
             archeageServerPacks.add(pack to packDTO)
             archeageServerEastDestinationLocationPack = packDTO
             archeageServerEastDepartureLocationPack=packDTO
@@ -110,7 +108,7 @@ abstract class AbstractPackagesPageTest : SeleniumTest(){
         targetWorkingPointsProfit += Price(10, 0, 0)
         workingPoints = price / targetWorkingPointsProfit
 
-        createPack("ANOTHER_CATEGORY_PACK", createEastDepartureLocation("SOME_EAST_CREATE_LOCATION", archeageServer), createEastDestinationLocation("SOME_EAST_SELL_LOCATION", archeageServer), price, 1, anotherCategory,materials, workingPoints).also { (pack,packDTO) ->
+        createPack("ANOTHER_CATEGORY_PACK", createEastDepartureLocation("SOME_EAST_CREATE_LOCATION", archeageServer), createEastDestinationLocation("SOME_EAST_SELL_LOCATION", archeageServer), price, 1, anotherCategory,materials, workingPoints,user).also { (pack,packDTO) ->
             archeageServerPacks.add(pack to packDTO)
             archeageServerEastOtherCategoryPack = packDTO
         }
@@ -121,7 +119,6 @@ abstract class AbstractPackagesPageTest : SeleniumTest(){
         archeageServerEastDepartureLocationPacks = archeageServerPacks.filter { it.first.creationLocation == eastDepartureLocation }.map { it.second }
         archeageServerDestinationLocationPacks = archeageServerPacks.filter { it.first.price.sellLocation == eastDestinationLocation }.map { it.second }
 
-        page = PackagesPageObject(webDriver, port, packService, retryTemplate).get()
     }
 
 }
