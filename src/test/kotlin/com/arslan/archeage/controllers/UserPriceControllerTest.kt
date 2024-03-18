@@ -21,6 +21,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -34,7 +35,7 @@ import org.springframework.test.web.servlet.post
 class UserPriceControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest() {
 
     private val archeageServer: ArcheageServer = availableServers[0]
-    private val pageable = PageRequest.of(2,10)
+    private val pageable = PageRequest.of(2,10, Sort.by("id.purchasableItem.name"))
     private val user = User("ANY","ANY")
     private val userPrices = PageImpl(
         listOf(

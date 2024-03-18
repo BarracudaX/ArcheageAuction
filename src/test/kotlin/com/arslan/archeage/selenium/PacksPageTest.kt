@@ -24,15 +24,15 @@ class PacksPageTest : AbstractPacksPageTest() {
 
     @Test
     fun `should display error when user is accessing packs view page and user has not selected archeage server`() {
-        page.error { this.shouldBe(messageSource.getMessage("archeage.server.not.chosen.error.message", emptyArray(), LocaleContextHolder.getLocale())) }
+        page.error { error -> error.shouldBe(messageSource.getMessage("archeage.server.not.chosen.error.message", emptyArray(), LocaleContextHolder.getLocale())) }
     }
 
     @Test
     fun `should not display error after user has selected archeage server`() {
         page
-            .error { this.shouldNotBe(null) }
+            .error { error -> error.shouldNotBe(null) }
             .selectServer(archeageServer)
-            .error { this.shouldBe(null) }
+            .error { error -> error.shouldBe(null) }
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.arslan.archeage.entity.Price
 import com.arslan.archeage.service.ArcheageServerContextHolder
 import io.mockk.*
 import kotlinx.serialization.encodeToString
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -48,14 +49,14 @@ class PackControllerTest(private val mockMvc: MockMvc) : AbstractControllerTest(
     }
 
     @Test
-    fun `should return 400 bad request if archeage server is not set`() {
+    fun `should return 200(OK) request with error if archeage server is not set`() {
         ArcheageServerContextHolder.clear()
 
         mockMvc
             .get("/pack?draw=1&continent=${Continent.WEST}")
             .andExpect {
-                status { isBadRequest() }
-                content { string(messageSource.getMessage("archeage.server.not.chosen.error.message", emptyArray(),LocaleContextHolder.getLocale())) }
+                status { isOk() }
+                content { string(Matchers.containsString(messageSource.getMessage("archeage.server.not.chosen.error.message", emptyArray(),LocaleContextHolder.getLocale()))) }
             }
 
         verifyAll { packServiceMock wasNot called }
