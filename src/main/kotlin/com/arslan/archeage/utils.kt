@@ -65,18 +65,9 @@ fun MultiValueMap<String,String>.packPageable() : Pageable{
 }
 
 fun MultiValueMap<String,String>.pricesPageable() : Pageable{
-    val orders = dataTableOrders(this)
-        .flatMap { order ->
-            val (direction,property) = order[0] to order[1]
-            when(property){
-                "" -> listOf<Sort.Order>()
-                else -> throw IllegalArgumentException("Unknown sorting property $order.")
-            }
-        }
-
     val pageSize = get("length")!![0].toInt()
     val pageNumber = get("start")!![0].toInt()/pageSize
-    return PageRequest.of(pageNumber,pageSize,Sort.by(orders))
+    return PageRequest.of(pageNumber,pageSize,Sort.by("id.purchasableItem.name"))
 }
 
 fun dataTableOrders(params: MultiValueMap<String,String>) : Collection<List<String>> =

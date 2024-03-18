@@ -7,10 +7,13 @@ import com.arslan.archeage.service.ArcheageServerService
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.context.request.WebRequest
 import java.util.TimeZone
 
 @ControllerAdvice
@@ -28,6 +31,25 @@ class ArcheageControllerAdvice(private val archeageServerService: ArcheageServer
     fun timezone() : TimeZone = LocaleContextHolder.getTimeZone()
 
     @ExceptionHandler(ArcheageContextHolderEmptyException::class)
-    fun archeageContextHolderEmptyHandler() : ResponseEntity<String> =
-        ResponseEntity.badRequest().body(messageSource.getMessage("archeage.server.not.chosen.error.message", emptyArray(),LocaleContextHolder.getLocale()))
+    fun archeageContextHolderEmptyHandler(request: WebRequest) : ResponseEntity<String> {
+        val error = messageSource.getMessage("archeage.server.not.chosen.error.message", emptyArray(),LocaleContextHolder.getLocale())
+        val params = request.parameterMap
+        return if(!params.contains("draw")){
+            ResponseEntity.badRequest().body(error)
+        }else{
+            ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(
+                """
+                {
+                    "recordsTotal" : 0,
+                    "recordsFiltered" : 0,
+                    "data":[],
+                    "draw" : ${params["draw"]!![0].toInt()},
+                    "error" : "$error"
+                }
+            """.trimIndent()
+            )
+        }
+    }
+
+
 }

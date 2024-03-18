@@ -1,5 +1,8 @@
 package com.arslan.archeage.pageobjects
 
+import com.arslan.archeage.entity.ArcheageServer
+import com.arslan.archeage.pageobjects.component.SelectComponent
+import com.arslan.archeage.selectArcheageServer
 import io.kotest.matchers.shouldBe
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.LoadableComponent
@@ -29,6 +32,12 @@ class UserProfilePageObject(private val driver: WebDriver,private val port: Int,
     override fun isLoaded() {
         driver.title shouldBe "My Profile"
     }
+
+    fun selectArcheageServer(archeageServer: ArcheageServer) : UserProfilePageObject{
+        driver.selectArcheageServer(archeageServer)
+        return this
+    }
+
 
 
 

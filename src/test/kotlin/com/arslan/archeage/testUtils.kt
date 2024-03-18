@@ -1,5 +1,6 @@
 package com.arslan.archeage
 
+import com.arslan.archeage.entity.ArcheageServer
 import org.openqa.selenium.By
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
@@ -30,4 +31,10 @@ fun <T> List<T>.toIndex(upperBound: Int) : Int = if(upperBound <= size){
     upperBound
 }else{
     size
+}
+
+fun WebDriver.selectArcheageServer(archeageServer: ArcheageServer) {
+    By.xpath("//a[text() = 'Server']").scrollInto(this)
+    By.xpath("//a[text() = 'Server']").click(this)
+    By.id("server_${archeageServer.id!!}").click(this)
 }

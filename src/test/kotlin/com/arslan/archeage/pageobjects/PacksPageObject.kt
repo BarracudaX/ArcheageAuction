@@ -1,10 +1,6 @@
 package com.arslan.archeage.pageobjects
 
-import com.arslan.archeage.click
-import com.arslan.archeage.Continent
-import com.arslan.archeage.NoOpCondition
-import com.arslan.archeage.PackDTO
-import com.arslan.archeage.PackRequest
+import com.arslan.archeage.*
 import com.arslan.archeage.entity.ArcheageServer
 import com.arslan.archeage.entity.Category
 import com.arslan.archeage.entity.Location
@@ -21,7 +17,6 @@ import org.openqa.selenium.support.ui.LoadableComponent
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.retry.support.RetryTemplate
-import com.arslan.archeage.scrollInto
 import java.time.Duration
 
 // page_url = http://localhost:8080/packs_view
@@ -78,7 +73,7 @@ open class PacksPageObject(protected val driver: WebDriver, protected val port: 
     fun currentPageSize() : Int = pageSelect.selectedValue().toInt()
 
     fun selectServer(archeageServer: ArcheageServer) : PacksPageObject{
-        selectArcheageServer(archeageServer)
+        driver.selectArcheageServer(archeageServer)
         currentArcheageServer = archeageServer
         currentPacks = packs()
         waitForPacks()
@@ -116,7 +111,7 @@ open class PacksPageObject(protected val driver: WebDriver, protected val port: 
         return this
     }
 
-    fun error(consumer: String?.() -> Unit) : PacksPageObject {
+    fun error(consumer: (String?) -> Unit) : PacksPageObject {
         try{
             driver.findElement(errorBy).text
         }catch (_: NoSuchElementException){
@@ -236,11 +231,7 @@ open class PacksPageObject(protected val driver: WebDriver, protected val port: 
         is WaitPackStrategy.AnyPosition -> By.xpath("//tbody/tr[@Id='pack_${strategy.id}']")
     }
 
-    private fun selectArcheageServer(archeageServer: ArcheageServer) {
-        By.xpath("//a[text() = 'Server']").scrollInto(driver)
-        By.xpath("//a[text() = 'Server']").click(driver)
-        By.id("server_${archeageServer.id!!}").click(driver)
-    }
+
     private fun waitForPackToDisappear(waitStrategy: WaitPackStrategy) {
 
         FluentWait(driver)

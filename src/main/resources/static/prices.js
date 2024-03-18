@@ -1,5 +1,8 @@
 $(document).ready(function(){
-    $.fn.dataTable.ext.errMode = 'throw';
+    $.fn.dataTable.ext.errMode = function ( settings, helpPage, message ) {
+        addError(message.substring(38))
+    };
+
     $("#prices").DataTable({
         language: { url : `/resource/dataTables/${locale}.json` },
         rowId: function(data){return `item_${data.id}`},
