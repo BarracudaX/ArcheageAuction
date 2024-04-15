@@ -3,6 +3,7 @@ package com.arslan.archeage.config
 import brave.handler.SpanHandler
 import io.micrometer.tracing.exporter.SpanReporter
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer
 import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler
 import java.nio.file.Files
 import java.security.SecureRandom
+import java.util.concurrent.Executors
 import kotlin.io.path.Path
 
 @Configuration
@@ -28,4 +30,8 @@ class InfrastructureConfiguration {
         Files.deleteIfExists(Path("drop.sql"))
     }
 
+    @Bean
+    fun tomcatConnectorCustomizer() : TomcatConnectorCustomizer = TomcatConnectorCustomizer{
+        it.protocolHandler.executor = Executors.newVirtualThreadPerTaskExecutor()
+    }
 }

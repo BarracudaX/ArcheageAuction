@@ -12,6 +12,7 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 import java.io.InputStreamReader
+import java.util.concurrent.StructuredTaskScope
 
 @SpringBootApplication(exclude = [ElasticsearchRestClientAutoConfiguration::class])
 class ArcheageApplication
